@@ -11,5 +11,5 @@ public class PlaylistPanelGUI extends JPanel {
     private JPanel playlistTilePanel;
     private JLabel PlaylistTitleLabel;
     private JPanel playlistIconOutPanel;
-    private JPanel playlistIconPanel;
+    public JButton playlistSettingsButton;
 }
