@@ -10,7 +10,15 @@ import java.awt.event.ActionListener;
 public class mainWindowGUI extends JFrame implements ActionListener {
     // Main panel
     private JPanel mainPanel;
-    private JMenuBar menuBar;
+
+    // Menu bar
+    private final JMenuBar menuBar;
+    private final JMenu fileMenu;
+    private final JMenuItem openSongMenuItem;
+    private final JMenu editMenu;
+    private final JMenuItem settingsMenuItem;
+    private final JMenuItem exportPlaylistMenuItem;
+
 
     // Left Menu Panel
     private JButton homeButton;
@@ -45,29 +53,35 @@ public class mainWindowGUI extends JFrame implements ActionListener {
     public mainWindowGUI() {
         // Set the window
         super("JavaPlayer - Playlist");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000,500);
-        setMinimumSize(new Dimension(1000, 500));
-        setContentPane(mainPanel);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(1000,500);
+        this.setMinimumSize(new Dimension(1000, 500));
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setContentPane(mainPanel);
+
         mainPanel.setMinimumSize(new Dimension(1000, 500));
 
         // Set the menu bar
         menuBar = new JMenuBar();
         this.setJMenuBar(menuBar);
-        JMenu fileMenu = new JMenu("Files");
+
+        // Set the different menus
+        fileMenu = new JMenu("Files");
+        editMenu = new JMenu ("Edit");
         menuBar.add(fileMenu);
-        JMenuItem openSongMenuItem = new JMenuItem("Open file");
-        openSongMenuItem.addActionListener(this);
-        fileMenu.add(openSongMenuItem);
-
-        JMenuItem exportPlaylistMenuItem = new JMenuItem("Export playlist");
-        exportPlaylistMenuItem.addActionListener(this);
-        fileMenu.add(exportPlaylistMenuItem);
-
-        JMenu editMenu = new JMenu ("Edit");
         menuBar.add(editMenu);
-        JMenuItem settingsMenuItem = new JMenuItem("Settings");
+
+        // Set the menu items
+        openSongMenuItem = new JMenuItem("Open file");
+        settingsMenuItem = new JMenuItem("Settings");
+        exportPlaylistMenuItem = new JMenuItem("Export playlist");
+        fileMenu.add(openSongMenuItem);
+        fileMenu.add(exportPlaylistMenuItem);
         editMenu.add(settingsMenuItem);
+
+        // Add all action listener
+        openSongMenuItem.addActionListener(this);
+        exportPlaylistMenuItem.addActionListener(this);
         settingsMenuItem.addActionListener(this);
 
         homeButton.addActionListener(this);
@@ -81,6 +95,7 @@ public class mainWindowGUI extends JFrame implements ActionListener {
         volumeButton.addActionListener(this);
         songIconButton.addActionListener(this);
 
+        // Delete the border of some buttons
         randomButton.setBorderPainted(false);
         previousButton.setBorderPainted(false);
         nextButton.setBorderPainted(false);
@@ -88,6 +103,7 @@ public class mainWindowGUI extends JFrame implements ActionListener {
         loopButton.setBorderPainted(false);
         volumeButton.setBorderPainted(false);
 
+        // Set the UI of timeSlider
         timeSlider.setUI(new javax.swing.plaf.basic.BasicSliderUI(timeSlider) {
             @Override
             public void paintTrack(Graphics g) {
@@ -106,9 +122,11 @@ public class mainWindowGUI extends JFrame implements ActionListener {
             }
         });
 
-        cardLayout = new CardLayout();
+        // Create the layout for the main content
+        cardLayout = new CardLayout(); // Note : On peut raccourcir ?
         contentPanel = new JPanel(cardLayout);
 
+        // Add the main content
         contentPanel.add(new HomePanelGUI().mainPanel, "Home");
         contentPanel.add(new PlaylistPanelGUI().mainPanel, "Playlist");
 
@@ -123,6 +141,26 @@ public class mainWindowGUI extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "Recherche non implémentée !");
         } else if (e.getSource() == favoritesButton) {
             cardLayout.show(contentPanel, "Playlist");
+        } else if (e.getSource() == settingsMenuItem) {
+            // Create the settings dialog box
+            JDialog settingsDialog = new JDialog(this, true);
+//            dialog.setLocation(100,100);
+            settingsDialog.setTitle("Settings");
+
+            // Set the properties of the dialog box
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            int width = (int)((float)screenSize.width / 1.5);
+            int height = (int)((float)screenSize.height / 1.5);
+            settingsDialog.setSize(new Dimension(width, height));
+            settingsDialog.setResizable(false);
+
+            int x = (screenSize.width - settingsDialog.getWidth()) / 2;
+            int y = (screenSize.height - settingsDialog.getHeight()) / 2;
+            settingsDialog.setLocation(x, y);
+
+            settingsDialog.setContentPane(new SettingsPanelGUI().mainPanel);
+            settingsDialog.setVisible(true);
+            settingsDialog.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Bouton non implémenté !");
         }
