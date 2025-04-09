@@ -24,4 +24,17 @@ public class Artist {
     public void setPseudo(String pseudo) {
         this.pseudo = pseudo;
     }
+
+    public String toString()
+    {
+        return "Artist : " + pseudo;
+    }
+
+    public boolean equals(Object obj)
+    {
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false; //garantir qu'on compare deux objets de meme type
+        Artist artist = (Artist)obj;//cast l'objet a comparer en artiste
+        return pseudo != null && pseudo.equalsIgnoreCase(artist.getPseudo());//
+    }
 }

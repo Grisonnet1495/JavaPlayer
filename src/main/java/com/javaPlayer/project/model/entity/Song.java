@@ -75,4 +75,9 @@ public class Song {
     public void setAddedDate(Date addedDate) {
         this.addedDate = addedDate;
     }
+
+    public String toString()
+    {
+        return title + " - " + artist.getPseudo();
+    }
 }
