@@ -1,11 +1,13 @@
 package com.javaPlayer.project.view.GUI;
 
-import com.formdev.flatlaf.FlatLightLaf;
+//import com.formdev.flatlaf.FlatMacLightLaf;
+import com.formdev.flatlaf.themes.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class mainWindowGUI extends JFrame implements ActionListener {
     // Main panel
@@ -62,12 +64,17 @@ public class mainWindowGUI extends JFrame implements ActionListener {
     private CardLayout cardLayout;
     private JPanel contentPanel;
 
+    // Add the different content panels
+    private HomePanelGUI homePanel;
+    private PlaylistPanelGUI playlistPanel;
+    private SearchPanelGUI searchPanel;
+
     public mainWindowGUI() {
         // Set the window
         super("JavaPlayer - Playlist");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1000,500);
-        this.setMinimumSize(new Dimension(1000, 500));
+        this.setSize(1200,1000);
+        this.setMinimumSize(new Dimension(1200, 1000));
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setContentPane(mainPanel);
 
@@ -177,11 +184,17 @@ public class mainWindowGUI extends JFrame implements ActionListener {
         // Create the layout for the main content
         cardLayout = new CardLayout(); // Note : On peut raccourcir ?
         contentPanel = new JPanel(cardLayout);
+        contentPanel.setPreferredSize(new Dimension(contentScrollPane.getPreferredSize().width, contentScrollPane.getPreferredSize().height));
+
+
+        homePanel = new HomePanelGUI();
+        playlistPanel = new PlaylistPanelGUI();
+        searchPanel = new SearchPanelGUI();
 
         // Add the main content
-        contentPanel.add(new HomePanelGUI().mainPanel, "Home");
-        contentPanel.add(new PlaylistPanelGUI().mainPanel, "Playlist");
-        contentPanel.add(new SearchPanelGUI().mainPanel, "Search");
+        contentPanel.add(homePanel.mainPanel, "Home");
+        contentPanel.add(playlistPanel.mainPanel, "Playlist");
+        contentPanel.add(searchPanel.mainPanel, "Search");
 
         contentScrollPane.setViewportView(contentPanel);
     }
@@ -189,7 +202,15 @@ public class mainWindowGUI extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == homeButton) {
-            cardLayout.show(contentPanel, "Home");
+//            cardLayout.show(contentPanel, "Home"); // Note : Do it need to be destroyed and re-created ?
+//
+//            homePanel.recentPlaylistsContentPanel.revalidate();
+//            homePanel.recentPlaylistsContentPanel.repaint();
+            homePanel.updateRecentPlaylists();
+            homePanel.updateAllPlaylists();
+            contentPanel.remove(homePanel.mainPanel);
+            contentPanel.add(homePanel.mainPanel, "Home");
+            cardLayout.show(contentPanel, "Home"); // Note : Do it need to be destroyed and re-created ?
         } else if (e.getSource() == searchButton) {
             cardLayout.show(contentPanel, "Search");
         } else if (e.getSource() == favoritesButton) {
@@ -230,6 +251,7 @@ public class mainWindowGUI extends JFrame implements ActionListener {
             songDetailsDialog.setContentPane(new SongDetailsPanelGUI().mainPanel);
             songDetailsDialog.setVisible(true);
             songDetailsDialog.dispose();
+
         } else if (e.getSource() == addToFavoritesButton) {
             // Add song to favorites
             // Change icon
@@ -241,7 +263,7 @@ public class mainWindowGUI extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        FlatLightLaf.setup();
+        FlatMacLightLaf.setup();
         mainWindowGUI window = new mainWindowGUI();
         window.setVisible(true);
     }
