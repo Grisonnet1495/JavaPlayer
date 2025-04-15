@@ -2,7 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 
-public class PlaylistSettingsPanelGUI {
+public class JPanelPlaylistSettings {
     protected JPanel mainPanel;
     private JTextField playlistNameTextField;
     private JButton deletePlaylistButton;

@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class PlaylistPanelGUI extends JPanel {
+public class JPanelPlaylist extends JPanel {
     public JPanel mainPanel;
     private JScrollBar scrollBar1;
     private JTable songTable;
@@ -15,7 +15,7 @@ public class PlaylistPanelGUI extends JPanel {
     private JPanel playlistIconOutPanel;
     public JButton playlistSettingsButton;
 
-    PlaylistPanelGUI() {
+    JPanelPlaylist() {
         playlistSettingsButton.addActionListener(this::actionPerformed);
     }
 
@@ -34,7 +34,7 @@ public class PlaylistPanelGUI extends JPanel {
             int y = (screenSize.height - playlistSettingsDialog.getHeight()) / 2;
             playlistSettingsDialog.setLocation(x, y);
 
-            playlistSettingsDialog.setContentPane(new PlaylistSettingsPanelGUI().mainPanel);
+            playlistSettingsDialog.setContentPane(new JPanelPlaylistSettings().mainPanel);
             playlistSettingsDialog.setVisible(true);
             playlistSettingsDialog.dispose();
         }

@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class HomePanelGUI extends JPanel {
+public class JPanelHome extends JPanel {
     public JPanel mainPanel;
     private JLabel recentPlaylistsLabel;
     private JLabel allPlaylistsLabel;
@@ -16,7 +16,7 @@ public class HomePanelGUI extends JPanel {
     ArrayList<String> recentPlaylistsList = new ArrayList<>();
     ArrayList<String> allPlaylistsList = new ArrayList<>();
 
-    public HomePanelGUI() {
+    public JPanelHome() {
         recentPlaylistsContentPanel.setLayout(new WrapLayout(FlowLayout.LEFT));
         allPlaylistsContentPanel.setLayout(new WrapLayout(FlowLayout.LEFT));
         updateRecentPlaylists();

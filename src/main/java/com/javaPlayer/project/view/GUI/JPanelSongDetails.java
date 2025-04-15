@@ -2,7 +2,8 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 
-public class SongDetailsPanelGUI {
+public class JPanelSongDetails {
+    // Note : Extend from JDialog ?
     public JPanel mainPanel;
     private JLabel songTitleTitleLabel;
     private JLabel songTitleLabel;

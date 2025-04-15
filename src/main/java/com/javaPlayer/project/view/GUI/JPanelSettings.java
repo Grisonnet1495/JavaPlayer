@@ -2,7 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 
-public class SettingsPanelGUI {
+public class JPanelSettings {
     public JPanel mainPanel;
     private JScrollPane mainContentScrollPane;
     private JPanel accountSettingsInPanel;

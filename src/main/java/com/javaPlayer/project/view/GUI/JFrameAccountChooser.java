@@ -5,7 +5,7 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import javax.swing.*;
 import java.awt.*;
 
-public class AccountChooserWindowGUI extends JFrame {
+public class JFrameAccountChooser extends JFrame {
     private JPanel mainPanel;
     private JButton guestUserButton;
     private JButton createAccountButton;
@@ -13,7 +13,7 @@ public class AccountChooserWindowGUI extends JFrame {
     private JLabel guestUserLabel;
     private JLabel createAccountLabel;
 
-    public AccountChooserWindowGUI() {
+    public JFrameAccountChooser() {
         // Set the window
         super("JavaPlayer - Choose user");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +32,7 @@ public class AccountChooserWindowGUI extends JFrame {
 
     public static void main(String[] args) {
         FlatMacLightLaf.setup();
-        AccountChooserWindowGUI window = new AccountChooserWindowGUI();
+        JFrameAccountChooser window = new JFrameAccountChooser();
         window.setVisible(true);
     }
 }

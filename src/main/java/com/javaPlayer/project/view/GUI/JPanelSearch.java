@@ -2,7 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 
-public class SearchPanelGUI {
+public class JPanelSearch {
     public JPanel mainPanel;
     private JTextField searchTextField;
     private JTable resultTable;
