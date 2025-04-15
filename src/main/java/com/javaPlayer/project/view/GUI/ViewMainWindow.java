@@ -7,6 +7,7 @@ public interface ViewMainWindow {
     void showPlaylist(int playlistId);
     void showSettings();
     void showSongDetails();
+    void showPlaylistSettings();
     void toggleFavoritesForCurrentSong();
     void addCurrentSongToPlaylist();
     void showMessage(String message);

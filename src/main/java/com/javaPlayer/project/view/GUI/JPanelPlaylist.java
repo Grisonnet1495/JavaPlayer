@@ -1,5 +1,7 @@
 package com.javaPlayer.project.view.GUI;
 
+import com.javaPlayer.project.controller.Controller;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,28 +17,8 @@ public class JPanelPlaylist extends JPanel {
     private JPanel playlistIconOutPanel;
     public JButton playlistSettingsButton;
 
-    JPanelPlaylist() {
-        playlistSettingsButton.addActionListener(this::actionPerformed);
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == playlistSettingsButton) {
-            // Create the settings dialog box
-            JDialog playlistSettingsDialog = new JDialog(((JFrame) SwingUtilities.getWindowAncestor(this)), true);
-            playlistSettingsDialog.setTitle("Playlist settings");
-
-            // Set the properties of the dialog box
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            playlistSettingsDialog.setSize(new Dimension(500, 300));
-            playlistSettingsDialog.setResizable(false);
-
-            int x = (screenSize.width - playlistSettingsDialog.getWidth()) / 2;
-            int y = (screenSize.height - playlistSettingsDialog.getHeight()) / 2;
-            playlistSettingsDialog.setLocation(x, y);
-
-            playlistSettingsDialog.setContentPane(new JPanelPlaylistSettings().mainPanel);
-            playlistSettingsDialog.setVisible(true);
-            playlistSettingsDialog.dispose();
-        }
+    void setController(Controller c) {
+        playlistSettingsButton.setActionCommand("PLAYLIST_SETTINGS");
+        playlistSettingsButton.addActionListener(c);
     }
 }

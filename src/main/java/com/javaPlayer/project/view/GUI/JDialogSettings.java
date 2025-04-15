@@ -2,7 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 
-public class JPanelSettings {
+public class JDialogSettings extends JDialog {
     public JPanel mainPanel;
     private JScrollPane mainContentScrollPane;
     private JPanel accountSettingsInPanel;
@@ -30,4 +30,10 @@ public class JPanelSettings {
     private JButton saveChangesButton;
     private JButton discardChangesButton;
     private JPanel saveSettingsPanel;
+
+    public JDialogSettings(JFrame parent, boolean modal) {
+        super(parent, "Settings", modal);
+        setContentPane(mainPanel);
+//        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    }
 }

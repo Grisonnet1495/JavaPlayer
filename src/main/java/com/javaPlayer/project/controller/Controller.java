@@ -32,6 +32,10 @@ public final class Controller implements ActionListener {
             view.showSettings();
         } else if (e.getActionCommand().equals("SONG_DETAILS")) {
             view.showSongDetails();
+        } else if (e.getActionCommand().equals("PLAYLIST_SETTINGS")) {
+            view.showPlaylistSettings();
+        } else if (e.getActionCommand().equals("ADD_TO_PLAYLIST")) {
+            view.addCurrentSongToPlaylist();
         } else {
             view.showMessage("Button not implemented !");
         }
