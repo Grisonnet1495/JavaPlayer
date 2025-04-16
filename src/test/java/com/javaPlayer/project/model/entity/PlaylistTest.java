@@ -53,7 +53,7 @@ public class PlaylistTest {
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>());
         playlist.setSongList(newSongs);
         assertEquals(1, playlist.getSongList().size());
-        assertEquals("C.L.U", playlist.getSongList().get(0).getTitle());
+        assertEquals("C.L.U", playlist.getSongList().getFirst().getTitle());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class PlaylistTest {
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(b, a)));
 
         playlist.sortSongByTitle();
-        assertEquals("Aerodynamic", playlist.getSongList().get(0).getTitle());
+        assertEquals("Aerodynamic", playlist.getSongList().getFirst().getTitle());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class PlaylistTest {
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(a, b)));
 
         playlist.sortSongByArtist();
-        assertEquals("Daft Punk", playlist.getSongList().get(0).getArtist().getPseudo());
+        assertEquals("Daft Punk", playlist.getSongList().getFirst().getArtist().getPseudo());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class PlaylistTest {
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(b, a)));
 
         playlist.sortSongByGenre();
-        assertEquals("Electronic", playlist.getSongList().get(0).getGenre());
+        assertEquals("Electronic", playlist.getSongList().getFirst().getGenre());
     }
 
     @Test
@@ -123,6 +123,6 @@ public class PlaylistTest {
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(newSong, oldSong)));
 
         playlist.sortSongByDate();
-        assertEquals(oldSong, playlist.getSongList().get(0));
+        assertEquals(oldSong, playlist.getSongList().getFirst());
     }
 }
