@@ -2,8 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 
-public class JPanelSongDetails {
-    // Note : Extend from JDialog ?
+public class JDialogSongDetails extends JDialog {
     public JPanel mainPanel;
     private JLabel songTitleTitleLabel;
     private JLabel songTitleLabel;
@@ -13,6 +12,13 @@ public class JPanelSongDetails {
     private JLabel songPlaylistLabel;
     private JLabel songAddedDateTitleLabel;
     private JLabel songAddedDateLabel;
-    private JLabel songLengthTitelLabel;
+    private JLabel songLengthTitleLabel;
     private JLabel songLengthLabel;
+
+    public JDialogSongDetails(JFrame parent, boolean modal) {
+        super(parent, "Song details", modal);
+        setContentPane(mainPanel);
+//        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setSize(500, 250);
+    }
 }

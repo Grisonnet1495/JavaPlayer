@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.javaPlayer.project.view.GUI.JPanelPlaylistSettings">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.javaPlayer.project.view.GUI.JDialogPlaylistSettings">
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="20" left="20" bottom="20" right="20"/>
     <constraints>
@@ -21,7 +21,9 @@
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <font style="1"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="c884d" class="javax.swing.JTextField" binding="playlistNameTextField">
@@ -92,6 +94,7 @@
                 </constraints>
                 <properties>
                   <background color="-7594471"/>
+                  <font style="1"/>
                   <foreground color="-1"/>
                   <text value="Delete"/>
                 </properties>

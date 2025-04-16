@@ -2,7 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 
-public class JPanelPlaylistSettings {
+public class JDialogPlaylistSettings extends JDialog {
     protected JPanel mainPanel;
     private JTextField playlistNameTextField;
     private JButton deletePlaylistButton;
@@ -12,4 +12,10 @@ public class JPanelPlaylistSettings {
     private JLabel deletePlaylistTitleLabel;
     private JLabel deletePlaylistInfoUpLabel;
     private JPanel deletePlaylistPanel;
+
+    public JDialogPlaylistSettings(JFrame parent, boolean modal) {
+        super(parent, "Playlist settings", modal);
+        setContentPane(mainPanel);
+//        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    }
 }

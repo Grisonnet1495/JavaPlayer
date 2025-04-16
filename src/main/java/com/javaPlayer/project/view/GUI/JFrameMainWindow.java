@@ -115,8 +115,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         songMenu.add(searchSongMenuItem);
 
         // Set the menu items for the 'Playlist' menu
-        createPlaylistMenuItem = new JMenuItem("Add to playlist");
-        deletePlaylistMenuItem = new JMenuItem("Remove from playlist");
+        createPlaylistMenuItem = new JMenuItem("Create playlist");
+        deletePlaylistMenuItem = new JMenuItem("Delete playlist");
         editPlaylistMenuItem = new JMenuItem("Edit playlist");
         exportPlaylistMenuItem = new JMenuItem("Export playlist");
         playlistMenu.add(createPlaylistMenuItem);
@@ -187,8 +187,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
     @Override
     public void showSettings() {
-        JDialog settingsDialog = new JDialog(this, true);
-        settingsDialog.setTitle("Settings");
+        JDialogSettings settingsDialog = new JDialogSettings(this,true);
 
         // Set the properties of the dialog box
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -201,28 +200,40 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         int y = (screenSize.height - settingsDialog.getHeight()) / 2;
         settingsDialog.setLocation(x, y);
 
-        settingsDialog.setContentPane(new JPanelSettings().mainPanel);
         settingsDialog.setVisible(true);
         settingsDialog.dispose();
     }
 
     @Override
     public void showSongDetails() {
-        JDialog songDetailsDialog = new JDialog(this, true);
-        songDetailsDialog.setTitle("Song details");
-
-        // Set the properties of the dialog box
-        songDetailsDialog.setSize(new Dimension(500, 250));
-        songDetailsDialog.setResizable(false);
+        JDialogSongDetails songDetailsDialog = new JDialogSongDetails(this,true);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (screenSize.width - songDetailsDialog.getWidth()) / 2;
         int y = (screenSize.height - songDetailsDialog.getHeight()) / 2;
         songDetailsDialog.setLocation(x, y);
 
-        songDetailsDialog.setContentPane(new JPanelSongDetails().mainPanel);
         songDetailsDialog.setVisible(true);
         songDetailsDialog.dispose();
+    }
+
+    @Override
+    public void showPlaylistSettings()
+    {
+        // Create the settings dialog box
+        JDialogPlaylistSettings playlistSettingsDialog = new JDialogPlaylistSettings(this, true);
+
+        // Set the properties of the dialog box
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        playlistSettingsDialog.setSize(new Dimension(500, 300));
+        playlistSettingsDialog.setResizable(false);
+
+        int x = (screenSize.width - playlistSettingsDialog.getWidth()) / 2;
+        int y = (screenSize.height - playlistSettingsDialog.getHeight()) / 2;
+        playlistSettingsDialog.setLocation(x, y);
+
+        playlistSettingsDialog.setVisible(true);
+        playlistSettingsDialog.dispose();
     }
 
     @Override
@@ -232,19 +243,13 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
     @Override
     public void addCurrentSongToPlaylist() {
-        JDialog addToPlaylistDialog = new JDialog(this, true);
-        addToPlaylistDialog.setTitle("Song details");
-
-        // Set the properties of the dialog box
-//        addToPlaylistDialog.setSize(new Dimension(500, 250));
-        addToPlaylistDialog.setResizable(false);
+        JDialogAddToPlaylist addToPlaylistDialog = new JDialogAddToPlaylist(this, true);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (screenSize.width - addToPlaylistDialog.getWidth()) / 2;
         int y = (screenSize.height - addToPlaylistDialog.getHeight()) / 2;
         addToPlaylistDialog.setLocation(x, y);
 
-        addToPlaylistDialog.setContentPane(new JPanelAddToPlaylist().mainPanel);
         addToPlaylistDialog.setVisible(true);
         // Note : Retrieve the data
         addToPlaylistDialog.dispose();
@@ -269,9 +274,9 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         settingsMenuItem.addActionListener(c);
         createBackupMenuItem.setActionCommand("CREATE_BACKUP");
         createBackupMenuItem.addActionListener(c);
-        addSongToFavoritesMenuItem.setActionCommand("ADD_SONG_TO_FAVORITES");
+        addSongToFavoritesMenuItem.setActionCommand("ADD_TO_FAVORITES");
         addSongToFavoritesMenuItem.addActionListener(c);
-        addSongToPlaylistMenuItem.setActionCommand("ADD_SONG_TO_PLAYLIST");
+        addSongToPlaylistMenuItem.setActionCommand("ADD_TO_PLAYLIST");
         addSongToPlaylistMenuItem.addActionListener(c);
         removeSongFromFavoritesMenuItem.setActionCommand("REMOVE_SONG_FROM_FAVORITES");
         removeSongFromFavoritesMenuItem.addActionListener(c);
@@ -311,6 +316,9 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         addToFavoritesButton.addActionListener(c);
         songIconButton.setActionCommand("SONG_DETAILS");
         songIconButton.addActionListener(c);
+
+        // Set the controller for each Panel
+        playlistPanel.setController(c);
     }
 
     public static void main(String[] args) {
