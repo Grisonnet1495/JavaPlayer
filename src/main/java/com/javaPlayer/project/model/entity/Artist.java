@@ -30,11 +30,12 @@ public class Artist {
         return "Artist : " + pseudo;
     }
 
-    public boolean equals(Object obj)
-    {
-        if(this == obj) return true;
-        if(obj == null || getClass() != obj.getClass()) return false; //garantir qu'on compare deux objets de meme type
-        Artist artist = (Artist)obj;//cast l'objet a comparer en artiste
-        return pseudo != null && pseudo.equalsIgnoreCase(artist.getPseudo());//
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Artist artist = (Artist) obj;
+        return id == artist.id && pseudo != null && pseudo.equalsIgnoreCase(artist.pseudo);
     }
+
 }
