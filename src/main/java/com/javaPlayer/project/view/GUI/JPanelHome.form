@@ -3,16 +3,11 @@
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="20" left="20" bottom="20" right="20"/>
     <constraints>
-      <xy x="20" y="20" width="549" height="430"/>
+      <xy x="20" y="20" width="250" height="285"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <vspacer id="770f2">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
       <grid id="84a91" binding="recentPlaylistsTitlePanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="10" right="0"/>
         <constraints>
@@ -34,24 +29,6 @@
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
-          </hspacer>
-        </children>
-      </grid>
-      <grid id="80b53" binding="recentPlaylistsContentPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children>
-          <component id="73e0a" class="javax.swing.JLabel" binding="noRecentPlaylistsLabel">
-            <constraints/>
-            <properties>
-              <text value="No recent playlists"/>
-            </properties>
-          </component>
-          <hspacer id="b1fe8">
-            <constraints/>
           </hspacer>
         </children>
       </grid>
@@ -79,24 +56,71 @@
           </hspacer>
         </children>
       </grid>
-      <grid id="5bad5" binding="allPlaylistsContentPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+      <vspacer id="67738">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <scrollpane id="63b94" binding="recentPlaylistsScrollPane">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="19f4c" class="javax.swing.JLabel">
+          <grid id="b4adf" binding="recentPlaylistsContentPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints/>
-            <properties>
-              <text value="No playlists"/>
-            </properties>
-          </component>
-          <hspacer id="51666">
-            <constraints/>
-          </hspacer>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="73e0a" class="javax.swing.JLabel" binding="noRecentPlaylistsLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="No recent playlists"/>
+                </properties>
+              </component>
+              <hspacer id="43601">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+            </children>
+          </grid>
         </children>
-      </grid>
+      </scrollpane>
+      <scrollpane id="1357e" binding="allPlaylistsScrollPane">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="f6b1c" binding="allPlaylistsContentPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="19f4c" class="javax.swing.JLabel" binding="noAllPlaylistsLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="No playlists"/>
+                </properties>
+              </component>
+              <hspacer id="31618">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+            </children>
+          </grid>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>

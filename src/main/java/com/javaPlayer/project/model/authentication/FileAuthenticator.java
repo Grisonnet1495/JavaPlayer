@@ -1,4 +1,4 @@
-package com.javaPlayer.project.model.entity;
+package com.javaPlayer.project.model.authentication;
 
 import java.io.*;
 import java.util.HashMap;
@@ -27,16 +27,7 @@ public class FileAuthenticator extends Authenticator {
         }
     }
 
-    public void addUsers(String pseudo, String password) {
-        if (!utilisateurs.containsKey(pseudo)) {
-            utilisateurs.put(pseudo, password);
-            saveUsers();
-        } else {
-            System.out.println("Utilisateur déjà existant !");
-        }
-    }
-
-    private void saveUsers() {
+    public void saveUsers() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             for (Map.Entry<String, String> entry : utilisateurs.entrySet()) {
                 bw.write(entry.getKey() + ":" + entry.getValue()); // ecrire dans le fichier la map
@@ -44,6 +35,15 @@ public class FileAuthenticator extends Authenticator {
             }
         } catch (IOException e) {
             System.out.println("Erreur d'écriture : " + e.getMessage());
+        }
+    }
+
+    public void addUsers(String pseudo, String password) {
+        if (!utilisateurs.containsKey(pseudo)) {
+            utilisateurs.put(pseudo, password);
+            saveUsers();
+        } else {
+            System.out.println("Utilisateur déjà existant !");
         }
     }
 
@@ -55,11 +55,6 @@ public class FileAuthenticator extends Authenticator {
         } else {
             System.out.println("Utilisateur introuvable.");
         }
-    }
-
-    @Override
-    public boolean authenticate(String pseudo, String password) {
-        return isLoginExists(pseudo) && getPassword(pseudo).equals(password);
     }
 
     @Override

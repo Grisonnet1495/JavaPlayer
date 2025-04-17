@@ -1,5 +1,5 @@
 package com.javaPlayer.project.view.GUI;
-import com.javaPlayer.project.controller.Controller;
+import com.javaPlayer.project.controller.MainController;
 
 public interface ViewMainWindow {
     void showHomePanel();
@@ -13,5 +13,5 @@ public interface ViewMainWindow {
     void showMessage(String message);
 
     void run();
-    void setController(Controller c);
+    void setController(MainController c);
 }

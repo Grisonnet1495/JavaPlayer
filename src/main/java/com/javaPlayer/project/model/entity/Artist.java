@@ -35,7 +35,6 @@ public class Artist {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Artist artist = (Artist) obj;
-        return id == artist.id && pseudo != null && pseudo.equalsIgnoreCase(artist.pseudo);
+        return pseudo != null && pseudo.equalsIgnoreCase(artist.pseudo);
     }
-
 }

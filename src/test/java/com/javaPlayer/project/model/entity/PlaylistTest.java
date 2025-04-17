@@ -73,48 +73,59 @@ public class PlaylistTest {
     }
 
     @Test
-    void searchSong() {
+    void findSongById() {
         Song song1 = new Song(1, "The Grid", new Artist(1, "Daft Punk"), "Soundtrack", 180, new Date());
         Song song2 = new Song(2, "C.L.U", new Artist(1, "Daft Punk"), "Soundtrack", 172, new Date());
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(song1, song2)));
 
-        Song found = playlist.searchSong("C.L.U"); // Adapté si la méthode retourne une Song
+        Song found = playlist.findSongById(1); // Adapté si la méthode retourne une Song
         assertNotNull(found);
         assertEquals("C.L.U", found.getTitle());
     }
 
     @Test
-    void sortSongByTitle() {
+    void findSongByTitle() {
+        Song song1 = new Song(1, "The Grid", new Artist(1, "Daft Punk"), "Soundtrack", 180, new Date());
+        Song song2 = new Song(2, "C.L.U", new Artist(1, "Daft Punk"), "Soundtrack", 172, new Date());
+        Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(song1, song2)));
+
+        Song found = playlist.findSongByTitle("C.L.U"); // Adapté si la méthode retourne une Song
+        assertNotNull(found);
+        assertEquals("C.L.U", found.getTitle());
+    }
+
+    @Test
+    void sortSongsByTitle() {
         Song a = new Song(1, "Aerodynamic", new Artist(1, "Daft Punk"), "Electronic", 180, new Date());
         Song b = new Song(2, "C.L.U", new Artist(1, "Daft Punk"), "Soundtrack", 172, new Date());
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(b, a)));
 
-        playlist.sortSongByTitle();
+        playlist.sortSongsByTitle();
         assertEquals("Aerodynamic", playlist.getSongList().getFirst().getTitle());
     }
 
     @Test
-    void sortSongByArtist() {
+    void sortSongsByArtist() {
         Song a = new Song(1, "The Grid", new Artist(2, "Zedd"), "Soundtrack", 180, new Date());
         Song b = new Song(2, "C.L.U", new Artist(1, "Daft Punk"), "Soundtrack", 172, new Date());
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(a, b)));
 
-        playlist.sortSongByArtist();
+        playlist.sortSongsByArtist();
         assertEquals("Daft Punk", playlist.getSongList().getFirst().getArtist().getPseudo());
     }
 
     @Test
-    void sortSongByGenre() {
+    void sortSongsByGenre() {
         Song a = new Song(1, "Voyager", new Artist(1, "Daft Punk"), "Electronic", 200, new Date());
         Song b = new Song(2, "End of Line", new Artist(1, "Daft Punk"), "Soundtrack", 172, new Date());
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(b, a)));
 
-        playlist.sortSongByGenre();
+        playlist.sortSongsByGenre();
         assertEquals("Electronic", playlist.getSongList().getFirst().getGenre());
     }
 
     @Test
-    void sortSongByDate() {
+    void sortSongsByDate() {
         Date older = new Date(2010); // Ancienne date
         Date newer = new Date(2011); // Plus récente
 
@@ -122,7 +133,7 @@ public class PlaylistTest {
         Song newSong = new Song(2, "Fall", new Artist(1, "Daft Punk"), "Soundtrack", 180, newer);
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(newSong, oldSong)));
 
-        playlist.sortSongByDate();
+        playlist.sortSongsByDate();
         assertEquals(oldSong, playlist.getSongList().getFirst());
     }
 }

@@ -61,30 +61,36 @@ public class Playlist {
             songList.remove(toRemove);
     }
 
-    public Song searchSong(String title)
-    {
+    public Song findSongById(int id) {
+        return songList.stream()
+                .filter(song -> song.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Song findSongByTitle(String title) {
         return songList.stream()
                 .filter(song -> song.getTitle().equalsIgnoreCase(title)) //filtre la recherhe
                 .findFirst() // dès qu'il trouve
                 .orElse(null);
     }
 
-    public void sortSongByTitle()
+    public void sortSongsByTitle()
     {
         songList.sort(Comparator.comparing(Song::getTitle));
     }
 
-    public void sortSongByArtist()
+    public void sortSongsByArtist()
     {
         songList.sort(Comparator.comparing(song -> song.getArtist().getPseudo()));
     }
 
-    public void sortSongByGenre()
+    public void sortSongsByGenre()
     {
         songList.sort(Comparator.comparing(Song::getGenre));
     }
 
-    public void sortSongByDate()
+    public void sortSongsByDate()
     {
         songList.sort(Comparator.comparing(Song::getAddedDate));
     }

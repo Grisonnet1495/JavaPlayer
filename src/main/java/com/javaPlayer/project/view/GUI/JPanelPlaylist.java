@@ -1,10 +1,8 @@
 package com.javaPlayer.project.view.GUI;
 
-import com.javaPlayer.project.controller.Controller;
+import com.javaPlayer.project.controller.MainController;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class JPanelPlaylist extends JPanel {
     public JPanel mainPanel;
@@ -17,7 +15,7 @@ public class JPanelPlaylist extends JPanel {
     private JPanel playlistIconOutPanel;
     public JButton playlistSettingsButton;
 
-    void setController(Controller c) {
+    void setController(MainController c) {
         playlistSettingsButton.setActionCommand("PLAYLIST_SETTINGS");
         playlistSettingsButton.addActionListener(c);
     }

@@ -2,6 +2,8 @@ package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 
 public class JPanelHome extends JPanel {
@@ -13,12 +15,17 @@ public class JPanelHome extends JPanel {
     public JPanel recentPlaylistsContentPanel;
     private JPanel allPlaylistsTitlePanel;
     public JPanel allPlaylistsContentPanel;
+    private JLabel noAllPlaylistsLabel;
+    private JScrollPane recentPlaylistsScrollPane;
+    private JScrollPane allPlaylistsScrollPane;
     ArrayList<String> recentPlaylistsList = new ArrayList<>();
     ArrayList<String> allPlaylistsList = new ArrayList<>();
 
     public JPanelHome() {
-        recentPlaylistsContentPanel.setLayout(new WrapLayout(FlowLayout.LEFT));
-        allPlaylistsContentPanel.setLayout(new WrapLayout(FlowLayout.LEFT));
+        recentPlaylistsScrollPane.setBorder(null);
+        allPlaylistsScrollPane.setBorder(null);
+        recentPlaylistsContentPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        allPlaylistsContentPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         updateRecentPlaylists();
         updateAllPlaylists();
     }
@@ -44,7 +51,7 @@ public class JPanelHome extends JPanel {
 
             // Setup of the components
             playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            Dimension size = new Dimension(100, 120);
+            Dimension size = new Dimension(180, 230);
             playlistButton.setPreferredSize(size);
             playlistButton.setMaximumSize(size);
             playlistButton.setMinimumSize(size);
@@ -88,7 +95,7 @@ public class JPanelHome extends JPanel {
 
             // Setup of the components
             playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            Dimension size = new Dimension(100, 120);
+            Dimension size = new Dimension(180, 230);
             playlistButton.setPreferredSize(size);
             playlistButton.setMaximumSize(size);
             playlistButton.setMinimumSize(size);

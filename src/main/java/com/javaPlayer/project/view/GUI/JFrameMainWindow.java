@@ -2,7 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 //import com.formdev.flatlaf.FlatMacLightLaf;
 import com.formdev.flatlaf.themes.*;
-import com.javaPlayer.project.controller.Controller;
+import com.javaPlayer.project.controller.MainController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +39,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
     // Song panel
     private JPanel songPanel;
-    private JScrollPane contentScrollPane;
+//    private JScrollPane contentScrollPane;
     private JSlider timeSlider;
     private JPanel songTimeActionsPanel;
     private JPanel songActionsPanel;
@@ -155,15 +155,14 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         // Create the layout for the main content
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
-
-        contentPanel.setPreferredSize(new Dimension(contentScrollPane.getPreferredSize().width, 10000));
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Add the main content
         contentPanel.add(homePanel.mainPanel, "Home");
         contentPanel.add(playlistPanel.mainPanel, "Playlist");
         contentPanel.add(searchPanel.mainPanel, "Search");
 
-        contentScrollPane.setViewportView(contentPanel);
+        cardLayout.show(contentPanel, "Home");
     }
 
     @Override
@@ -262,11 +261,11 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
     @Override
     public void run() {
-        setVisible(true);
+        this.setVisible(true);
     }
 
     @Override
-    public void setController(Controller c) {
+    public void setController(MainController c) {
         // Menu items
         openSongMenuItem.setActionCommand("OPEN_SONG");
         openSongMenuItem.addActionListener(c);
