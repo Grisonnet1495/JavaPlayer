@@ -88,7 +88,7 @@ public class SongTest {
     @Test
     void testToString() {
         Song song = new Song(1, "The Grid", new Artist(1, "Daft Punk"), "Soundtrack", 180, new Date());
-        Song song2 = new Song(2, "The Grid", new Artist(1, "Daft Punk"), "Soundtrack", 180, new Date());
+        Song song2 = new Song(1, "The Grid", new Artist(1, "Daft Punk"), "Soundtrack", 180, new Date());
         assertEquals(song.toString(), song2.toString());
     }
 }

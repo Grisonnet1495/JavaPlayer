@@ -11,7 +11,7 @@ public abstract class Authenticator {
 
     public abstract void uploadUsers();
 
-    public abstract void saveUsers();
+    public abstract void saveUsers(String fileName);
 
     public abstract void addUsers(String pseudo, String password);
 

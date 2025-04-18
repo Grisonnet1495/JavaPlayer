@@ -41,7 +41,7 @@ public class ArtistTest {
     @Test
     void testEqualsForSameArtist() {
         Artist artist1 = new Artist(1, "Daft punk");
-        Artist artist2 = new Artist(1, "Daft punk");
+        Artist artist2 = new Artist(2, "Daft punk");
         assertEquals(artist1, artist2);
     }
 
