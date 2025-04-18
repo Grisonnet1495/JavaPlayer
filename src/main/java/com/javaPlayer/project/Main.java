@@ -2,12 +2,12 @@ package com.javaPlayer.project;
 
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.javaPlayer.project.controller.MainController;
+import com.javaPlayer.project.model.FilePathNames;
 import com.javaPlayer.project.model.authentication.FileAuthenticator;
+import com.javaPlayer.project.model.dao.DAOConfig;
 import com.javaPlayer.project.view.GUI.JFrameMainWindow;
 
 import javax.swing.*;
-import java.io.*;
-import java.util.Properties;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,39 +18,15 @@ public class Main {
         }
 
         SwingUtilities.invokeLater(() -> {
+            // Note : Correct ?
+            DAOConfig daoConfig = new DAOConfig(FilePathNames.CONFIG);
 
-            String configPath = "config.properties";
-            File file = new File(configPath);
-            Properties config = new Properties();
-            try
-            {
-                if(file.createNewFile())
-                {
-                    System.out.println("File created");
-                    config.setProperty("users", "users.properties");
-                    try(FileOutputStream fot = new FileOutputStream(file))
-                    {
-                        config.store(fot, "Liste des fichiers");
-                    }
-                }else{
-                    try(FileInputStream fis = new FileInputStream(file))
-                    {
-                        config.load(fis);
-                    }
-                }
+            if (!daoConfig.isConfigExists("userFile")) {
+                daoConfig.addConfig("userFile", "users.properties");
             }
-            catch(Exception e)
-            {
-                System.out.println("File Creation Failed");
-            }
-            String users = config.getProperty("users");
-            if (users == null) {
-                System.out.println("Fichier utilisateur non défini dans config.properties.");
-                return;
-            }
-            MainController mainController = new MainController(new JFrameMainWindow(), new FileAuthenticator(users));
+
+            MainController mainController = new MainController(new JFrameMainWindow(), daoConfig, new FileAuthenticator(daoConfig.getConfig("userFile")));
             mainController.run();
         });
     }
 }
-

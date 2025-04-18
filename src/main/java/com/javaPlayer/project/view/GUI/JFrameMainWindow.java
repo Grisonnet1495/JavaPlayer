@@ -3,10 +3,14 @@ package com.javaPlayer.project.view.GUI;
 //import com.formdev.flatlaf.FlatMacLightLaf;
 import com.formdev.flatlaf.themes.*;
 import com.javaPlayer.project.controller.MainController;
-import com.javaPlayer.project.model.entity.User;
+import com.javaPlayer.project.model.entity.Credentials;
+import com.javaPlayer.project.model.entity.Playlist;
+import com.javaPlayer.project.model.entity.Song;
+import com.javaPlayer.project.view.ViewMainWindow;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     // Main panel
@@ -171,10 +175,71 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         cardLayout.show(contentPanel, "Home");
     }
 
-    public void updateMainPanel() {
-        contentPanel.removeAll();
-        mainPanel.revalidate();
-        mainPanel.repaint();
+    @Override
+    public Credentials promptForCredentials() {
+        Credentials credentials;
+        boolean isCredentialEmpty = false;
+
+        do {
+            JDialogAccountChooser accountChooserDialog = new JDialogAccountChooser();
+            accountChooserDialog.setTitle("Login or create an account");
+            accountChooserDialog.setModal(true);
+            accountChooserDialog.setLocationRelativeTo(null);
+            accountChooserDialog.setVisible(true);
+
+            credentials = new Credentials(accountChooserDialog.isCancelled(), accountChooserDialog.isCreatingAccount(), accountChooserDialog.getPseudo(), accountChooserDialog.getPassword());
+
+            if (!accountChooserDialog.isCancelled() && (accountChooserDialog.getPassword().isEmpty() || accountChooserDialog.getPassword().isEmpty())) {
+                showMessage("Pseudo or password cannot be empty.");
+                isCredentialEmpty = true;
+            }
+            else {
+                isCredentialEmpty = false;
+                accountChooserDialog.dispose();
+            }
+
+//            accountChooserDialog.setVisible(false);
+//            accountChooserDialog.dispose();
+        } while (isCredentialEmpty);
+
+        return credentials;
+    }
+
+    @Override
+    public void updateHomePanel(ArrayList<String> recentPlaylistsTitles, ArrayList<String> allPlaylistsTitles) {
+        homePanel.updateRecentPlaylists(recentPlaylistsTitles);
+        homePanel.updateAllPlaylists(allPlaylistsTitles);
+        contentPanel.remove(homePanel.mainPanel);
+        contentPanel.add(homePanel.mainPanel, "Home");
+    }
+
+    @Override
+    public void updatePlaylistPanel(Playlist playlist) {
+        playlistPanel.updatePlaylist(playlist);
+        contentPanel.remove(playlistPanel.mainPanel);
+        contentPanel.add(playlistPanel.mainPanel, "Playlist");
+    }
+
+    @Override
+    public void updateSearchPanel(ArrayList<Song> songList) {
+        searchPanel.updateResults(songList);
+        contentPanel.remove(searchPanel.mainPanel);
+        contentPanel.add(searchPanel.mainPanel, "Search");
+    }
+
+    @Override
+    public void showHome() {
+        cardLayout.show(contentPanel, "Home"); // Note : Do it need to be destroyed and re-created ?
+    }
+
+    @Override
+    public void showSearch() {
+        cardLayout.show(contentPanel, "Search");
+    }
+
+    @Override
+    public void showPlaylist() {
+        cardLayout.show(contentPanel, "Playlist");
     }
 
     public JDialogAccountChooser showAccountChooserDialog() {
@@ -185,29 +250,6 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         accountChooserDialog.setVisible(true);
 
         return accountChooserDialog;
-    }
-
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
-
-    @Override
-    public void showHomePanel() {
-        homePanel.updateRecentPlaylists();
-        homePanel.updateAllPlaylists();
-        contentPanel.remove(homePanel.mainPanel);
-        contentPanel.add(homePanel.mainPanel, "Home");
-        cardLayout.show(contentPanel, "Home"); // Note : Do it need to be destroyed and re-created ?
-    }
-
-    @Override
-    public void showSearchPanel() {
-        cardLayout.show(contentPanel, "Search");
-    }
-
-    @Override
-    public void showPlaylist(int playlistId) {
-        cardLayout.show(contentPanel, "Playlist");
     }
 
     @Override
@@ -262,6 +304,11 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
+
+    @Override
     public void toggleFavoritesForCurrentSong() {
         // Toggle favorites
     }
@@ -281,13 +328,13 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message);
+    public void run() {
+        this.setVisible(true);
     }
 
     @Override
-    public void run() {
-        this.setVisible(true);
+    public void stop() {
+        this.setVisible(false);
     }
 
     @Override

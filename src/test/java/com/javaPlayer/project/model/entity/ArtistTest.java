@@ -9,7 +9,7 @@ public class ArtistTest {
     @Test
     void getId() {
         Artist artist = new Artist(1, "Daft punk");
-        assertEquals(1, artist.getId());//verifier que les deux valeurs sont egales
+        assertEquals(1, artist.getId());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ArtistTest {
     @Test
     void testToString() {
         Artist artist = new Artist(1, "Daft punk");
-        assertEquals("Artist : Daft punk", artist.toString());
+        assertEquals("Artist{id=1, pseudo='Daft punk'}", artist.toString());
     }
 
     @Test

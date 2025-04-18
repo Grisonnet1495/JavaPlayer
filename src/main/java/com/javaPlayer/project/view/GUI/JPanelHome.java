@@ -1,9 +1,9 @@
 package com.javaPlayer.project.view.GUI;
 
+import com.javaPlayer.project.controller.MainController;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 
 public class JPanelHome extends JPanel {
@@ -18,95 +18,76 @@ public class JPanelHome extends JPanel {
     private JLabel noAllPlaylistsLabel;
     private JScrollPane recentPlaylistsScrollPane;
     private JScrollPane allPlaylistsScrollPane;
-    ArrayList<String> recentPlaylistsList = new ArrayList<>();
-    ArrayList<String> allPlaylistsList = new ArrayList<>();
+    private MainController controller;
 
     public JPanelHome() {
         recentPlaylistsScrollPane.setBorder(null);
         allPlaylistsScrollPane.setBorder(null);
         recentPlaylistsContentPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         allPlaylistsContentPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        updateRecentPlaylists();
-        updateAllPlaylists();
+//        updateRecentPlaylists();
+//        updateAllPlaylists();
     }
 
-    void updateRecentPlaylists() {
-        recentPlaylistsList.clear();
+    void setController(MainController c) {
+        this.controller = c;
+    }
+
+    void updateRecentPlaylists(ArrayList<String> playlistsTitleList) {
         recentPlaylistsContentPanel.removeAll();
 
-        // Note : Temporary. It needs to extract recent playlists.
-        recentPlaylistsList.add("Playlist 1");
-        recentPlaylistsList.add("Playlist 2");
-        recentPlaylistsList.add("Playlist 3");
-        recentPlaylistsList.add("Playlist 4");
-
-        for (String element : recentPlaylistsList) {
+        for (String playlistTitle : playlistsTitleList) {
             // Creation of the components
-            JPanel playlistButtonPanel = new JPanel();
-            playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
-            JButton playlistButton = new JButton(String.valueOf(element.charAt(0)));
-            JLabel playlistLabel = new JLabel(element);
+            JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
 
-            recentPlaylistsContentPanel.add(playlistButtonPanel);
-
-            // Setup of the components
-            playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            Dimension size = new Dimension(180, 230);
-            playlistButton.setPreferredSize(size);
-            playlistButton.setMaximumSize(size);
-            playlistButton.setMinimumSize(size);
-
-            playlistLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            playlistLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-            // Adding the components
-            playlistButtonPanel.add(playlistButton);
-            playlistButtonPanel.add(playlistLabel);
             recentPlaylistsContentPanel.add(playlistButtonPanel);
         }
+
+        recentPlaylistsContentPanel.revalidate();
+        recentPlaylistsContentPanel.repaint();
     }
 
-    void updateAllPlaylists() {
-        allPlaylistsList.clear();
+    void updateAllPlaylists(ArrayList<String> playlistsTitleList) {
         allPlaylistsContentPanel.removeAll();
 
-        // Note : Temporary. It needs to extract all playlists.
-        allPlaylistsList.add("Playlist 1");
-        allPlaylistsList.add("Playlist 2");
-        allPlaylistsList.add("Playlist 3");
-        allPlaylistsList.add("Playlist 4");
-        allPlaylistsList.add("Playlist 5");
-        allPlaylistsList.add("Playlist 6");
-        allPlaylistsList.add("Playlist 7");
-        allPlaylistsList.add("Playlist 8");
-        allPlaylistsList.add("Playlist 9");
-        allPlaylistsList.add("Playlist 10");
-        allPlaylistsList.add("Playlist 11");
-        allPlaylistsList.add("Playlist 12");
-
-        for (String song : allPlaylistsList) {
-            // Creation of the components
-            JPanel playlistButtonPanel = new JPanel();
-            playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
-            JButton playlistButton = new JButton(String.valueOf(song.charAt(0)));
-            JLabel playlistLabel = new JLabel(song);
-
-            allPlaylistsContentPanel.add(playlistButtonPanel);
-
-            // Setup of the components
-            playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            Dimension size = new Dimension(180, 230);
-            playlistButton.setPreferredSize(size);
-            playlistButton.setMaximumSize(size);
-            playlistButton.setMinimumSize(size);
-
-            playlistLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            playlistLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-            // Adding the components
-            playlistButtonPanel.add(playlistButton);
-            playlistButtonPanel.add(playlistLabel);
+        for (String playlistTitle : playlistsTitleList) {
+            JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
             allPlaylistsContentPanel.add(playlistButtonPanel);
         }
+
+        allPlaylistsContentPanel.revalidate();
+        allPlaylistsContentPanel.repaint();
+    }
+
+    JPanel createButtonPanel(String playlistTitle) {
+        // Creation of the components
+        JPanel playlistButtonPanel = new JPanel();
+        playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
+        JButton playlistButton = new JButton(String.valueOf(playlistTitle.charAt(0)));
+        JLabel playlistLabel = new JLabel(playlistTitle);
+
+        allPlaylistsContentPanel.add(playlistButtonPanel);
+
+        // Setup of the components
+        playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Dimension size = new Dimension(180, 230);
+        playlistButton.setPreferredSize(size);
+        playlistButton.setMaximumSize(size);
+        playlistButton.setMinimumSize(size);
+
+        playlistLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        playlistLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Adding the components
+        playlistButtonPanel.add(playlistButton);
+        playlistButtonPanel.add(playlistLabel);
+
+        allPlaylistsContentPanel.revalidate();
+        allPlaylistsContentPanel.repaint();
+
+        playlistButton.addActionListener(controller);
+        playlistButton.setActionCommand(playlistTitle);
+
+        return playlistButtonPanel;
     }
 }

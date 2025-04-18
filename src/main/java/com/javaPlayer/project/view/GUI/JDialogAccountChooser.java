@@ -13,27 +13,24 @@ public class JDialogAccountChooser extends JDialog {
     private JLabel passwordLabel;
     private JLabel pseudoLabel;
     private JButton createAccountButton;
-    private String pseudo;
-    private String password;
-    private boolean isConfirmed = false;
+    private boolean isCancelled = true;
     private boolean isCreatingAccount = false;
 
     public JDialogAccountChooser() {
         // Set the window
-//        super(parent, "JavaPlayer - Choose user", modal);
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setSize(350, 200);
         this.setResizable(false);
 
         loginButton.addActionListener(e -> {
-            isConfirmed = true;
             setVisible(false);
+            isCancelled = false;
         });
 
         createAccountButton.addActionListener(e -> {
             isCreatingAccount = true;
-            isConfirmed = true;
+            isCancelled = false;
             setVisible(false);
         });
 
@@ -43,7 +40,6 @@ public class JDialogAccountChooser extends JDialog {
     }
 
     public String getPseudo() {
-        pseudo = pseudoTextField.getText();
         return pseudoTextField.getText();
     }
 
@@ -51,8 +47,8 @@ public class JDialogAccountChooser extends JDialog {
         return new String(passwordTextField.getPassword());
     }
 
-    public boolean isConfirmed() {
-        return isConfirmed;
+    public boolean isCancelled() {
+        return isCancelled;
     }
 
     public boolean isCreatingAccount() { return isCreatingAccount; }
