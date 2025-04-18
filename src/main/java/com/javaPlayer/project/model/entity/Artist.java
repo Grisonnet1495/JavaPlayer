@@ -25,9 +25,12 @@ public class Artist {
         this.pseudo = pseudo;
     }
 
-    public String toString()
-    {
-        return "Artist : " + pseudo;
+    @Override
+    public String toString() {
+        return "Artist{" +
+                "id=" + id +
+                ", pseudo='" + pseudo + '\'' +
+                '}';
     }
 
     @Override

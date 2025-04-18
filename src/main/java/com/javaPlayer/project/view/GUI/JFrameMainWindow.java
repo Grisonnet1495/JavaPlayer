@@ -3,6 +3,7 @@ package com.javaPlayer.project.view.GUI;
 //import com.formdev.flatlaf.FlatMacLightLaf;
 import com.formdev.flatlaf.themes.*;
 import com.javaPlayer.project.controller.MainController;
+import com.javaPlayer.project.model.entity.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private final JMenu playlistMenu;
     private final JMenuItem openSongMenuItem;
     private final JMenuItem createBackupMenuItem;
+    private final JMenuItem accountMenuItem;
     private final JMenuItem settingsMenuItem;
     private final JMenuItem exportPlaylistMenuItem;
     private final JMenuItem addSongToFavoritesMenuItem;
@@ -67,6 +69,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private JPanelPlaylist playlistPanel = new JPanelPlaylist();
     private JPanelSearch searchPanel = new JPanelSearch();
 
+//    private User user;
+
     public JFrameMainWindow() {
         // Set the window
         super("JavaPlayer - Playlist");
@@ -99,7 +103,9 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         fileMenu.add(createBackupMenuItem);
 
         // Set the menu items for the 'Edit' menu
+        accountMenuItem = new JMenuItem("Switch account");
         settingsMenuItem = new JMenuItem("Settings");
+        editMenu.add(accountMenuItem);
         editMenu.add(settingsMenuItem);
 
         // Set the menu items for the 'Song' menu
@@ -164,6 +170,26 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
         cardLayout.show(contentPanel, "Home");
     }
+
+    public void updateMainPanel() {
+        contentPanel.removeAll();
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    public JDialogAccountChooser showAccountChooserDialog() {
+        JDialogAccountChooser accountChooserDialog = new JDialogAccountChooser();
+        accountChooserDialog.setTitle("Login or create an account");
+        accountChooserDialog.setModal(true);
+        accountChooserDialog.setLocationRelativeTo(null);
+        accountChooserDialog.setVisible(true);
+
+        return accountChooserDialog;
+    }
+
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 
     @Override
     public void showHomePanel() {
@@ -269,6 +295,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         // Menu items
         openSongMenuItem.setActionCommand("OPEN_SONG");
         openSongMenuItem.addActionListener(c);
+        accountMenuItem.setActionCommand("SWITCH_ACCOUNT");
+        accountMenuItem.addActionListener(c);
         settingsMenuItem.setActionCommand("SETTINGS");
         settingsMenuItem.addActionListener(c);
         createBackupMenuItem.setActionCommand("CREATE_BACKUP");

@@ -94,4 +94,13 @@ public class Playlist {
     {
         songList.sort(Comparator.comparing(Song::getAddedDate));
     }
+
+    @Override
+    public String toString() {
+        return "Playlist{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", songList=" + songList +
+                '}';
+    }
 }

@@ -8,4 +8,12 @@ public abstract class Authenticator {
     protected abstract boolean isLoginExists(String pseudo);
 
     protected abstract String getPassword(String pseudo);
+
+    public abstract void uploadUsers();
+
+    public abstract void saveUsers();
+
+    public abstract void addUsers(String pseudo, String password);
+
+    public abstract void removeUser(String pseudo);
 }

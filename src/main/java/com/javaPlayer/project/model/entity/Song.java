@@ -76,7 +76,15 @@ public class Song {
         this.addedDate = addedDate;
     }
 
+    @Override
     public String toString() {
-        return title + " - " + artist.getPseudo();
+        return "Song{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", artist=" + artist +
+                ", genre='" + genre + '\'' +
+                ", duration=" + duration +
+                ", addedDate=" + addedDate +
+                '}';
     }
 }

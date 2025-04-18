@@ -85,4 +85,14 @@ public class User {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", pseudo='" + pseudo + '\'' +
+                ", password='" + password + '\'' +
+                ", playlistList=" + playlistList +
+                '}';
+    }
 }

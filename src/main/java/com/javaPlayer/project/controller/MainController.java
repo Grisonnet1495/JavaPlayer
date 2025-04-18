@@ -1,6 +1,7 @@
 package com.javaPlayer.project.controller;
 
-import com.javaPlayer.project.model.authentication.FileAuthenticator;
+import com.javaPlayer.project.model.authentication.Authenticator;
+import com.javaPlayer.project.model.dao.DAOUser;
 import com.javaPlayer.project.view.GUI.JDialogAccountChooser;
 import com.javaPlayer.project.view.GUI.JFrameMainWindow;
 
@@ -9,45 +10,44 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public final class MainController implements ActionListener {
-//    private DataAccessLayer model;
-//    private DAOAuthenticator authenticationModel;
+    private DAOUser daoUser;
     private JFrameMainWindow view;
-    private FileAuthenticator fileAuthenticator;
+    private Authenticator authenticator;
+    private String userPseudo;
 
 
-    public MainController(JFrameMainWindow view) {
-//        this.authenticationModel = authenticationModel;
+    public MainController(JFrameMainWindow view, Authenticator authenticator) {
         this.view = view;
         this.view.setController(this);
-        this.fileAuthenticator = new FileAuthenticator();
+        this.authenticator = authenticator;
 
-        authenticate();
+        userPseudo = authenticate();
+        daoUser = new DAOUser(userPseudo);
+        view.setVisible(true);
     }
 
-    public void authenticate() {
-
-        boolean authenticationSuccess = false;
-
-        while (!authenticationSuccess) {
-            // Création du JDialog
-            JDialogAccountChooser accountChooserDialog = new JDialogAccountChooser();
-            accountChooserDialog.setTitle("Login or create an account");
-            accountChooserDialog.setModal(true);
-            accountChooserDialog.setLocationRelativeTo(null);
-            accountChooserDialog.setVisible(true);
+    public String authenticate() {
+        while (true) {
+            // Show the account chooser dialog
+            JDialogAccountChooser accountChooserDialog = view.showAccountChooserDialog();
 
             if (accountChooserDialog.isConfirmed()) {
                 if (accountChooserDialog.getPseudo().isEmpty() || accountChooserDialog.getPassword().isEmpty()) {
                     JOptionPane.showMessageDialog(view, "Pseudo or password cannot be empty.");
-                }
-                else {
+                } else {
                     if (accountChooserDialog.isCreatingAccount()) {
                         // Create a new user
-                        fileAuthenticator.addUsers(accountChooserDialog.getPseudo(), accountChooserDialog.getPassword());
-                        authenticationSuccess = true;
+                        authenticator.addUsers(accountChooserDialog.getPseudo(), accountChooserDialog.getPassword());
+
+                        return accountChooserDialog.getPseudo();
                     } else {
-                        authenticationSuccess = fileAuthenticator.authenticate(accountChooserDialog.getPseudo(), accountChooserDialog.getPassword());
-                        if (!authenticationSuccess) {
+                        // Login with an existing user
+                        boolean authenticationSuccess = authenticator.authenticate(accountChooserDialog.getPseudo(), accountChooserDialog.getPassword());
+
+                        if (authenticationSuccess) {
+                            // Correct credentials
+                            return accountChooserDialog.getPseudo();
+                        } else {
                             // Incorrect credentials
                             JOptionPane.showMessageDialog(view, "Pseudo or password incorrect.");
                         }
@@ -72,6 +72,11 @@ public final class MainController implements ActionListener {
             view.showSearchPanel();
         } else if (e.getActionCommand().equals("FAVORITES")) {
             view.showPlaylist(0);
+        } else if (e.getActionCommand().equals("SWITCH_ACCOUNT")) {
+            view.setVisible(false);
+            authenticate();
+            view.setVisible(true);
+//            view.updateAll();
         } else if (e.getActionCommand().equals("SETTINGS")) {
             view.showSettings();
         } else if (e.getActionCommand().equals("SONG_DETAILS")) {

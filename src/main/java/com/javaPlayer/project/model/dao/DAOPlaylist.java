@@ -5,14 +5,17 @@ import com.javaPlayer.project.model.entity.Playlist;
 import java.util.ArrayList;
 
 public class DAOPlaylist {
-    private ArrayList<Playlist> playlistsList;
     private static int currentId = 1;
+    private ArrayList<Playlist> playlistsList;
 
-    public void saveInFile() {
+    public DAOPlaylist() {
+    }
+
+    public void savePlaylistInFile() {
         // Code to save the playlist in a file
     }
 
-    public void loadFromFile() {
+    public void loadPlaylistFromFile() {
         // Code to load the playlist from a file
     }
 }

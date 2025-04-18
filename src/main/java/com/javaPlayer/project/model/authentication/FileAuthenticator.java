@@ -13,6 +13,7 @@ public class FileAuthenticator extends Authenticator {
         uploadUsers();
     }
 
+    @Override
     public void uploadUsers() {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -27,6 +28,7 @@ public class FileAuthenticator extends Authenticator {
         }
     }
 
+    @Override
     public void saveUsers() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             for (Map.Entry<String, String> entry : utilisateurs.entrySet()) {
@@ -38,6 +40,7 @@ public class FileAuthenticator extends Authenticator {
         }
     }
 
+    @Override
     public void addUsers(String pseudo, String password) {
         if (!utilisateurs.containsKey(pseudo)) {
             utilisateurs.put(pseudo, password);
@@ -47,6 +50,7 @@ public class FileAuthenticator extends Authenticator {
         }
     }
 
+    @Override
     public void removeUser(String pseudo) {
         if (utilisateurs.containsKey(pseudo)) {
             utilisateurs.remove(pseudo);
