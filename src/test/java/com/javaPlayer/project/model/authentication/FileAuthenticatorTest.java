@@ -1,8 +1,6 @@
 package com.javaPlayer.project.model.authentication;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 
@@ -10,73 +8,72 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileAuthenticatorTest {
     private static FileAuthenticator fileAuthenticator;
-    private static final String fileName = "filename.properties";
+    private static String fileName = "testUser.properties";
+    private static File file = null;
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         // Suppression du fichier à la fin
-        File file = new File(fileName);
+        file = new File(fileName);
         if (file.exists()) file.delete();
 
         fileAuthenticator = new FileAuthenticator(fileName);
         fileAuthenticator.addUsers("Tom", "1234");
         fileAuthenticator.addUsers("Sacha", "abcd");
-
+        fileAuthenticator.saveUsers();
     }
 
     @AfterEach
-    void tearDown() {
-        File file = new File(fileName);
+    void deleteFile() {
         if (file.exists()) file.delete();
     }
 
-
     @Test
-    void uploadUsers() {
-        fileAuthenticator.saveUsers(fileName);
-        fileAuthenticator.uploadUsers();
-        assert(fileAuthenticator.isLoginExists("Tom"));
+    void loadUsers() {
+        fileAuthenticator.saveUsers();
+        fileAuthenticator.loadUsers();
+        assertTrue(fileAuthenticator.isLoginExists("Tom"));
         assertEquals("1234", fileAuthenticator.getPassword("Tom"));
-        assert(fileAuthenticator.isLoginExists("Sacha"));
+        assertTrue(fileAuthenticator.isLoginExists("Sacha"));
         assertEquals("abcd", fileAuthenticator.getPassword("Sacha"));
     }
 
     @Test
     void saveUsers() {
-        fileAuthenticator.saveUsers(fileName);
-        fileAuthenticator.uploadUsers();
-        assert(fileAuthenticator.isLoginExists("Tom"));
+        fileAuthenticator.saveUsers();
+        fileAuthenticator.loadUsers();
+        assertTrue(fileAuthenticator.isLoginExists("Tom"));
         assertEquals("1234", fileAuthenticator.getPassword("Tom"));
-        assert(fileAuthenticator.isLoginExists("Sacha"));
+        assertTrue(fileAuthenticator.isLoginExists("Sacha"));
         assertEquals("abcd", fileAuthenticator.getPassword("Sacha"));
     }
 
     @Test
     void addUsers() {
         fileAuthenticator.addUsers("Noa", "motDePasse");
-        assert(fileAuthenticator.isLoginExists("Noa"));
+        assertTrue(fileAuthenticator.isLoginExists("Noa"));
         assertEquals("motDePasse", fileAuthenticator.getPassword("Noa"));
     }
 
     @Test
     void removeUser() {
         fileAuthenticator.removeUser("Tom");
-        assert(!fileAuthenticator.isLoginExists("Tom"));
-        assert(fileAuthenticator.isLoginExists("Sacha"));
+        assertFalse(fileAuthenticator.isLoginExists("Tom"));
+        assertTrue(fileAuthenticator.isLoginExists("Sacha"));
     }
 
     @Test
     void authenticate() {
-        assert(fileAuthenticator.authenticate("Tom", "1234"));
-        assert(!fileAuthenticator.authenticate("Tom", "abcd"));
-        assert(fileAuthenticator.authenticate("Sacha", "abcd"));
-        assert(!fileAuthenticator.authenticate("Sacha", "1234"));
+        assertTrue(fileAuthenticator.authenticate("Tom", "1234"));
+        assertFalse(fileAuthenticator.authenticate("Tom", "abcd"));
+        assertTrue(fileAuthenticator.authenticate("Sacha", "abcd"));
+        assertFalse(fileAuthenticator.authenticate("Sacha", "1234"));
     }
 
     @Test
     void isLoginExists() {
-        assert(fileAuthenticator.isLoginExists("Tom"));
-        assert(!fileAuthenticator.isLoginExists("Noa"));
+        assertTrue(fileAuthenticator.isLoginExists("Tom"));
+        assertFalse(fileAuthenticator.isLoginExists("Noa"));
     }
 
     @Test

@@ -1,9 +1,6 @@
 package com.javaPlayer.project.model.authentication;
 
-import javax.xml.crypto.Data;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 public class FileAuthenticator extends Authenticator {
@@ -13,36 +10,27 @@ public class FileAuthenticator extends Authenticator {
 
     public FileAuthenticator(String fileName) {
         this.filename = fileName;
-        uploadUsers();
+        loadUsers();
     }
 
     @Override
-    public void uploadUsers() {
-        try{
-            users.load(new FileInputStream(filename));
-        }
-        catch(FileNotFoundException e)
-        {
+    public void loadUsers() {
+        try (FileInputStream fis = new FileInputStream(filename)) {
+            users.load(fis);
+        } catch (FileNotFoundException e) {
             System.out.println("File not found");
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("IO Exception");
         }
     }
 
     @Override
-    public void saveUsers(String fileName) {
-        try
-        {
-            users.store(new FileOutputStream(fileName), "Liste des utilisateurs");
-        }
-        catch(FileNotFoundException e)
-        {
+    public void saveUsers() {
+        try (FileOutputStream fos = new FileOutputStream(filename)) {
+            users.store(fos, "User list");
+        } catch (FileNotFoundException e) {
             System.out.println("File not found");
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("IO Exception");
         }
     }
@@ -51,9 +39,10 @@ public class FileAuthenticator extends Authenticator {
     public void addUsers(String pseudo, String password) {
         if (!users.containsKey(pseudo)) {
             users.put(pseudo, password);
-            saveUsers(filename);
+            saveUsers();
+            System.out.println("User added successfully.");
         } else {
-            System.out.println("Utilisateur déjà existant !");
+            System.out.println("User already exists.");
         }
     }
 
@@ -61,20 +50,20 @@ public class FileAuthenticator extends Authenticator {
     public void removeUser(String pseudo) {
         if (users.containsKey(pseudo)) {
             users.remove(pseudo);
-            saveUsers(filename);//mettre à jour le fichier
-            System.out.println("Utilisateur supprimé avec succès.");
+            saveUsers(); // Update file
+            System.out.println("User removed successfully.");
         } else {
-            System.out.println("Utilisateur introuvable.");
+            System.out.println("Cannot find user.");
         }
     }
 
     @Override
-    protected boolean isLoginExists(String pseudo) {
+    public boolean isLoginExists(String pseudo) {
         return users.containsKey(pseudo);
     }
 
     @Override
-    protected String getPassword(String pseudo) {
+    public String getPassword(String pseudo) {
         return (String)users.getOrDefault(pseudo, "");
     }
 }

@@ -14,7 +14,7 @@
         </constraints>
         <properties/>
       </component>
-      <grid id="c571a" binding="PlaylistInfoPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="100">
+      <grid id="c571a" binding="playlistInfoPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="100">
         <margin top="30" left="20" bottom="30" right="20"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -34,7 +34,7 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="acafb" class="javax.swing.JLabel" binding="PlaylistTitleLabel">
+              <component id="acafb" class="javax.swing.JLabel" binding="playlistTitleLabel">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>

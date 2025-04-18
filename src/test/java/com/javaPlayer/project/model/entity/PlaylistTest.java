@@ -78,7 +78,7 @@ public class PlaylistTest {
         Song song2 = new Song(2, "C.L.U", new Artist(1, "Daft Punk"), "Soundtrack", 172, new Date());
         Playlist playlist = new Playlist(1, "Tron", new ArrayList<>(List.of(song1, song2)));
 
-        Song found = playlist.findSongById(1); // Adapté si la méthode retourne une Song
+        Song found = playlist.findSongById(2); // Adapté si la méthode retourne une Song
         assertNotNull(found);
         assertEquals("C.L.U", found.getTitle());
     }
