@@ -24,18 +24,18 @@ public class JDialogAccountChooser extends JDialog {
         this.setResizable(false);
 
         loginButton.addActionListener(e -> {
-            setVisible(false);
+            this.setVisible(false);
             isCancelled = false;
         });
 
         createAccountButton.addActionListener(e -> {
             isCreatingAccount = true;
             isCancelled = false;
-            setVisible(false);
+            this.setVisible(false);
         });
 
         cancelButton.addActionListener(e -> {
-            setVisible(false);
+            this.setVisible(false);
         });
     }
 

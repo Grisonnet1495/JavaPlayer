@@ -15,7 +15,7 @@ public class JDialogPlaylistSettings extends JDialog {
 
     public JDialogPlaylistSettings(JFrame parent, boolean modal) {
         super(parent, "Playlist settings", modal);
-        setContentPane(mainPanel);
+        this.setContentPane(mainPanel);
 //        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 }

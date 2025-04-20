@@ -33,7 +33,7 @@ public class JDialogSettings extends JDialog {
 
     public JDialogSettings(JFrame parent, boolean modal) {
         super(parent, "Settings", modal);
-        setContentPane(mainPanel);
+        this.setContentPane(mainPanel);
 //        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 }

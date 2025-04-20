@@ -17,8 +17,8 @@ public class JDialogSongDetails extends JDialog {
 
     public JDialogSongDetails(JFrame parent, boolean modal) {
         super(parent, "Song details", modal);
-        setContentPane(mainPanel);
+        this.setContentPane(mainPanel);
 //        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setSize(500, 250);
+        this.setSize(500, 250);
     }
 }

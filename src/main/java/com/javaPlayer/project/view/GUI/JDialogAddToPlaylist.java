@@ -10,9 +10,9 @@ public class JDialogAddToPlaylist extends JDialog {
 
     public JDialogAddToPlaylist(JFrame parent, boolean modal) {
         super(parent, "Add to playlist", modal);
-        setContentPane(mainPanel);
+        this.setContentPane(mainPanel);
 //        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setSize(300, 150);
-        setResizable(false);
+        this.setSize(300, 150);
+        this.setResizable(false);
     }
 }

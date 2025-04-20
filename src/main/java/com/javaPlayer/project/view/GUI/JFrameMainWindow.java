@@ -209,22 +209,22 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     public void updateHomePanel(ArrayList<String> recentPlaylistsTitles, ArrayList<String> allPlaylistsTitles) {
         homePanel.updateRecentPlaylists(recentPlaylistsTitles);
         homePanel.updateAllPlaylists(allPlaylistsTitles);
-        contentPanel.remove(homePanel.mainPanel);
-        contentPanel.add(homePanel.mainPanel, "Home");
+//        contentPanel.remove(homePanel.mainPanel);
+//        contentPanel.add(homePanel.mainPanel, "Home");
     }
 
     @Override
     public void updatePlaylistPanel(Playlist playlist) {
         playlistPanel.updatePlaylist(playlist);
-        contentPanel.remove(playlistPanel.mainPanel);
-        contentPanel.add(playlistPanel.mainPanel, "Playlist");
+//        contentPanel.remove(playlistPanel.mainPanel);
+//        contentPanel.add(playlistPanel.mainPanel, "Playlist");
     }
 
     @Override
     public void updateSearchPanel(ArrayList<Song> songList) {
         searchPanel.updateResults(songList);
-        contentPanel.remove(searchPanel.mainPanel);
-        contentPanel.add(searchPanel.mainPanel, "Search");
+//        contentPanel.remove(searchPanel.mainPanel);
+//        contentPanel.add(searchPanel.mainPanel, "Search");
     }
 
     @Override
