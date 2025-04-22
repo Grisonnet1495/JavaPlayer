@@ -3,16 +3,16 @@ package com.javaPlayer.project.view.GUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class JDialogAddToPlaylist extends JDialog {
-    public JPanel mainPanel;
-    private JComboBox playlistComboBox;
-    private JButton addButton;
+public class JDialogCreatePlaylist extends JDialog {
+    private JPanel mainPanel;
     private JButton cancelButton;
-    private String selectedPlaylist = null;
-    private boolean isAddingSongToPlaylist = false;
+    private JButton createButton;
+    private JTextField playlistNameTextField;
+    private String newPlaylistName = null;
+    private boolean isCreatingPlaylist = false;
 
-    public JDialogAddToPlaylist(JFrame parent, boolean modal) {
-        super(parent, "Select playlist", modal);
+    public JDialogCreatePlaylist(JFrame parent, boolean modal) {
+        super(parent, "Enter the new playlist name", modal);
         this.setContentPane(mainPanel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -26,9 +26,9 @@ public class JDialogAddToPlaylist extends JDialog {
         this.setLocation(x, y);
 
         // Add action listeners
-        addButton.addActionListener(e -> {
-            selectedPlaylist = (String) playlistComboBox.getSelectedItem();
-            isAddingSongToPlaylist = true;
+        createButton.addActionListener(e -> {
+            newPlaylistName = playlistNameTextField.getText();
+            isCreatingPlaylist = true;
             this.dispose();
         });
 
@@ -37,11 +37,11 @@ public class JDialogAddToPlaylist extends JDialog {
         });
     }
 
-    public String getSelectedPlaylist() {
-        return selectedPlaylist;
+    public String getNewPlaylistName() {
+        return newPlaylistName;
     }
 
-    public boolean isAddingSongToPlaylist() {
-        return isAddingSongToPlaylist;
+    public boolean isCreatingPlaylist() {
+        return isCreatingPlaylist;
     }
 }

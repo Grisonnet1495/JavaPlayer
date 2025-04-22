@@ -22,7 +22,7 @@ public class Main {
             DAOConfig daoConfig = new DAOConfig(FilePathNames.CONFIG);
 
             if (!daoConfig.isConfigExists("userFile")) {
-                daoConfig.addConfig("userFile", "users.properties");
+                daoConfig.addConfig("userFile", FilePathNames.CONFIG);
             }
 
             MainController mainController = new MainController(new JFrameMainWindow(), daoConfig, new FileAuthenticator(daoConfig.getConfig("userFile")));

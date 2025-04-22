@@ -3,14 +3,16 @@ package com.javaPlayer.project.view.GUI;
 //import com.formdev.flatlaf.FlatMacLightLaf;
 import com.formdev.flatlaf.themes.*;
 import com.javaPlayer.project.controller.MainController;
-import com.javaPlayer.project.model.entity.Credentials;
-import com.javaPlayer.project.model.entity.Playlist;
-import com.javaPlayer.project.model.entity.Song;
+import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.view.ViewMainWindow;
+import org.jaudiotagger.tag.datatype.Artwork;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     // Main panel
@@ -26,7 +28,6 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private final JMenuItem createBackupMenuItem;
     private final JMenuItem accountMenuItem;
     private final JMenuItem settingsMenuItem;
-    private final JMenuItem exportPlaylistMenuItem;
     private final JMenuItem addSongToFavoritesMenuItem;
     private final JMenuItem removeSongFromFavoritesMenuItem;
     private final JMenuItem addSongToPlaylistMenuItem;
@@ -35,6 +36,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private final JMenuItem createPlaylistMenuItem;
     private final JMenuItem deletePlaylistMenuItem;
     private final JMenuItem editPlaylistMenuItem;
+    private final JMenuItem importPlaylistMenuItem;
+    private final JMenuItem exportPlaylistMenuItem;
 
 
     // Left Menu Panel
@@ -72,7 +75,9 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private JPanelHome homePanel = new JPanelHome();
     private JPanelPlaylist playlistPanel = new JPanelPlaylist();
     private JPanelSearch searchPanel = new JPanelSearch();
+    private boolean isSongFavorite;
 
+    private MainController controller;
 //    private User user;
 
     public JFrameMainWindow() {
@@ -128,10 +133,12 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         createPlaylistMenuItem = new JMenuItem("Create playlist");
         deletePlaylistMenuItem = new JMenuItem("Delete playlist");
         editPlaylistMenuItem = new JMenuItem("Edit playlist");
+        importPlaylistMenuItem = new JMenuItem("Import playlist");
         exportPlaylistMenuItem = new JMenuItem("Export playlist");
         playlistMenu.add(createPlaylistMenuItem);
         playlistMenu.add(deletePlaylistMenuItem);
         playlistMenu.add(editPlaylistMenuItem);
+        playlistMenu.add(importPlaylistMenuItem);
         playlistMenu.add(exportPlaylistMenuItem);
 
         // Delete the border of some buttons
@@ -253,54 +260,48 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public void showSettings() {
-        JDialogSettings settingsDialog = new JDialogSettings(this,true);
-
-        // Set the properties of the dialog box
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) ((float) screenSize.width / 1.5);
-        int height = (int) ((float) screenSize.height / 1.5);
-        settingsDialog.setSize(new Dimension(width, height));
-        settingsDialog.setResizable(false);
-
-        int x = (screenSize.width - settingsDialog.getWidth()) / 2;
-        int y = (screenSize.height - settingsDialog.getHeight()) / 2;
-        settingsDialog.setLocation(x, y);
-
+    public Settings showAndGetSettings(String userPseudo, String userPassword) {
+        JDialogSettings settingsDialog = new JDialogSettings(this,true, userPseudo, userPassword);
         settingsDialog.setVisible(true);
-        settingsDialog.dispose();
+
+        if (settingsDialog.isSaving()) {
+            return new Settings(settingsDialog.getUserPseudo(),
+                    settingsDialog.getUserPassword(),
+                    settingsDialog.isDeletingAllData());
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public void showSongDetails() {
+    public void showSongDetails(String title, String artist, String playlist, String addedDate, String duration) {
         JDialogSongDetails songDetailsDialog = new JDialogSongDetails(this,true);
-
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (screenSize.width - songDetailsDialog.getWidth()) / 2;
-        int y = (screenSize.height - songDetailsDialog.getHeight()) / 2;
-        songDetailsDialog.setLocation(x, y);
+        if (title != null) songDetailsDialog.setSongTitle(title);
+        if (artist != null) songDetailsDialog.setSongArtist(artist);
+        if (playlist != null) songDetailsDialog.setSongPlaylist(playlist);
+        if (addedDate != null) songDetailsDialog.setSongAddedDate(addedDate);
+        if (duration != null) {
+            songDetailsDialog.setSongDuration(duration);
+        } else {
+            // Note : To remove
+            System.out.println("Song duration is null");
+        };
 
         songDetailsDialog.setVisible(true);
-        songDetailsDialog.dispose();
     }
 
     @Override
-    public void showPlaylistSettings()
+    public PlaylistSettings showAndGetPlaylistSettings()
     {
-        // Create the settings dialog box
         JDialogPlaylistSettings playlistSettingsDialog = new JDialogPlaylistSettings(this, true);
-
-        // Set the properties of the dialog box
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        playlistSettingsDialog.setSize(new Dimension(500, 300));
-        playlistSettingsDialog.setResizable(false);
-
-        int x = (screenSize.width - playlistSettingsDialog.getWidth()) / 2;
-        int y = (screenSize.height - playlistSettingsDialog.getHeight()) / 2;
-        playlistSettingsDialog.setLocation(x, y);
-
         playlistSettingsDialog.setVisible(true);
-        playlistSettingsDialog.dispose();
+
+        if (playlistSettingsDialog.isSaving()) {
+            return new PlaylistSettings(playlistSettingsDialog.getPlaylistName(), playlistSettingsDialog.isDeletingPlaylist());
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -308,23 +309,41 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         JOptionPane.showMessageDialog(this, message);
     }
 
+//    @Override
+//    public void toggleFavoritesForCurrentSong() {
+//        // Toggle favorites
+//    }
+
     @Override
-    public void toggleFavoritesForCurrentSong() {
-        // Toggle favorites
+    public String promptChooseAddToPlaylist() {
+        JDialogAddToPlaylist addToPlaylistDialog = new JDialogAddToPlaylist(this, true);
+        addToPlaylistDialog.setVisible(true);
+
+        if (addToPlaylistDialog.isAddingSongToPlaylist()) {
+            return addToPlaylistDialog.getSelectedPlaylist();
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public void addCurrentSongToPlaylist() {
-        JDialogAddToPlaylist addToPlaylistDialog = new JDialogAddToPlaylist(this, true);
+    public String promptToCreatePlaylist() {
+        JDialogCreatePlaylist createPlaylistDialog = new JDialogCreatePlaylist(this, true);
+        createPlaylistDialog.setVisible(true);
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (screenSize.width - addToPlaylistDialog.getWidth()) / 2;
-        int y = (screenSize.height - addToPlaylistDialog.getHeight()) / 2;
-        addToPlaylistDialog.setLocation(x, y);
+        if (createPlaylistDialog.isCreatingPlaylist()) {
+            return createPlaylistDialog.getNewPlaylistName();
+        } else {
+            return null;
+        }
+    }
 
-        addToPlaylistDialog.setVisible(true);
-        // Note : Retrieve the data
-        addToPlaylistDialog.dispose();
+    @Override
+    public String promptChoosePlaylistToDelete() {
+        JDialogDeletePlaylist playlistToDeleteDialog = new JDialogDeletePlaylist(this, true);
+        playlistToDeleteDialog.setVisible(true);
+
+        return playlistToDeleteDialog.getSelectedPlaylist();
     }
 
     @Override
@@ -356,15 +375,17 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         removeSongFromFavoritesMenuItem.addActionListener(c);
         removeSongFromPlaylistMenuItem.setActionCommand("REMOVE_SONG_FROM_PLAYLIST");
         removeSongFromPlaylistMenuItem.addActionListener(c);
-        searchSongMenuItem.setActionCommand("SEARCH_SONG");
+        searchSongMenuItem.setActionCommand("SEARCH");
         searchSongMenuItem.addActionListener(c);
         createPlaylistMenuItem.setActionCommand("CREATE_PLAYLIST");
         createPlaylistMenuItem.addActionListener(c);
         deletePlaylistMenuItem.setActionCommand("DELETE_PLAYLIST");
         deletePlaylistMenuItem.addActionListener(c);
-        editPlaylistMenuItem.setActionCommand("EDIT_PLAYLIST");
+        editPlaylistMenuItem.setActionCommand("PLAYLIST_SETTINGS");
         editPlaylistMenuItem.addActionListener(c);
         exportPlaylistMenuItem.setActionCommand("EXPORT_PLAYLIST");
+        exportPlaylistMenuItem.addActionListener(c);
+        exportPlaylistMenuItem.setActionCommand("IMPORT_PLAYLIST");
         exportPlaylistMenuItem.addActionListener(c);
 
         // Other components
@@ -393,6 +414,45 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
         // Set the controller for each Panel
         playlistPanel.setController(c);
+    }
+
+    @Override
+    public File openFile(String fileType, String fileExtension) {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(fileType, fileExtension);
+        fileChooser.setFileFilter(filter);
+        int result = fileChooser.showOpenDialog(null); // Note : Does parent could be "this" ?
+
+        File currentFile;
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            currentFile = fileChooser.getSelectedFile();
+        } else {
+            currentFile = null;
+        }
+
+        return currentFile;
+    }
+
+    private void updateSongData(String title, String artist, Artwork albumImage, boolean isSongFavorite) {
+        songTitleLabel.setText(title);
+        songArtistLabel.setText(artist);
+
+        if (albumImage != null) {
+            byte[] imageData = albumImage.getBinaryData();
+            ImageIcon originalIcon = new ImageIcon(imageData);
+            Image scaledIcon = originalIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+
+            songIconButton.setIcon(new ImageIcon(scaledIcon));
+        } else {
+            songIconButton.setText(title.substring(0, 1));
+        }
+
+        if (isSongFavorite) {
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/favorite_song_icon.png"))));
+        } else {
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/not_favorite_song_icon.png"))));
+        }
     }
 
     public static void main(String[] args) {

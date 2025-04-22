@@ -51,7 +51,7 @@
             <properties>
               <background color="-2500135"/>
               <font size="14"/>
-              <icon value="icons/favorites_icon.png"/>
+              <icon value="icons/not_favorites_song_icon.png"/>
               <text value=" Favorites "/>
             </properties>
           </component>

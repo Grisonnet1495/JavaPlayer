@@ -1,11 +1,10 @@
 package com.javaPlayer.project.view.console;
 
 import com.javaPlayer.project.controller.MainController;
-import com.javaPlayer.project.model.entity.Credentials;
-import com.javaPlayer.project.model.entity.Playlist;
-import com.javaPlayer.project.model.entity.Song;
+import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.view.ViewMainWindow;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainConsoleWindow implements ViewMainWindow {
@@ -45,18 +44,20 @@ public class MainConsoleWindow implements ViewMainWindow {
     }
 
     @Override
-    public void showSettings() {
+    public Settings showAndGetSettings(String userPseudo, String userPassword) {
+
+        return null;
+    }
+
+    @Override
+    public void showSongDetails(String title, String artist, String playlist, String addedDate, String duration) {
 
     }
 
     @Override
-    public void showSongDetails() {
+    public PlaylistSettings showAndGetPlaylistSettings() {
 
-    }
-
-    @Override
-    public void showPlaylistSettings() {
-
+        return null;
     }
 
     @Override
@@ -64,14 +65,25 @@ public class MainConsoleWindow implements ViewMainWindow {
 
     }
 
-    @Override
-    public void toggleFavoritesForCurrentSong() {
+//    @Override
+//    public void toggleFavoritesForCurrentSong() {
+//
+//    }
 
+    @Override
+    public String promptChooseAddToPlaylist() {
+
+        return null;
     }
 
     @Override
-    public void addCurrentSongToPlaylist() {
+    public String promptToCreatePlaylist() {
+        return null;
+    }
 
+    @Override
+    public String promptChoosePlaylistToDelete() {
+        return "";
     }
 
     @Override
@@ -87,5 +99,10 @@ public class MainConsoleWindow implements ViewMainWindow {
     @Override
     public void setController(MainController c) {
 
+    }
+
+    @Override
+    public File openFile(String fileType, String fileExtension) {
+        return null;
     }
 }

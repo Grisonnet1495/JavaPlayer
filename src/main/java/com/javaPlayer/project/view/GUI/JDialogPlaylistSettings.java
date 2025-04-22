@@ -1,6 +1,7 @@
 package com.javaPlayer.project.view.GUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class JDialogPlaylistSettings extends JDialog {
     protected JPanel mainPanel;
@@ -12,10 +13,59 @@ public class JDialogPlaylistSettings extends JDialog {
     private JLabel deletePlaylistTitleLabel;
     private JLabel deletePlaylistInfoUpLabel;
     private JPanel deletePlaylistPanel;
+    private JCheckBox acceptConsequencesCheckBox;
+    private JButton saveButton;
+    private JButton cancelButton;
+    private JPanel saveAndCancelPanel;
+    private JPanel contentPanel;
+    private JPanel playlistNamePanel;
+    private JPanel playlistOwnerPanel;
+    private boolean isSaving = false;
+    private boolean isDeletingPlaylist = false;
+    private String playlistName = null;
+
 
     public JDialogPlaylistSettings(JFrame parent, boolean modal) {
         super(parent, "Playlist settings", modal);
         this.setContentPane(mainPanel);
-//        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        // Set the properties of the dialog box
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize(new Dimension(500, 390));
+        this.setResizable(false);
+
+        int x = (screenSize.width - this.getWidth()) / 2;
+        int y = (screenSize.height - this.getHeight()) / 2;
+        this.setLocation(x, y);
+
+        // Add action listeners
+        saveButton.addActionListener(e -> {
+            isSaving = true;
+            playlistName = playlistNameTextField.getText();
+            this.dispose();
+        });
+
+        cancelButton.addActionListener(e -> {
+            this.dispose();
+        });
+
+        deletePlaylistButton.addActionListener(e -> {
+            if (acceptConsequencesCheckBox.isSelected()) {
+                isDeletingPlaylist = true;
+            }
+        });
+    }
+
+    public boolean isSaving() {
+        return isSaving;
+    }
+
+    public boolean isDeletingPlaylist() {
+        return isDeletingPlaylist;
+    }
+
+    public String getPlaylistName() {
+        return playlistName;
     }
 }

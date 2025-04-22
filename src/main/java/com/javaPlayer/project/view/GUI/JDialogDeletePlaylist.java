@@ -3,15 +3,14 @@ package com.javaPlayer.project.view.GUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class JDialogAddToPlaylist extends JDialog {
-    public JPanel mainPanel;
+public class JDialogDeletePlaylist extends JDialog {
+    private JPanel mainPanel;
     private JComboBox playlistComboBox;
-    private JButton addButton;
     private JButton cancelButton;
+    private JButton deleteButton;
     private String selectedPlaylist = null;
-    private boolean isAddingSongToPlaylist = false;
 
-    public JDialogAddToPlaylist(JFrame parent, boolean modal) {
+    public JDialogDeletePlaylist(JFrame parent, boolean modal) {
         super(parent, "Select playlist", modal);
         this.setContentPane(mainPanel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -26,9 +25,8 @@ public class JDialogAddToPlaylist extends JDialog {
         this.setLocation(x, y);
 
         // Add action listeners
-        addButton.addActionListener(e -> {
+        deleteButton.addActionListener(e -> {
             selectedPlaylist = (String) playlistComboBox.getSelectedItem();
-            isAddingSongToPlaylist = true;
             this.dispose();
         });
 
@@ -39,9 +37,5 @@ public class JDialogAddToPlaylist extends JDialog {
 
     public String getSelectedPlaylist() {
         return selectedPlaylist;
-    }
-
-    public boolean isAddingSongToPlaylist() {
-        return isAddingSongToPlaylist;
     }
 }

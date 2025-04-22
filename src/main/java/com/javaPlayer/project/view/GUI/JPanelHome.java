@@ -63,7 +63,7 @@ public class JPanelHome extends JPanel {
         // Creation of the components
         JPanel playlistButtonPanel = new JPanel();
         playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
-        JButton playlistButton = new JButton(String.valueOf(playlistTitle.charAt(0)));
+        JButton playlistButton = new JButton(playlistTitle.substring(0, 1));
         JLabel playlistLabel = new JLabel(playlistTitle);
 
         allPlaylistsContentPanel.add(playlistButtonPanel);
