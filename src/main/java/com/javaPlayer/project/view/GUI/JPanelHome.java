@@ -1,6 +1,7 @@
 package com.javaPlayer.project.view.GUI;
 
 import com.javaPlayer.project.controller.MainController;
+import com.javaPlayer.project.controller.MainControllerActions;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +19,8 @@ public class JPanelHome extends JPanel {
     private JLabel noAllPlaylistsLabel;
     private JScrollPane recentPlaylistsScrollPane;
     private JScrollPane allPlaylistsScrollPane;
+
+    private String selectedPlaylistTitle = null;
     private MainController controller;
 
     public JPanelHome() {
@@ -27,6 +30,14 @@ public class JPanelHome extends JPanel {
         allPlaylistsContentPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 //        updateRecentPlaylists();
 //        updateAllPlaylists();
+    }
+
+    public String getSelectedPlaylistTitle() {
+        return selectedPlaylistTitle;
+    }
+
+    public void clearSelectedPlaylistTitle() {
+        selectedPlaylistTitle = null;
     }
 
     void setController(MainController c) {
@@ -85,8 +96,12 @@ public class JPanelHome extends JPanel {
         allPlaylistsContentPanel.revalidate();
         allPlaylistsContentPanel.repaint();
 
+        playlistButton.setActionCommand(MainControllerActions.PLAYLIST_VIEW);
+        playlistButton.addActionListener(e -> {
+            selectedPlaylistTitle = playlistTitle;
+        });
         playlistButton.addActionListener(controller);
-        playlistButton.setActionCommand(playlistTitle);
+
 
         return playlistButtonPanel;
     }

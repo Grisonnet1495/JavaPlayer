@@ -42,4 +42,8 @@ public class UserTest {
     @Test
     void setPlaylistList() {
     }
+
+    @Test
+    void testEquals() {
+    }
 }

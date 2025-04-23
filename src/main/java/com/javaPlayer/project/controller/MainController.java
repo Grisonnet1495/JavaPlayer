@@ -88,7 +88,7 @@ public final class MainController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(MainControllerActions.HOME)) {
+        if (e.getActionCommand().equals(MainControllerActions.HOME_VIEW)) {
             // Note : Temporary
             ArrayList<String> recentPlaylistsTitleList = new ArrayList<>();
             ArrayList<String> allPlaylistsTitleList = new ArrayList<>();
@@ -106,13 +106,26 @@ public final class MainController implements ActionListener {
 
             view.updateHomePanel(recentPlaylistsTitleList, allPlaylistsTitleList);
             view.showHome();
-        } else if (e.getActionCommand().equals(MainControllerActions.SEARCH)) {
+        } else if (e.getActionCommand().equals(MainControllerActions.SEARCH_VIEW)) {
             // Note : Temporary
             view.updateSearchPanel(new ArrayList<Song>());
+
             view.showSearch();
-        } else if (e.getActionCommand().equals(MainControllerActions.FAVORITES)) {
+        } else if (e.getActionCommand().equals(MainControllerActions.PLAYLIST_VIEW)) {
+            String currentPlaylistName = view.getSelectedPlaylistTitle();
+            view.clearSelectedPlaylistTitle();
+
+            if (currentPlaylistName == null) {
+                // Retrieve the favorites playlist data
+            } else {
+                // Retrieve the current playlist data
+            }
+
             // Note : Temporary
-            view.updatePlaylistPanel(new Playlist(0, "Playlist 1", new ArrayList<Song>()));
+            Playlist playlist = new Playlist(0, "Playlist 1", new ArrayList<Song>());
+
+            view.updatePlaylistPanel(playlist);
+
             view.showPlaylist();
         } else if (e.getActionCommand().equals(MainControllerActions.SWITCH_ACCOUNT)) {
             view.stop();
@@ -138,8 +151,12 @@ public final class MainController implements ActionListener {
             view.updateHomePanel(recentPlaylistsTitleList, allPlaylistsTitleList);
             view.showHome();
         } else if (e.getActionCommand().equals(MainControllerActions.SETTINGS)) {
-            // Note : Retrieve user pseudo and password
-            Settings settings = view.showAndGetSettings(null, null);
+            // Retrieve user pseudo and password
+            // Note : Temporary
+            String userPseudo = "User 1";
+            String userPassword = "Password1";
+
+            Settings settings = view.showAndGetSettings(userPseudo, userPassword);
 
             if (settings != null) {
                 // Update user settings
@@ -148,9 +165,24 @@ public final class MainController implements ActionListener {
                 System.out.println("Settings updated : {" + settings.getUserPseudo() + ", " + settings.getUserPassword() + ", " + settings.isDeletingAllData() + "}");
             }
         } else if (e.getActionCommand().equals(MainControllerActions.SONG_DETAILS)) {
-            view.showSongDetails(null, null, null, null, null);
+            // Retrieve song data
+
+            // Note : Temporary
+            String songTitle = "Song 1";
+            String artistPseudo = "Artist 1";
+            String playlistTitle = "Playlist 1";
+            String addedDate = "01/01/2001";
+            String duration = "1:30";
+
+            view.showSongDetails(songTitle, artistPseudo, playlistTitle, addedDate, duration);
         } else if (e.getActionCommand().equals(MainControllerActions.PLAYLIST_SETTINGS)) {
-            PlaylistSettings playlistSettings = view.showAndGetPlaylistSettings();
+            // Retrieve playlist data
+
+            // Note : Temporary
+            String playlistTitle = "Playlist 1";
+            String playlistOwner = "User 1";
+
+            PlaylistSettings playlistSettings = view.showAndGetPlaylistSettings(playlistTitle, playlistOwner);
 
             if (playlistSettings != null) {
                 // Update playlist
@@ -168,13 +200,28 @@ public final class MainController implements ActionListener {
             // Count the number of songs in the actual playlist
             // Choose a random number between 1 and the number of songs
             // Play the song at this position in the playlist
+
+            // Note : Temporary
+            System.out.println("Random triggered");
         } else if (e.getActionCommand().equals(MainControllerActions.LOOP)) {
             // Change the loop flag to true
+
+            // Note : Temporary
+            System.out.println("Loop triggered");
         } else if (e.getActionCommand().equals(MainControllerActions.ADD_TO_FAVORITES)) {
             // Add song to the Favorites playlist
             // Update the UI
+
+            // Note : Temporary
+            System.out.println("Add to favorites triggered");
         } else if (e.getActionCommand().equals(MainControllerActions.ADD_TO_PLAYLIST)) {
-            String selectedPlaylist = view.promptChooseAddToPlaylist();
+            // Note : Temporary
+            ArrayList<String> playlistTitleList = new ArrayList<String>();
+            playlistTitleList.add("Playlist 1");
+            playlistTitleList.add("Playlist 2");
+            playlistTitleList.add("Playlist 3");
+
+            String selectedPlaylist = view.promptChooseAddToPlaylist(playlistTitleList);
 
             if (selectedPlaylist != null) {
                 // Add current song to selected playlist
@@ -197,6 +244,9 @@ public final class MainController implements ActionListener {
         } else if (e.getActionCommand().equals(MainControllerActions.REMOVE_SONG_FROM_FAVORITES)) {
             // Remove song from the Favorites playlist
             // Update the UI
+
+            // Note : Temporary
+            System.out.println("Remove song from favorites triggered");
         } else if (e.getActionCommand().equals(MainControllerActions.REMOVE_SONG_FROM_PLAYLIST)) {
             // Remove song from the current playlist
             // Add song to the All song playlist
@@ -216,7 +266,13 @@ public final class MainController implements ActionListener {
                 System.out.println("Playlist created : " + playlistName);
             }
         } else if (e.getActionCommand().equals(MainControllerActions.DELETE_PLAYLIST)) {
-            String playlistToDelete = view.promptChoosePlaylistToDelete();
+            // Note : Temporary
+            ArrayList<String> playlistTitleList = new ArrayList<String>();
+            playlistTitleList.add("Playlist 1");
+            playlistTitleList.add("Playlist 2");
+            playlistTitleList.add("Playlist 3");
+
+            String playlistToDelete = view.promptChoosePlaylistToDelete(playlistTitleList);
 
             if (playlistToDelete != null) {
                 // Delete playlist
@@ -227,8 +283,21 @@ public final class MainController implements ActionListener {
             }
         } else if (e.getActionCommand().equals(MainControllerActions.EXPORT_PLAYLIST)) {
             // Export the current playlist
+
+            // Note : Temporary
+            System.out.println("Export playlist triggered");
         } else if (e.getActionCommand().equals(MainControllerActions.IMPORT_PLAYLIST)) {
             // Import a playlist
+
+            // Note : Temporary
+            System.out.println("Import playlist triggered");
+        } else if (e.getActionCommand().equals(MainControllerActions.SEARCH_SONG)) {
+            // Retrieve the word to search for
+            // Search for all songs containing the given word
+            // Update the UI
+
+            // Note : Temporary
+            System.out.println("Search triggered");
         } else {
             view.showMessage("Button not implemented !");
         }

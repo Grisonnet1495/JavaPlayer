@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class DAOUser {
     private User currentUser;
-    private ArrayList<Playlist> playlistsList;
+    private ArrayList<User> UserList;
 
     public DAOUser(String user) {
         loadUserFromFile(user);

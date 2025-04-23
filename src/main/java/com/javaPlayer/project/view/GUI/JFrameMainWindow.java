@@ -3,6 +3,7 @@ package com.javaPlayer.project.view.GUI;
 //import com.formdev.flatlaf.FlatMacLightLaf;
 import com.formdev.flatlaf.themes.*;
 import com.javaPlayer.project.controller.MainController;
+import com.javaPlayer.project.controller.MainControllerActions;
 import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.view.ViewMainWindow;
 import org.jaudiotagger.tag.datatype.Artwork;
@@ -235,6 +236,34 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
+    public void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, int duration, int elapsedTime, int remainingTime, boolean isSongFavorite) {
+        songTitleLabel.setText(songTitle);
+        songArtistLabel.setText(artistPseudo);
+
+        if (songIcon != null) {
+            songIconButton.setIcon(songIcon);
+        } else {
+            songIconButton.setText(songTitle.substring(0, 1));
+        }
+
+        if (isSongFavorite) {
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/favorite_song_icon.png"))));
+        } else {
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/not_favorites_song_icon.png"))));
+        }
+    }
+
+    @Override
+    public String getSelectedPlaylistTitle() {
+        return homePanel.getSelectedPlaylistTitle();
+    }
+
+    @Override
+    public void clearSelectedPlaylistTitle() {
+        homePanel.clearSelectedPlaylistTitle();
+    }
+
+    @Override
     public void showHome() {
         cardLayout.show(contentPanel, "Home"); // Note : Do it need to be destroyed and re-created ?
     }
@@ -291,9 +320,9 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public PlaylistSettings showAndGetPlaylistSettings()
+    public PlaylistSettings showAndGetPlaylistSettings(String playlistTitle, String playlistOwner)
     {
-        JDialogPlaylistSettings playlistSettingsDialog = new JDialogPlaylistSettings(this, true);
+        JDialogPlaylistSettings playlistSettingsDialog = new JDialogPlaylistSettings(this, true, playlistTitle, playlistOwner);
         playlistSettingsDialog.setVisible(true);
 
         if (playlistSettingsDialog.isSaving()) {
@@ -315,8 +344,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 //    }
 
     @Override
-    public String promptChooseAddToPlaylist() {
-        JDialogAddToPlaylist addToPlaylistDialog = new JDialogAddToPlaylist(this, true);
+    public String promptChooseAddToPlaylist(ArrayList<String> playlistTitleList) {
+        JDialogAddToPlaylist addToPlaylistDialog = new JDialogAddToPlaylist(this, true, playlistTitleList);
         addToPlaylistDialog.setVisible(true);
 
         if (addToPlaylistDialog.isAddingSongToPlaylist()) {
@@ -339,8 +368,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public String promptChoosePlaylistToDelete() {
-        JDialogDeletePlaylist playlistToDeleteDialog = new JDialogDeletePlaylist(this, true);
+    public String promptChoosePlaylistToDelete(ArrayList<String> playlistTitleList) {
+        JDialogDeletePlaylist playlistToDeleteDialog = new JDialogDeletePlaylist(this, true, playlistTitleList);
         playlistToDeleteDialog.setVisible(true);
 
         return playlistToDeleteDialog.getSelectedPlaylist();
@@ -359,60 +388,62 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     @Override
     public void setController(MainController c) {
         // Menu items
-        openSongMenuItem.setActionCommand("OPEN_SONG");
+        openSongMenuItem.setActionCommand(MainControllerActions.OPEN_SONG);
         openSongMenuItem.addActionListener(c);
-        accountMenuItem.setActionCommand("SWITCH_ACCOUNT");
+        accountMenuItem.setActionCommand(MainControllerActions.SWITCH_ACCOUNT);
         accountMenuItem.addActionListener(c);
-        settingsMenuItem.setActionCommand("SETTINGS");
+        settingsMenuItem.setActionCommand(MainControllerActions.SETTINGS);
         settingsMenuItem.addActionListener(c);
-        createBackupMenuItem.setActionCommand("CREATE_BACKUP");
+        createBackupMenuItem.setActionCommand(MainControllerActions.CREATE_BACKUP);
         createBackupMenuItem.addActionListener(c);
-        addSongToFavoritesMenuItem.setActionCommand("ADD_TO_FAVORITES");
+        addSongToFavoritesMenuItem.setActionCommand(MainControllerActions.ADD_TO_FAVORITES);
         addSongToFavoritesMenuItem.addActionListener(c);
-        addSongToPlaylistMenuItem.setActionCommand("ADD_TO_PLAYLIST");
+        addSongToPlaylistMenuItem.setActionCommand(MainControllerActions.ADD_TO_PLAYLIST);
         addSongToPlaylistMenuItem.addActionListener(c);
-        removeSongFromFavoritesMenuItem.setActionCommand("REMOVE_SONG_FROM_FAVORITES");
+        removeSongFromFavoritesMenuItem.setActionCommand(MainControllerActions.REMOVE_SONG_FROM_FAVORITES);
         removeSongFromFavoritesMenuItem.addActionListener(c);
-        removeSongFromPlaylistMenuItem.setActionCommand("REMOVE_SONG_FROM_PLAYLIST");
+        removeSongFromPlaylistMenuItem.setActionCommand(MainControllerActions.REMOVE_SONG_FROM_PLAYLIST);
         removeSongFromPlaylistMenuItem.addActionListener(c);
-        searchSongMenuItem.setActionCommand("SEARCH");
+        searchSongMenuItem.setActionCommand(MainControllerActions.SEARCH_VIEW);
         searchSongMenuItem.addActionListener(c);
-        createPlaylistMenuItem.setActionCommand("CREATE_PLAYLIST");
+        createPlaylistMenuItem.setActionCommand(MainControllerActions.CREATE_PLAYLIST);
         createPlaylistMenuItem.addActionListener(c);
-        deletePlaylistMenuItem.setActionCommand("DELETE_PLAYLIST");
+        deletePlaylistMenuItem.setActionCommand(MainControllerActions.DELETE_PLAYLIST);
         deletePlaylistMenuItem.addActionListener(c);
-        editPlaylistMenuItem.setActionCommand("PLAYLIST_SETTINGS");
+        editPlaylistMenuItem.setActionCommand(MainControllerActions.PLAYLIST_SETTINGS);
         editPlaylistMenuItem.addActionListener(c);
-        exportPlaylistMenuItem.setActionCommand("EXPORT_PLAYLIST");
-        exportPlaylistMenuItem.addActionListener(c);
-        exportPlaylistMenuItem.setActionCommand("IMPORT_PLAYLIST");
+        importPlaylistMenuItem.setActionCommand(MainControllerActions.IMPORT_PLAYLIST);
+        importPlaylistMenuItem.addActionListener(c);
+        exportPlaylistMenuItem.setActionCommand(MainControllerActions.EXPORT_PLAYLIST);
         exportPlaylistMenuItem.addActionListener(c);
 
         // Other components
-        homeButton.setActionCommand("HOME");
+        homeButton.setActionCommand(MainControllerActions.HOME_VIEW);
         homeButton.addActionListener(c);
-        searchButton.setActionCommand("SEARCH");
+        searchButton.setActionCommand(MainControllerActions.SEARCH_VIEW);
         searchButton.addActionListener(c);
-        favoritesButton.setActionCommand("FAVORITES");
+        favoritesButton.setActionCommand(MainControllerActions.PLAYLIST_VIEW);
         favoritesButton.addActionListener(c);
-        pausePlayButton.setActionCommand("PAUSE_PLAY");
+        pausePlayButton.setActionCommand(MainControllerActions.PAUSE_PLAY);
         pausePlayButton.addActionListener(c);
-        previousButton.setActionCommand("PREVIOUS");
+        previousButton.setActionCommand(MainControllerActions.PREVIOUS);
         previousButton.addActionListener(c);
-        nextButton.setActionCommand("NEXT");
+        nextButton.setActionCommand(MainControllerActions.NEXT);
         nextButton.addActionListener(c);
-        randomButton.setActionCommand("RANDOM");
+        randomButton.setActionCommand(MainControllerActions.RANDOM);
         randomButton.addActionListener(c);
-        loopButton.setActionCommand("LOOP");
+        loopButton.setActionCommand(MainControllerActions.LOOP);
         loopButton.addActionListener(c);
-        addToPlaylistButton.setActionCommand("ADD_TO_PLAYLIST");
+        addToPlaylistButton.setActionCommand(MainControllerActions.ADD_TO_PLAYLIST);
         addToPlaylistButton.addActionListener(c);
-        addToFavoritesButton.setActionCommand("ADD_TO_FAVORITES");
+        addToFavoritesButton.setActionCommand(MainControllerActions.ADD_TO_FAVORITES);
         addToFavoritesButton.addActionListener(c);
-        songIconButton.setActionCommand("SONG_DETAILS");
+        songIconButton.setActionCommand(MainControllerActions.SONG_DETAILS);
         songIconButton.addActionListener(c);
 
         // Set the controller for each Panel
+        homePanel.setController(c);
+        searchPanel.setController(c);
         playlistPanel.setController(c);
     }
 

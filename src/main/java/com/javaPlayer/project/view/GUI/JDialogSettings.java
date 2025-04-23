@@ -47,10 +47,6 @@ public class JDialogSettings extends JDialog {
         int y = (screenSize.height - this.getHeight()) / 2;
         this.setLocation(x, y);
 
-        // Set the text fields
-        userPseudoTextField.setText(actualUserPseudo);
-        passwordTextField.setText(actualUserPassword);
-
         // Add action listeners
         deleteAllDataButton.addActionListener(e -> {
             if (acceptDeleteAllDataCheckBox.isSelected()) {
@@ -71,6 +67,10 @@ public class JDialogSettings extends JDialog {
         discardChangesButton.addActionListener(e -> {
             this.dispose();
         });
+
+        // Set the text fields
+        userPseudoTextField.setText(actualUserPseudo);
+        passwordTextField.setText(actualUserPassword);
     }
 
     public String getUserPseudo() {

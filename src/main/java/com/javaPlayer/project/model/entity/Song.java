@@ -87,4 +87,12 @@ public class Song {
                 ", addedDate=" + addedDate +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Song song = (Song) obj;
+        return title.equals(song.title) && artist.equals(song.artist) && genre.equals(song.genre) && duration == song.duration;
+    }
 }

@@ -25,7 +25,7 @@ public class JDialogPlaylistSettings extends JDialog {
     private String playlistName = null;
 
 
-    public JDialogPlaylistSettings(JFrame parent, boolean modal) {
+    public JDialogPlaylistSettings(JFrame parent, boolean modal, String playlistTitle, String playlistOwner) {
         super(parent, "Playlist settings", modal);
         this.setContentPane(mainPanel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -55,6 +55,9 @@ public class JDialogPlaylistSettings extends JDialog {
                 isDeletingPlaylist = true;
             }
         });
+
+        if (playlistTitle != null) playlistNameTextField.setText(playlistTitle);
+        if (playlistOwner != null) playlistOwnerLabel.setText(playlistOwner);
     }
 
     public boolean isSaving() {

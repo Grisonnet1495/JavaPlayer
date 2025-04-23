@@ -9,6 +9,7 @@ public class DAOPlaylist {
     private ArrayList<Playlist> playlistsList;
 
     public DAOPlaylist() {
+        loadPlaylistFromFile();
     }
 
     public void savePlaylistInFile() {

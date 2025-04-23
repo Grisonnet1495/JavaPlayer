@@ -103,4 +103,6 @@ public class Playlist {
                 ", songList=" + songList +
                 '}';
     }
+
+    // Note : implements equals methods
 }
