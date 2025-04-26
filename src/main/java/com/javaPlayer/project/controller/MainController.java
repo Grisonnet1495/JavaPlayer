@@ -2,7 +2,7 @@ package com.javaPlayer.project.controller;
 
 import com.javaPlayer.project.model.authentication.Authenticator;
 import com.javaPlayer.project.model.dao.DAOConfig;
-import com.javaPlayer.project.model.dao.DAOUser;
+import com.javaPlayer.project.model.dao.DAOPlaylist;
 import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.view.GUI.JFrameMainWindow;
 
@@ -13,7 +13,8 @@ import java.util.ArrayList;
 
 public final class MainController implements ActionListener {
     private DAOConfig daoConfig;
-    private DAOUser daoUser;
+    private DAOPlaylist daoPlayList;
+    private User currentUser;
     private JFrameMainWindow view;
     private Authenticator authenticator;
     private String userPseudo;
@@ -75,7 +76,7 @@ public final class MainController implements ActionListener {
     }
 
     public void switchUser(String userPseudo) {
-        //daoUser = new DAOUser(userPseudo);
+        daoPlayList = new DAOPlaylist(userPseudo);
     }
 
     public void run() {
