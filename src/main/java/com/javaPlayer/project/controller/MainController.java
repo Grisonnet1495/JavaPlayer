@@ -75,7 +75,7 @@ public final class MainController implements ActionListener {
     }
 
     public void switchUser(String userPseudo) {
-        daoUser = new DAOUser(userPseudo);
+        //daoUser = new DAOUser(userPseudo);
     }
 
     public void run() {
