@@ -1,8 +1,9 @@
 package com.javaPlayer.project.model.entity;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Playlist {
+public class Playlist implements Serializable {
     private int id;
     private String title;
     private ArrayList<Song> songList;

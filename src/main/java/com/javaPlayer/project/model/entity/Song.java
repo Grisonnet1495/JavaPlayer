@@ -1,8 +1,9 @@
 package com.javaPlayer.project.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Song {
+public class Song implements Serializable {
 //    private static int currentSongId = 0;
     private int id;
     private String title;

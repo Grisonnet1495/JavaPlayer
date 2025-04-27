@@ -1,6 +1,8 @@
 package com.javaPlayer.project.model.entity;
 
-public class Artist {
+import java.io.Serializable;
+
+public class Artist implements Serializable {
     private int id;
     private String pseudo;
 
