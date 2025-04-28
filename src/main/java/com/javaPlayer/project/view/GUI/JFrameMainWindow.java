@@ -205,9 +205,6 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
                 isCredentialEmpty = false;
                 accountChooserDialog.dispose();
             }
-
-//            accountChooserDialog.setVisible(false);
-//            accountChooserDialog.dispose();
         } while (isCredentialEmpty);
 
         return credentials;
@@ -217,26 +214,20 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     public void updateHomePanel(ArrayList<String> recentPlaylistsTitles, ArrayList<String> allPlaylistsTitles) {
         homePanel.updateRecentPlaylists(recentPlaylistsTitles);
         homePanel.updateAllPlaylists(allPlaylistsTitles);
-//        contentPanel.remove(homePanel.mainPanel);
-//        contentPanel.add(homePanel.mainPanel, "Home");
     }
 
     @Override
     public void updatePlaylistPanel(Playlist playlist) {
         playlistPanel.updatePlaylist(playlist);
-//        contentPanel.remove(playlistPanel.mainPanel);
-//        contentPanel.add(playlistPanel.mainPanel, "Playlist");
     }
 
     @Override
     public void updateSearchPanel(ArrayList<Song> songList) {
         searchPanel.updateResults(songList);
-//        contentPanel.remove(searchPanel.mainPanel);
-//        contentPanel.add(searchPanel.mainPanel, "Search");
     }
 
     @Override
-    public void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, int duration, int elapsedTime, int remainingTime, boolean isSongFavorite) {
+    public void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite) {
         songTitleLabel.setText(songTitle);
         songArtistLabel.setText(artistPseudo);
 
@@ -247,20 +238,15 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         }
 
         if (isSongFavorite) {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/favorite_song_icon.png"))));
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_favorite_song_icon.png"))));
         } else {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/not_favorites_song_icon.png"))));
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_not_favorite_song_icon.png"))));
         }
     }
 
     @Override
     public String getSelectedPlaylistTitle() {
         return homePanel.getSelectedPlaylistTitle();
-    }
-
-    @Override
-    public void clearSelectedPlaylistTitle() {
-        homePanel.clearSelectedPlaylistTitle();
     }
 
     @Override
@@ -337,11 +323,6 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
-
-//    @Override
-//    public void toggleFavoritesForCurrentSong() {
-//        // Toggle favorites
-//    }
 
     @Override
     public String promptChooseAddToPlaylist(ArrayList<String> playlistTitleList) {
@@ -422,7 +403,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         homeButton.addActionListener(c);
         searchButton.setActionCommand(MainControllerActions.SEARCH_VIEW);
         searchButton.addActionListener(c);
-        favoritesButton.setActionCommand(MainControllerActions.PLAYLIST_VIEW);
+        favoritesButton.setActionCommand(MainControllerActions.FAVORITES_VIEW);
         favoritesButton.addActionListener(c);
         pausePlayButton.setActionCommand(MainControllerActions.PAUSE_PLAY);
         pausePlayButton.addActionListener(c);
@@ -436,7 +417,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         loopButton.addActionListener(c);
         addToPlaylistButton.setActionCommand(MainControllerActions.ADD_TO_PLAYLIST);
         addToPlaylistButton.addActionListener(c);
-        addToFavoritesButton.setActionCommand(MainControllerActions.ADD_TO_FAVORITES);
+        addToFavoritesButton.setActionCommand(MainControllerActions.TOGGLE_FAVORITE);
         addToFavoritesButton.addActionListener(c);
         songIconButton.setActionCommand(MainControllerActions.SONG_DETAILS);
         songIconButton.addActionListener(c);
@@ -480,9 +461,9 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         }
 
         if (isSongFavorite) {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/favorite_song_icon.png"))));
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/is_favorite_song_icon.png"))));
         } else {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/not_favorite_song_icon.png"))));
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/favorite_song_icon.png"))));
         }
     }
 

@@ -36,9 +36,9 @@ public class JPanelHome extends JPanel {
         return selectedPlaylistTitle;
     }
 
-    public void clearSelectedPlaylistTitle() {
-        selectedPlaylistTitle = null;
-    }
+//    public void clearSelectedPlaylistTitle() {
+//        selectedPlaylistTitle = null;
+//    }
 
     void setController(MainController c) {
         this.controller = c;
@@ -47,11 +47,15 @@ public class JPanelHome extends JPanel {
     void updateRecentPlaylists(ArrayList<String> playlistsTitleList) {
         recentPlaylistsContentPanel.removeAll();
 
-        for (String playlistTitle : playlistsTitleList) {
-            // Creation of the components
-            JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
+        if (playlistsTitleList.isEmpty()) {
+            recentPlaylistsContentPanel.add(noRecentPlaylistsLabel);
+        } else {
+            for (String playlistTitle : playlistsTitleList) {
+                // Creation of the components
+                JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
 
-            recentPlaylistsContentPanel.add(playlistButtonPanel);
+                recentPlaylistsContentPanel.add(playlistButtonPanel);
+            }
         }
 
         recentPlaylistsContentPanel.revalidate();
@@ -61,9 +65,13 @@ public class JPanelHome extends JPanel {
     void updateAllPlaylists(ArrayList<String> playlistsTitleList) {
         allPlaylistsContentPanel.removeAll();
 
-        for (String playlistTitle : playlistsTitleList) {
-            JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
-            allPlaylistsContentPanel.add(playlistButtonPanel);
+        if (playlistsTitleList.isEmpty()) {
+            allPlaylistsContentPanel.add(noAllPlaylistsLabel);
+        } else {
+            for (String playlistTitle : playlistsTitleList) {
+                JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
+                allPlaylistsContentPanel.add(playlistButtonPanel);
+            }
         }
 
         allPlaylistsContentPanel.revalidate();
@@ -97,10 +105,10 @@ public class JPanelHome extends JPanel {
         allPlaylistsContentPanel.repaint();
 
         playlistButton.setActionCommand(MainControllerActions.PLAYLIST_VIEW);
+        playlistButton.addActionListener(controller);
         playlistButton.addActionListener(e -> {
             selectedPlaylistTitle = playlistTitle;
         });
-        playlistButton.addActionListener(controller);
 
 
         return playlistButtonPanel;

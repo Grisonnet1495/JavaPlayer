@@ -3,7 +3,8 @@ package com.javaPlayer.project.controller;
 public abstract class MainControllerActions {
     public static final String HOME_VIEW = "HOME_VIEW";
     public static final String SEARCH_VIEW = "SEARCH_VIEW";
-    public static final String PLAYLIST_VIEW = "FAVORITES_VIEW";
+    public static final String FAVORITES_VIEW = "FAVORITES_VIEW";
+    public static final String PLAYLIST_VIEW = "PLAYLIST_VIEW";
     public static final String SWITCH_ACCOUNT = "SWITCH_ACCOUNT";
     public static final String SETTINGS = "SETTINGS";
     public static final String SONG_DETAILS = "SONG_DETAILS";
@@ -13,6 +14,7 @@ public abstract class MainControllerActions {
     public static final String NEXT = "NEXT";
     public static final String RANDOM = "RANDOM";
     public static final String LOOP = "LOOP";
+    public static final String TOGGLE_FAVORITE = "TOGGLE_FAVORITE";
     public static final String ADD_TO_FAVORITES = "ADD_TO_FAVORITES";
     public static final String ADD_TO_PLAYLIST = "ADD_TO_PLAYLIST";
     public static final String OPEN_SONG = "OPEN_SONG";

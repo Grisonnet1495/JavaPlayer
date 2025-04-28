@@ -1,6 +1,8 @@
 package com.javaPlayer.project.model.entity;
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Song implements Serializable {
@@ -9,18 +11,18 @@ public class Song implements Serializable {
     private String title;
     private Artist artist;
     private String genre;
-    private int duration;
-    private Date addedDate;
+    private Duration duration;
+    private LocalDateTime addedDate;
 
     public Song() {
         this.title = "Unknown Title";
         this.artist = null;
         this.genre = "Unknown genre";
-        this.duration = 0;
-        this.addedDate = new Date();
+        this.duration = Duration.ZERO;
+        this.addedDate = LocalDateTime.now();
     }
 
-    public Song(int id, String title, Artist artist, String genre, int duration, Date addedDate) {
+    public Song(int id, String title, Artist artist, String genre, Duration duration, LocalDateTime addedDate) {
         this.id = id;
         this.title = title;
         this.artist = artist;
@@ -61,19 +63,31 @@ public class Song implements Serializable {
         this.genre = genre;
     }
 
-    public int getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public String getDurationToString() {
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        long seconds = duration.toSecondsPart();
+
+        if (hours == 0) {
+            return minutes + ":" + seconds;
+        }
+
+        return hours + ":" + minutes + ":" + seconds;
+    }
+
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
-    public Date getAddedDate() {
+    public LocalDateTime getAddedDate() {
         return addedDate;
     }
 
-    public void setAddedDate(Date addedDate) {
+    public void setAddedDate(LocalDateTime addedDate) {
         this.addedDate = addedDate;
     }
 

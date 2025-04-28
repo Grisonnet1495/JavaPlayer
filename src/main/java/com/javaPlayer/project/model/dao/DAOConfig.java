@@ -1,19 +1,46 @@
 package com.javaPlayer.project.model.dao;
 
+import com.javaPlayer.project.utils.DefaultFilePath;
+
 import java.io.*;
 import java.util.Properties;
 
 public class DAOConfig {
-    public String configFileName;
+    public String configFilename;
     Properties config = new Properties();;
 
-    public DAOConfig(String configFileName) {
-        this.configFileName = configFileName;
+    public DAOConfig(String configFilename) {
+        this.configFilename = configFilename;
+        setupConfig();
         loadConfig();
     }
 
+    public void setupConfig() {
+        try {
+            File configFile = new File(configFilename);
+            if (!configFile.exists()) {
+                configFile.createNewFile();
+            }
+
+            loadConfig();
+
+            if (!isConfigExists("userFile")) {
+                addConfig("userFile", DefaultFilePath.USERS);
+            }
+
+            if (!isConfigExists("playlistsFile")) {
+                addConfig("playlistsFile", DefaultFilePath.PLAYLISTS);
+            }
+
+            saveConfig();
+
+        } catch (IOException | SecurityException e) {
+            System.out.println("Error creating config file");
+        }
+    }
+
     public void loadConfig() {
-        try (FileInputStream fis = new FileInputStream(configFileName)) {
+        try (FileInputStream fis = new FileInputStream(configFilename)) {
             config.load(fis);
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
@@ -23,7 +50,7 @@ public class DAOConfig {
     }
 
     public void saveConfig() {
-        try (FileOutputStream fos = new FileOutputStream(configFileName)) {
+        try (FileOutputStream fos = new FileOutputStream(configFilename)) {
             config.store(fos, "Config");
         } catch (FileNotFoundException e) {
             System.out.println("File not found");

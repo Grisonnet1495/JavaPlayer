@@ -51,7 +51,7 @@
             <properties>
               <background color="-2500135"/>
               <font size="14"/>
-              <icon value="icons/not_favorites_song_icon.png"/>
+              <icon value="icons/favorite_song_icon.png"/>
               <text value=" Favorites "/>
             </properties>
           </component>
@@ -308,7 +308,7 @@
                 </constraints>
                 <properties>
                   <background color="-1513240"/>
-                  <icon value="icons/add_to_favorites_possible_icon.png"/>
+                  <icon value="icons/is_not_favorite_song_icon.png"/>
                   <text value=""/>
                 </properties>
               </component>

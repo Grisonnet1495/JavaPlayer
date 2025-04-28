@@ -51,7 +51,7 @@ public class MainConsoleWindow implements ViewMainWindow {
     }
 
     @Override
-    public void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, int duration, int elapsedTime, int remainingTime, boolean isSongFavorite) {
+    public void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite) {
         System.out.println();
         System.out.println("--------------- Song panel ---------------");
         System.out.println("Title : " + songTitle);
@@ -67,10 +67,10 @@ public class MainConsoleWindow implements ViewMainWindow {
         return selectedPlaylistTitle;
     }
 
-    @Override
-    public void clearSelectedPlaylistTitle() {
-        selectedPlaylistTitle = null;
-    }
+//    @Override
+//    public void clearSelectedPlaylistTitle() {
+//        selectedPlaylistTitle = null;
+//    }
 
     @Override
     public void showHome() {

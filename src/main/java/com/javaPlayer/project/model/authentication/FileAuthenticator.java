@@ -5,11 +5,21 @@ import java.util.Properties;
 
 public class FileAuthenticator extends Authenticator {
 
-    private final Properties users = new Properties();
-    private final String filename;
+    private Properties users = new Properties();
+    private String filename;
 
     public FileAuthenticator(String fileName) {
         this.filename = fileName;
+
+        File file = new File(fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         loadUsers();
     }
 
@@ -17,10 +27,8 @@ public class FileAuthenticator extends Authenticator {
     public void loadUsers() {
         try (FileInputStream fis = new FileInputStream(filename)) {
             users.load(fis);
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
         } catch (IOException e) {
-            System.out.println("IO Exception");
+            throw new RuntimeException(e);
         }
     }
 
@@ -28,10 +36,8 @@ public class FileAuthenticator extends Authenticator {
     public void saveUsers() {
         try (FileOutputStream fos = new FileOutputStream(filename)) {
             users.store(fos, "User list");
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
         } catch (IOException e) {
-            System.out.println("IO Exception");
+            throw new RuntimeException(e);
         }
     }
 

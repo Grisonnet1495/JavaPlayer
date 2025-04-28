@@ -1,25 +1,19 @@
 package com.javaPlayer.project.model.entity;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class Playlist implements Serializable {
-    private int id;
     private String title;
+    private LocalDateTime lastViewedDate;
     private ArrayList<Song> songList;
 
-    public Playlist(int id, String title, ArrayList<Song> songList) {
-        this.id = id;
+    public Playlist(String title, ArrayList<Song> songList) {
         this.title = title;
+        this.lastViewedDate = LocalDateTime.now();
         this.songList = songList;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -28,6 +22,16 @@ public class Playlist implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    // Note : Create test
+    public LocalDateTime getLastViewedDate() {
+        return lastViewedDate;
+    }
+
+    // Note : Create test
+    public void updateLastViewedDate() {
+        this.lastViewedDate = LocalDateTime.now();
     }
 
     public ArrayList<Song> getSongList() {
@@ -62,13 +66,6 @@ public class Playlist implements Serializable {
             songList.remove(toRemove);
     }
 
-    public Song findSongById(int id) {
-        return songList.stream()
-                .filter(song -> song.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-
     public Song findSongByTitle(String title) {
         return songList.stream()
                 .filter(song -> song.getTitle().equalsIgnoreCase(title)) //filtre la recherhe
@@ -99,11 +96,21 @@ public class Playlist implements Serializable {
     @Override
     public String toString() {
         return "Playlist{" +
-                "id=" + id +
                 ", title='" + title + '\'' +
                 ", songList=" + songList +
                 '}';
     }
 
-    // Note : implements equals methods
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Playlist playlist = (Playlist) o;
+        return Objects.equals(title, playlist.title) && Objects.equals(songList, playlist.songList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, songList);
+    }
 }

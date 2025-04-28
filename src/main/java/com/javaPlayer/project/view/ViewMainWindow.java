@@ -18,9 +18,9 @@ public interface ViewMainWindow {
     void updateHomePanel(ArrayList<String> recentPlaylistsTitles, ArrayList<String> allPlaylistsTitles);
     void updatePlaylistPanel(Playlist playlist);
     void updateSearchPanel(ArrayList<Song> songList);
-    void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, int duration, int elapsedTime, int remainingTime, boolean isSongFavorite);
+    void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite);
     String getSelectedPlaylistTitle();
-    void clearSelectedPlaylistTitle();
+//    void clearSelectedPlaylistTitle();
 
     // Show dialog boxes
     Settings showAndGetSettings(String userPseudo, String userPassword);

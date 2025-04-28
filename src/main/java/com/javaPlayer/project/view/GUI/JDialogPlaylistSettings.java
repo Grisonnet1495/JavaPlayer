@@ -53,6 +53,9 @@ public class JDialogPlaylistSettings extends JDialog {
         deletePlaylistButton.addActionListener(e -> {
             if (acceptConsequencesCheckBox.isSelected()) {
                 isDeletingPlaylist = true;
+                deletePlaylistButton.setText("Please save to confirm...");
+                playlistNameTextField.setEnabled(false);
+                acceptConsequencesCheckBox.setEnabled(false);
             }
         });
 

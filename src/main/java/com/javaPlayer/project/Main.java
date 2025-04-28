@@ -2,7 +2,7 @@ package com.javaPlayer.project;
 
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.javaPlayer.project.controller.MainController;
-import com.javaPlayer.project.model.FilePathNames;
+import com.javaPlayer.project.utils.DefaultFilePath;
 import com.javaPlayer.project.model.authentication.FileAuthenticator;
 import com.javaPlayer.project.model.dao.DAOConfig;
 import com.javaPlayer.project.view.GUI.JFrameMainWindow;
@@ -18,9 +18,10 @@ public class Main {
         }
 
         SwingUtilities.invokeLater(() -> {
-            DAOConfig daoConfig = new DAOConfig(FilePathNames.CONFIG);
+            DAOConfig daoConfig = new DAOConfig(DefaultFilePath.CONFIG);
 
-            MainController mainController = new MainController(new JFrameMainWindow(), daoConfig, new FileAuthenticator(daoConfig.getConfig("userFile")));
+            MainController mainController = new MainController(new JFrameMainWindow(),
+                    new FileAuthenticator(daoConfig.getConfig("userFile")));
             mainController.run();
         });
     }
