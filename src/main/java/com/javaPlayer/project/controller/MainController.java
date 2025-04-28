@@ -55,7 +55,7 @@ public final class MainController implements ActionListener {
         currentSong = daoPlayList.getPlaylist("Favorites").getSongList().getFirst();
 
         // Show home menu
-        view.updateHomePanel(daoPlayList.getRecentPlaylistsTitleList(Constants.RECENT_PLAYLIST_MINUTES), daoPlayList.getPlaylistsTitleList());
+        view.updateHomePanel(daoPlayList.getRecentPlaylistsList(Constants.RECENT_PLAYLIST_MINUTES), daoPlayList.getPlaylistsList());
         view.showHome();
         currentView = Constants.HOME;
     }
@@ -231,7 +231,7 @@ public final class MainController implements ActionListener {
     }
 
     public void updateToHome() {
-        view.updateHomePanel(daoPlayList.getRecentPlaylistsTitleList(Constants.RECENT_PLAYLIST_MINUTES), daoPlayList.getPlaylistsTitleList());
+        view.updateHomePanel(daoPlayList.getRecentPlaylistsList(Constants.RECENT_PLAYLIST_MINUTES), daoPlayList.getPlaylistsList());
         view.showHome();
         currentView = Constants.HOME;
     }

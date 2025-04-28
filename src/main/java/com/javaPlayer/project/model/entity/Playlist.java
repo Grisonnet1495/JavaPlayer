@@ -53,6 +53,8 @@ public class Playlist implements Serializable {
         } else {
             System.out.println("Le son " + song.getTitle() + " est déjà dans la playlist");
         }
+
+        // Note : Copy song file to song folder
     }
 
     public void removeSong(Song song)
@@ -64,6 +66,8 @@ public class Playlist implements Serializable {
 
         if(toRemove != null)
             songList.remove(toRemove);
+
+        // Note : Delete song file from song folder
     }
 
     public Song findSongByTitle(String title) {

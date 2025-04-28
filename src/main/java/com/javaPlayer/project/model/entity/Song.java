@@ -13,6 +13,7 @@ public class Song implements Serializable {
     private String genre;
     private Duration duration;
     private LocalDateTime addedDate;
+    private String filename;
 
     public Song() {
         this.title = "Unknown Title";

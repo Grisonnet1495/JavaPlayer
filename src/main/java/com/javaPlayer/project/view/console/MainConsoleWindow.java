@@ -14,8 +14,8 @@ import java.util.Scanner;
 public class MainConsoleWindow implements ViewMainWindow {
     private Scanner scanner;
     private MainController controller;
-    private ArrayList<String> recentPlaylistTitleList;
-    private ArrayList<String> allPlaylistTitleList;
+    private ArrayList<Playlist> recentPlaylistsList;
+    private ArrayList<Playlist> allPlaylistsList;
     private Playlist currentPlaylist;
     private ArrayList<Song> currentSongList;
     private String selectedPlaylistTitle;
@@ -35,9 +35,9 @@ public class MainConsoleWindow implements ViewMainWindow {
     }
 
     @Override
-    public void updateHomePanel(ArrayList<String> recentPlaylistsTitles, ArrayList<String> allPlaylistsTitles) {
-        recentPlaylistTitleList = recentPlaylistsTitles;
-        allPlaylistTitleList = allPlaylistsTitles;
+    public void updateHomePanel(ArrayList<Playlist> recentPlaylistsList, ArrayList<Playlist> allPlaylistsList) {
+        this.recentPlaylistsList = recentPlaylistsList;
+        this.allPlaylistsList = allPlaylistsList;
     }
 
     @Override
@@ -77,12 +77,12 @@ public class MainConsoleWindow implements ViewMainWindow {
         System.out.println();
         System.out.println("--------------- Home ---------------");
         System.out.println("Recent playlists :");
-        for (int i = 0; i < recentPlaylistTitleList.size(); i++) {
-            System.out.println((i + 1) + " : " + recentPlaylistTitleList.get(i));
+        for (int i = 0; i < recentPlaylistsList.size(); i++) {
+            System.out.println((i + 1) + " : " + recentPlaylistsList.get(i).getTitle());
         }
         System.out.println("All playlists :");
-        for (int i = recentPlaylistTitleList.size(); i < recentPlaylistTitleList.size() + allPlaylistTitleList.size(); i++) {
-            System.out.println((i + 1) + " : " + allPlaylistTitleList.get(i));
+        for (int i = recentPlaylistsList.size(); i < recentPlaylistsList.size() + allPlaylistsList.size(); i++) {
+            System.out.println((i + 1) + " : " + allPlaylistsList.get(i).getTitle());
         }
         System.out.println("Choose a playlist to open (or 0 to cancel) :");
 
@@ -92,15 +92,15 @@ public class MainConsoleWindow implements ViewMainWindow {
             try {
                 int choice = promptConsoleForInt();
 
-                if (choice > 0 && choice <= recentPlaylistTitleList.size()) {
-                    controller.actionPerformed(new ActionEvent(this, 0, recentPlaylistTitleList.get(choice - 1)));
-                } else if (choice > recentPlaylistTitleList.size() && choice <= recentPlaylistTitleList.size() + allPlaylistTitleList.size()) {
-                    controller.actionPerformed(new ActionEvent(this, 0, allPlaylistTitleList.get(choice - recentPlaylistTitleList.size() - 1)));
+                if (choice > 0 && choice <= recentPlaylistsList.size()) {
+                    controller.actionPerformed(new ActionEvent(this, 0, recentPlaylistsList.get(choice - 1).getTitle()));
+                } else if (choice > recentPlaylistsList.size() && choice <= recentPlaylistsList.size() + allPlaylistsList.size()) {
+                    controller.actionPerformed(new ActionEvent(this, 0, allPlaylistsList.get(choice - recentPlaylistsList.size() - 1).getTitle()));
                 } else {
                     entryCorrect = false;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Error : you must enter a number between 1 and " + recentPlaylistTitleList.size() + allPlaylistTitleList.size() + " !");
+                System.out.println("Error : you must enter a number between 1 and " + recentPlaylistsList.size() + allPlaylistsList.size() + " !");
                 entryCorrect = false;
             }
         } while (!entryCorrect);

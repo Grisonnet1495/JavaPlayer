@@ -63,13 +63,17 @@ public class DAOPlaylist {
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             playlistsList = (ArrayList<Playlist>) ois.readObject();
         } catch (FileNotFoundException e) {
-            playlistsList = new ArrayList<>();
-            addPlaylist(new Playlist("Favorites", new ArrayList<>())); // Add an All playlist
-            addPlaylist(new Playlist("Unclassed songs", new ArrayList<>())); // Add a Favorites playlist
+            initialisePlaylistsList();
             savePlaylistsToFile();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void initialisePlaylistsList() {
+        playlistsList = new ArrayList<>();
+        addPlaylist(new Playlist("Favorites", new ArrayList<>())); // Add an All playlist
+        addPlaylist(new Playlist("Unclassed songs", new ArrayList<>())); // Add a Favorites playlist
     }
 
     public void addPlaylist(Playlist p) {
@@ -99,19 +103,33 @@ public class DAOPlaylist {
         return playlistsTitleList;
     }
 
-    public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
-        ArrayList<String> recentPlaylistsTitleList = new ArrayList<>();
+    public ArrayList<Playlist> getRecentPlaylistsList(int minutes) {
+        ArrayList<Playlist> recentPlaylistsList = new ArrayList<>();
 
         LocalDateTime startTime = LocalDateTime.now().minusMinutes(minutes);
 
         for (Playlist p : playlistsList) {
             if (p.getLastViewedDate().isAfter(startTime)) {
-                recentPlaylistsTitleList.add(p.getTitle());
+                recentPlaylistsList.add(p);
             }
         }
 
-        return recentPlaylistsTitleList;
+        return recentPlaylistsList;
     }
+
+//    public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
+//        ArrayList<String> recentPlaylistsTitleList = new ArrayList<>();
+//
+//        LocalDateTime startTime = LocalDateTime.now().minusMinutes(minutes);
+//
+//        for (Playlist p : playlistsList) {
+//            if (p.getLastViewedDate().isAfter(startTime)) {
+//                recentPlaylistsTitleList.add(p.getTitle());
+//            }
+//        }
+//
+//        return recentPlaylistsTitleList;
+//    }
 
     public Playlist getPlaylist(String playlistName) {
         for (Playlist p : playlistsList) {

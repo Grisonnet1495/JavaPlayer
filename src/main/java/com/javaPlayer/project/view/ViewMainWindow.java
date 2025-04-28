@@ -14,8 +14,8 @@ public interface ViewMainWindow {
     void showSearch();
     void showPlaylist();
 
-    // Update panels
-    void updateHomePanel(ArrayList<String> recentPlaylistsTitles, ArrayList<String> allPlaylistsTitles);
+    // Update UI
+    void updateHomePanel(ArrayList<Playlist> recentPlaylistsList, ArrayList<Playlist> allPlaylistsList);
     void updatePlaylistPanel(Playlist playlist);
     void updateSearchPanel(ArrayList<Song> songList);
     void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite);
@@ -31,7 +31,6 @@ public interface ViewMainWindow {
     void showMessage(String message);
 
     // Prompt for actions
-//    void toggleFavoritesForCurrentSong();
     String promptChooseAddToPlaylist(ArrayList<String> playlistTitleList);
     String promptToCreatePlaylist();
     String promptChoosePlaylistToDelete(ArrayList<String> playlistTitleList);

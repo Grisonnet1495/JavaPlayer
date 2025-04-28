@@ -1,6 +1,5 @@
 package com.javaPlayer.project.view.GUI;
 
-//import com.formdev.flatlaf.FlatMacLightLaf;
 import com.formdev.flatlaf.themes.*;
 import com.javaPlayer.project.controller.MainController;
 import com.javaPlayer.project.controller.MainControllerActions;
@@ -71,6 +70,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private JPanel songInfoPanel;
     private CardLayout cardLayout;
     private JPanel contentPanel;
+    private JPanel recentPlaylistsButtonsPanel;
 
     // Add the different content panels
     private JPanelHome homePanel = new JPanelHome();
@@ -211,9 +211,9 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public void updateHomePanel(ArrayList<String> recentPlaylistsTitles, ArrayList<String> allPlaylistsTitles) {
-        homePanel.updateRecentPlaylists(recentPlaylistsTitles);
-        homePanel.updateAllPlaylists(allPlaylistsTitles);
+    public void updateHomePanel(ArrayList<Playlist> recentPlaylistsList, ArrayList<Playlist> allPlaylistsList) {
+        homePanel.updateRecentPlaylists(recentPlaylistsList);
+        homePanel.updateAllPlaylists(allPlaylistsList);
     }
 
     @Override
@@ -453,17 +453,17 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         if (albumImage != null) {
             byte[] imageData = albumImage.getBinaryData();
             ImageIcon originalIcon = new ImageIcon(imageData);
-            Image scaledIcon = originalIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+            Image scaledImage = originalIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH); // Note : Size need to be changer
 
-            songIconButton.setIcon(new ImageIcon(scaledIcon));
+            songIconButton.setIcon(new ImageIcon(scaledImage));
         } else {
             songIconButton.setText(title.substring(0, 1));
         }
 
         if (isSongFavorite) {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/is_favorite_song_icon.png"))));
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_favorite_song_icon.png"))));
         } else {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("src/main/resources/icons/favorite_song_icon.png"))));
+            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/favorite_song_icon.png"))));
         }
     }
 

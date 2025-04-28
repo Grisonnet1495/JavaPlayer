@@ -2,6 +2,7 @@ package com.javaPlayer.project.view.GUI;
 
 import com.javaPlayer.project.controller.MainController;
 import com.javaPlayer.project.controller.MainControllerActions;
+import com.javaPlayer.project.model.entity.Playlist;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,15 +45,15 @@ public class JPanelHome extends JPanel {
         this.controller = c;
     }
 
-    void updateRecentPlaylists(ArrayList<String> playlistsTitleList) {
+    void updateRecentPlaylists(ArrayList<Playlist> playlistsList) {
         recentPlaylistsContentPanel.removeAll();
 
-        if (playlistsTitleList.isEmpty()) {
+        if (playlistsList.isEmpty()) {
             recentPlaylistsContentPanel.add(noRecentPlaylistsLabel);
         } else {
-            for (String playlistTitle : playlistsTitleList) {
+            for (Playlist p : playlistsList) {
                 // Creation of the components
-                JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
+                JPanel playlistButtonPanel = createButtonPanel(p.getTitle());
 
                 recentPlaylistsContentPanel.add(playlistButtonPanel);
             }
@@ -62,14 +63,14 @@ public class JPanelHome extends JPanel {
         recentPlaylistsContentPanel.repaint();
     }
 
-    void updateAllPlaylists(ArrayList<String> playlistsTitleList) {
+    void updateAllPlaylists(ArrayList<Playlist> playlistsList) {
         allPlaylistsContentPanel.removeAll();
 
-        if (playlistsTitleList.isEmpty()) {
+        if (playlistsList.isEmpty()) {
             allPlaylistsContentPanel.add(noAllPlaylistsLabel);
         } else {
-            for (String playlistTitle : playlistsTitleList) {
-                JPanel playlistButtonPanel = createButtonPanel(playlistTitle);
+            for (Playlist p : playlistsList) {
+                JPanel playlistButtonPanel = createButtonPanel(p.getTitle());
                 allPlaylistsContentPanel.add(playlistButtonPanel);
             }
         }
