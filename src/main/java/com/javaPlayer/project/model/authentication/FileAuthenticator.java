@@ -63,6 +63,23 @@ public class FileAuthenticator extends Authenticator {
         }
     }
 
+    public void changePseudo(String pseudo, String newPseudo) {
+        if (users.containsKey(pseudo)) {
+            if (users.containsKey(newPseudo)) {
+                System.out.println("Le nouveau pseudo existe déjà !");
+                return;
+            }
+
+            String password = users.getProperty(pseudo);
+            users.remove(pseudo);
+            users.setProperty(newPseudo, password);
+            saveUsers();
+            System.out.println("Pseudo modifié avec succès.");
+        } else {
+            System.out.println("Pseudo introuvable.");
+        }
+    }
+
     @Override
     public boolean isLoginExists(String pseudo) {
         return users.containsKey(pseudo);

@@ -13,41 +13,41 @@ public class DAOPlaylist {
     private String fileName;
     private ArrayList<Playlist> playlistsList;
 
+    private Properties configProps;
+    private String configFilePath;
+    private File configFile;
+
     public DAOPlaylist(String pseudo) {
+        this.configFilePath = new DAOConfig(DefaultFilePath.CONFIG).getConfig("playlistsFile");
+        this.configFile = new File(configFilePath);
+        this.configProps = new Properties();
+
         retrievePlaylistFile(pseudo);
         loadPlaylistsFromFile();
     }
 
-    // Retrieve the user playlist filename via the playlist configuration file
-    public void retrievePlaylistFile(String pseudo) {
-        DAOConfig daoConfig = new DAOConfig(DefaultFilePath.CONFIG);
-
-        String playlistFilePath = daoConfig.getConfig("playlistsFile");
-
-        Properties prop = new Properties();
-        File file = new File(playlistFilePath);
-
-        // Load the playlists configuration file if it exists
-        if (file.exists()) {
-            try (FileInputStream fis = new FileInputStream(file)) {
-                prop.load(fis);
+    private void retrievePlaylistFile(String pseudo) {
+        if (configFile.exists()) {
+            try (FileInputStream fis = new FileInputStream(configFile)) {
+                configProps.load(fis);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        if (!prop.containsKey(pseudo)) {
-            prop.setProperty(pseudo, pseudo + "_playlists.properties");
+        if (!configProps.containsKey(pseudo)) {
+            configProps.setProperty(pseudo, pseudo + "_playlists.properties");
         }
 
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            prop.store(fos, "User playlists configuration file");
+        try (FileOutputStream fos = new FileOutputStream(configFile)) {
+            configProps.store(fos, "User playlists configuration file");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        this.fileName = prop.getProperty(pseudo);
+        this.fileName = configProps.getProperty(pseudo);
     }
+
 
     public void savePlaylistsToFile() {
         try (FileOutputStream fos = new FileOutputStream(fileName);
@@ -76,6 +76,24 @@ public class DAOPlaylist {
         addPlaylist(new Playlist("Unclassed songs", new ArrayList<>())); // Add a Favorites playlist
     }
 
+    public void changeUserPseudo(String oldPseudo, String newPseudo) {
+        if (configFile.exists()) {
+            if (configProps.containsKey(oldPseudo)) {
+                this.fileName = configProps.getProperty(oldPseudo);
+                String newFileName = newPseudo + "_playlists.properties";
+                loadPlaylistsFromFile();
+                configProps.remove(oldPseudo);
+                configProps.setProperty(newPseudo, newFileName);
+                File file = new File(fileName);
+                if(file.exists()){
+                    file.delete();
+                }
+                this.fileName = newFileName;
+                savePlaylistsToFile();
+            }
+        }
+    }
+
     public void addPlaylist(Playlist p) {
         playlistsList.add(p);
     }
@@ -99,7 +117,6 @@ public class DAOPlaylist {
         for (Playlist p : playlistsList) {
             playlistsTitleList.add(p.getTitle());
         }
-
         return playlistsTitleList;
     }
 
