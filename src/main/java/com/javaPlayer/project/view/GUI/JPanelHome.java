@@ -1,7 +1,7 @@
 package com.javaPlayer.project.view.GUI;
 
-import com.javaPlayer.project.controller.MainController;
-import com.javaPlayer.project.controller.MainControllerActions;
+import com.javaPlayer.project.controller.Controller;
+import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.Playlist;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ public class JPanelHome extends JPanel {
     private JScrollPane allPlaylistsScrollPane;
 
     private String selectedPlaylistTitle = null;
-    private MainController controller;
+    private Controller controller;
 
     public JPanelHome() {
         recentPlaylistsScrollPane.setBorder(null);
@@ -41,7 +41,7 @@ public class JPanelHome extends JPanel {
 //        selectedPlaylistTitle = null;
 //    }
 
-    void setController(MainController c) {
+    void setController(Controller c) {
         this.controller = c;
     }
 
@@ -105,7 +105,7 @@ public class JPanelHome extends JPanel {
         allPlaylistsContentPanel.revalidate();
         allPlaylistsContentPanel.repaint();
 
-        playlistButton.setActionCommand(MainControllerActions.PLAYLIST_VIEW);
+        playlistButton.setActionCommand(ControllerActions.PLAYLIST_VIEW);
         playlistButton.addActionListener(controller);
         playlistButton.addActionListener(e -> {
             selectedPlaylistTitle = playlistTitle;

@@ -1,8 +1,8 @@
 package com.javaPlayer.project.view.GUI;
 
 import com.formdev.flatlaf.themes.*;
-import com.javaPlayer.project.controller.MainController;
-import com.javaPlayer.project.controller.MainControllerActions;
+import com.javaPlayer.project.controller.Controller;
+import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.view.ViewMainWindow;
 import org.jaudiotagger.tag.datatype.Artwork;
@@ -78,7 +78,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private JPanelSearch searchPanel = new JPanelSearch();
     private boolean isSongFavorite;
 
-    private MainController controller;
+    private Controller controller;
 //    private User user;
 
     public JFrameMainWindow() {
@@ -367,59 +367,59 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public void setController(MainController c) {
+    public void setController(Controller c) {
         // Menu items
-        openSongMenuItem.setActionCommand(MainControllerActions.OPEN_SONG);
+        openSongMenuItem.setActionCommand(ControllerActions.OPEN_SONG);
         openSongMenuItem.addActionListener(c);
-        accountMenuItem.setActionCommand(MainControllerActions.SWITCH_ACCOUNT);
+        accountMenuItem.setActionCommand(ControllerActions.SWITCH_ACCOUNT);
         accountMenuItem.addActionListener(c);
-        settingsMenuItem.setActionCommand(MainControllerActions.SETTINGS);
+        settingsMenuItem.setActionCommand(ControllerActions.SETTINGS);
         settingsMenuItem.addActionListener(c);
-        createBackupMenuItem.setActionCommand(MainControllerActions.CREATE_BACKUP);
+        createBackupMenuItem.setActionCommand(ControllerActions.CREATE_BACKUP);
         createBackupMenuItem.addActionListener(c);
-        addSongToFavoritesMenuItem.setActionCommand(MainControllerActions.ADD_TO_FAVORITES);
+        addSongToFavoritesMenuItem.setActionCommand(ControllerActions.ADD_TO_FAVORITES);
         addSongToFavoritesMenuItem.addActionListener(c);
-        addSongToPlaylistMenuItem.setActionCommand(MainControllerActions.ADD_TO_PLAYLIST);
+        addSongToPlaylistMenuItem.setActionCommand(ControllerActions.ADD_TO_PLAYLIST);
         addSongToPlaylistMenuItem.addActionListener(c);
-        removeSongFromFavoritesMenuItem.setActionCommand(MainControllerActions.REMOVE_SONG_FROM_FAVORITES);
+        removeSongFromFavoritesMenuItem.setActionCommand(ControllerActions.REMOVE_SONG_FROM_FAVORITES);
         removeSongFromFavoritesMenuItem.addActionListener(c);
-        removeSongFromPlaylistMenuItem.setActionCommand(MainControllerActions.REMOVE_SONG_FROM_PLAYLIST);
+        removeSongFromPlaylistMenuItem.setActionCommand(ControllerActions.REMOVE_SONG_FROM_PLAYLIST);
         removeSongFromPlaylistMenuItem.addActionListener(c);
-        searchSongMenuItem.setActionCommand(MainControllerActions.SEARCH_VIEW);
+        searchSongMenuItem.setActionCommand(ControllerActions.SEARCH_VIEW);
         searchSongMenuItem.addActionListener(c);
-        createPlaylistMenuItem.setActionCommand(MainControllerActions.CREATE_PLAYLIST);
+        createPlaylistMenuItem.setActionCommand(ControllerActions.CREATE_PLAYLIST);
         createPlaylistMenuItem.addActionListener(c);
-        deletePlaylistMenuItem.setActionCommand(MainControllerActions.DELETE_PLAYLIST);
+        deletePlaylistMenuItem.setActionCommand(ControllerActions.DELETE_PLAYLIST);
         deletePlaylistMenuItem.addActionListener(c);
-        editPlaylistMenuItem.setActionCommand(MainControllerActions.PLAYLIST_SETTINGS);
+        editPlaylistMenuItem.setActionCommand(ControllerActions.PLAYLIST_SETTINGS);
         editPlaylistMenuItem.addActionListener(c);
-        importPlaylistMenuItem.setActionCommand(MainControllerActions.IMPORT_PLAYLIST);
+        importPlaylistMenuItem.setActionCommand(ControllerActions.IMPORT_PLAYLIST);
         importPlaylistMenuItem.addActionListener(c);
-        exportPlaylistMenuItem.setActionCommand(MainControllerActions.EXPORT_PLAYLIST);
+        exportPlaylistMenuItem.setActionCommand(ControllerActions.EXPORT_PLAYLIST);
         exportPlaylistMenuItem.addActionListener(c);
 
         // Other components
-        homeButton.setActionCommand(MainControllerActions.HOME_VIEW);
+        homeButton.setActionCommand(ControllerActions.HOME_VIEW);
         homeButton.addActionListener(c);
-        searchButton.setActionCommand(MainControllerActions.SEARCH_VIEW);
+        searchButton.setActionCommand(ControllerActions.SEARCH_VIEW);
         searchButton.addActionListener(c);
-        favoritesButton.setActionCommand(MainControllerActions.FAVORITES_VIEW);
+        favoritesButton.setActionCommand(ControllerActions.FAVORITES_VIEW);
         favoritesButton.addActionListener(c);
-        pausePlayButton.setActionCommand(MainControllerActions.PAUSE_PLAY);
+        pausePlayButton.setActionCommand(ControllerActions.PAUSE_PLAY);
         pausePlayButton.addActionListener(c);
-        previousButton.setActionCommand(MainControllerActions.PREVIOUS);
+        previousButton.setActionCommand(ControllerActions.PREVIOUS);
         previousButton.addActionListener(c);
-        nextButton.setActionCommand(MainControllerActions.NEXT);
+        nextButton.setActionCommand(ControllerActions.NEXT);
         nextButton.addActionListener(c);
-        randomButton.setActionCommand(MainControllerActions.RANDOM);
+        randomButton.setActionCommand(ControllerActions.RANDOM);
         randomButton.addActionListener(c);
-        loopButton.setActionCommand(MainControllerActions.LOOP);
+        loopButton.setActionCommand(ControllerActions.LOOP);
         loopButton.addActionListener(c);
-        addToPlaylistButton.setActionCommand(MainControllerActions.ADD_TO_PLAYLIST);
+        addToPlaylistButton.setActionCommand(ControllerActions.ADD_TO_PLAYLIST);
         addToPlaylistButton.addActionListener(c);
-        addToFavoritesButton.setActionCommand(MainControllerActions.TOGGLE_FAVORITE);
+        addToFavoritesButton.setActionCommand(ControllerActions.TOGGLE_FAVORITE);
         addToFavoritesButton.addActionListener(c);
-        songIconButton.setActionCommand(MainControllerActions.SONG_DETAILS);
+        songIconButton.setActionCommand(ControllerActions.SONG_DETAILS);
         songIconButton.addActionListener(c);
 
         // Set the controller for each Panel

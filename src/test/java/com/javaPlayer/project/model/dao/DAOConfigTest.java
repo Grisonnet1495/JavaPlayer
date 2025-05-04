@@ -27,7 +27,7 @@ class DAOConfigTest {
     }
 
     @Test
-    void isConfigExists() {
+    void isConfigPresent() {
     }
 
     @Test

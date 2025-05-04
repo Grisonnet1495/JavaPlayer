@@ -1,22 +1,23 @@
 package com.javaPlayer.project.model.authentication;
 
+import com.javaPlayer.project.model.exception.AuthenticatorException;
+
 import java.io.*;
 import java.util.Properties;
 
 public class FileAuthenticator extends Authenticator {
-
-    private Properties users = new Properties();
-    private String filename;
+    private String usersPasswordsFilename; // Filename of the file containing user passwords
+    private Properties usersPasswords = new Properties(); // User passwords
 
     public FileAuthenticator(String fileName) {
-        this.filename = fileName;
+        this.usersPasswordsFilename = fileName;
 
         File file = new File(fileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new AuthenticatorException("Cannot create file", e);
             }
         }
 
@@ -25,8 +26,8 @@ public class FileAuthenticator extends Authenticator {
 
     @Override
     public void loadUsers() {
-        try (FileInputStream fis = new FileInputStream(filename)) {
-            users.load(fis);
+        try (FileInputStream fis = new FileInputStream(usersPasswordsFilename)) {
+            usersPasswords.load(fis);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,59 +35,55 @@ public class FileAuthenticator extends Authenticator {
 
     @Override
     public void saveUsers() {
-        try (FileOutputStream fos = new FileOutputStream(filename)) {
-            users.store(fos, "User list");
+        try (FileOutputStream fos = new FileOutputStream(usersPasswordsFilename)) {
+            usersPasswords.store(fos, "User passwords");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AuthenticatorException("Cannot save users", e);
         }
     }
 
     @Override
     public void addUsers(String pseudo, String password) {
-        if (!users.containsKey(pseudo)) {
-            users.put(pseudo, password);
-            saveUsers();
-            System.out.println("User added successfully.");
-        } else {
-            System.out.println("User already exists.");
+        if (usersPasswords.containsKey(pseudo)) {
+            throw new AuthenticatorException("User already exists.");
         }
+
+        usersPasswords.put(pseudo, password);
+        saveUsers();
     }
 
     @Override
     public void removeUser(String pseudo) {
-        if (users.containsKey(pseudo)) {
-            users.remove(pseudo);
-            saveUsers(); // Update file
-            System.out.println("User removed successfully.");
-        } else {
-            System.out.println("Cannot find user.");
+        if (!usersPasswords.containsKey(pseudo)) {
+            throw new AuthenticatorException("User does not exist.");
         }
+
+        usersPasswords.remove(pseudo);
+        saveUsers();
     }
 
     public void changePseudo(String pseudo, String newPseudo) {
-        if (users.containsKey(pseudo)) {
-            if (users.containsKey(newPseudo)) {
-                System.out.println("Le nouveau pseudo existe déjà !");
-                return;
-            }
-
-            String password = users.getProperty(pseudo);
-            users.remove(pseudo);
-            users.setProperty(newPseudo, password);
-            saveUsers();
-            System.out.println("Pseudo modifié avec succès.");
-        } else {
-            System.out.println("Pseudo introuvable.");
+        if (!usersPasswords.containsKey(pseudo)) {
+            throw new AuthenticatorException("Pseudo to change does not exist.");
         }
+
+        if (usersPasswords.containsKey(newPseudo)) {
+            throw new AuthenticatorException("New pseudo already exists.");
+        }
+
+        String password = usersPasswords.getProperty(pseudo);
+        usersPasswords.remove(pseudo);
+        usersPasswords.setProperty(newPseudo, password);
+        saveUsers();
     }
 
     @Override
     public boolean isLoginExists(String pseudo) {
-        return users.containsKey(pseudo);
+        return usersPasswords.containsKey(pseudo);
     }
 
     @Override
     public String getPassword(String pseudo) {
-        return (String)users.getOrDefault(pseudo, "");
+        return (String) usersPasswords.getOrDefault(pseudo, "");
     }
 }

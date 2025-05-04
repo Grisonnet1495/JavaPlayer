@@ -75,22 +75,22 @@ public class MusicPlayer {
         }
     }
 
-    private SongMetadata getSongMetadata(File file) {
-        try {
-            AudioFile audioFile = AudioFileIO.read(file);
-            Tag tag = audioFile.getTag();
-
-            Artwork artwork = tag.getFirstArtwork();
-
-            return new SongMetadata(tag.getFirst(org.jaudiotagger.tag.FieldKey.TITLE),
-                    tag.getFirst(org.jaudiotagger.tag.FieldKey.ARTIST),
-                    tag.getFirst(org.jaudiotagger.tag.FieldKey.ALBUM) ,
-                    tag.getFirst(org.jaudiotagger.tag.FieldKey.GENRE),
-                    artwork
-            );
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+//    private SongMetadata getSongMetadata(File file) {
+//        try {
+//            AudioFile audioFile = AudioFileIO.read(file);
+//            Tag tag = audioFile.getTag();
+//
+//            Artwork artwork = tag.getFirstArtwork();
+//
+//            return new SongMetadata(tag.getFirst(org.jaudiotagger.tag.FieldKey.TITLE),
+//                    tag.getFirst(org.jaudiotagger.tag.FieldKey.ARTIST),
+//                    tag.getFirst(org.jaudiotagger.tag.FieldKey.ALBUM) ,
+//                    tag.getFirst(org.jaudiotagger.tag.FieldKey.GENRE),
+//                    artwork
+//            );
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
+//    }
 }

@@ -1,22 +1,27 @@
 package com.javaPlayer.project.model.dao;
 
-import com.javaPlayer.project.utils.DefaultFilePath;
+import com.javaPlayer.project.model.exception.ConfigException;
+import com.javaPlayer.project.utils.Constants;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class DAOConfig {
     public String configFilename;
-    Properties config = new Properties();;
+    Properties config;
 
     public DAOConfig(String configFilename) {
-        this.configFilename = configFilename;
-        setupConfig();
+        config = new Properties();
+        setupConfig(configFilename);
         loadConfig();
     }
 
-    public void setupConfig() {
+    public void setupConfig(String filename) {
         try {
+            // Create the config file if it doesn't exist
+            configFilename = filename;
+
             File configFile = new File(configFilename);
             if (!configFile.exists()) {
                 configFile.createNewFile();
@@ -24,18 +29,24 @@ public class DAOConfig {
 
             loadConfig();
 
-            if (!isConfigExists("userFile")) {
-                addConfig("userFile", DefaultFilePath.USERS);
+            // Add the users config filename if it doesn't exist
+            if (!isConfigPresent(Constants.USERS_CONFIG_KEY)) {
+                addConfig(Constants.USERS_CONFIG_KEY, Constants.USERS_FILENAME);
             }
 
-            if (!isConfigExists("playlistsFile")) {
-                addConfig("playlistsFile", DefaultFilePath.PLAYLISTS);
+            // Add the users password filename if it doesn't exist
+            if (!isConfigPresent(Constants.USER_PASSWORDS_CONFIG_KEY)) {
+                addConfig(Constants.USER_PASSWORDS_CONFIG_KEY, Constants.USER_PASSWORDS_FILENAME);
+            }
+
+            // Add the user playlists config filename if it doesn't exist
+            if (!isConfigPresent(Constants.USER_PLAYLISTS_CONFIG_KEY)) {
+                addConfig(Constants.USER_PLAYLISTS_CONFIG_KEY, Constants.USER_PLAYLISTS_FILENAME);
             }
 
             saveConfig();
-
         } catch (IOException | SecurityException e) {
-            System.out.println("Error creating config file");
+            throw new ConfigException("Cannot setup config file : " + configFilename, e);
         }
     }
 
@@ -43,9 +54,9 @@ public class DAOConfig {
         try (FileInputStream fis = new FileInputStream(configFilename)) {
             config.load(fis);
         } catch (FileNotFoundException e) {
-            System.out.println("File not found");
+            throw new ConfigException("Config file not found", e);
         } catch (IOException e) {
-            System.out.println("IO Exception");
+            throw new ConfigException("IO Exception", e);
         }
     }
 
@@ -53,9 +64,9 @@ public class DAOConfig {
         try (FileOutputStream fos = new FileOutputStream(configFilename)) {
             config.store(fos, "Config");
         } catch (FileNotFoundException e) {
-            System.out.println("File not found");
+            throw new ConfigException("Config file not found", e);
         } catch (IOException e) {
-            System.out.println("IO Exception");
+            throw new ConfigException("IO Exception", e);
         }
     }
 
@@ -63,24 +74,22 @@ public class DAOConfig {
         if (!config.containsKey(configName)) {
             config.put(configName, configValue);
             saveConfig();
-            System.out.println("Config added successfully.");
         } else {
-            System.out.println("Config already exists.");
+            throw new ConfigException("Config already exists.");
         }
     }
 
     public void removeConfig(String configName) {
         if (config.containsKey(configName)) {
             config.remove(configName);
-            saveConfig(); // Update file
-            System.out.println("Config removed successfully.");
+            saveConfig();
         } else {
-            System.out.println("Cannot find config.");
+            throw new ConfigException("Config does not exist.");
         }
     }
 
-    public boolean isConfigExists(String pseudo) {
-        return config.containsKey(pseudo);
+    public boolean isConfigPresent(String configName) {
+        return config.containsKey(configName);
     }
 
     public String getConfig(String configName) {

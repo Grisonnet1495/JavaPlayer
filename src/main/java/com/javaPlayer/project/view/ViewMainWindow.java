@@ -1,5 +1,5 @@
 package com.javaPlayer.project.view;
-import com.javaPlayer.project.controller.MainController;
+import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.model.entity.*;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ public interface ViewMainWindow {
     void stop();
 
     // Set controller
-    void setController(MainController c);
+    void setController(Controller c);
 
     // Open file
     File openFile(String fileType, String fileExtension);

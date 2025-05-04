@@ -1,7 +1,7 @@
 package com.javaPlayer.project.view.console;
 
-import com.javaPlayer.project.controller.MainController;
-import com.javaPlayer.project.controller.MainControllerActions;
+import com.javaPlayer.project.controller.Controller;
+import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.view.ViewMainWindow;
 
@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class MainConsoleWindow implements ViewMainWindow {
     private Scanner scanner;
-    private MainController controller;
+    private Controller controller;
     private ArrayList<Playlist> recentPlaylistsList;
     private ArrayList<Playlist> allPlaylistsList;
     private Playlist currentPlaylist;
@@ -115,7 +115,7 @@ public class MainConsoleWindow implements ViewMainWindow {
         String searchWord = promptConsoleForString();
 
         if (!searchWord.isEmpty()) {
-            controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.SEARCH_SONG));
+            controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.SEARCH_SONG));
         }
     }
 
@@ -335,7 +335,7 @@ public class MainConsoleWindow implements ViewMainWindow {
     }
 
     @Override
-    public void setController(MainController c) {
+    public void setController(Controller c) {
         controller = c;
     }
 
@@ -382,34 +382,34 @@ public class MainConsoleWindow implements ViewMainWindow {
                         showMenuBar();
                         break;
                     case 1:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.HOME_VIEW));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.HOME_VIEW));
                         break;
                     case 2:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.SEARCH_VIEW));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.SEARCH_VIEW));
                         break;
                     case 3:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.PLAYLIST_VIEW));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.PLAYLIST_VIEW));
                         break;
                     case 4:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.PAUSE_PLAY));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.PAUSE_PLAY));
                         break;
                     case 5:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.PREVIOUS));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.PREVIOUS));
                         break;
                     case 6:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.NEXT));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.NEXT));
                         break;
                     case 7:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.RANDOM));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.RANDOM));
                         break;
                     case 8:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.LOOP));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.LOOP));
                         break;
                     case 9:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.ADD_TO_FAVORITES));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.ADD_TO_FAVORITES));
                         break;
                     case 10:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.ADD_TO_PLAYLIST));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.ADD_TO_PLAYLIST));
                         break;
                     case 11:
                         System.exit(0);
@@ -456,46 +456,46 @@ public class MainConsoleWindow implements ViewMainWindow {
 
                 switch (choice) {
                     case 0:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.OPEN_SONG));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.OPEN_SONG));
                         break;
                     case 1:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.CREATE_BACKUP));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.CREATE_BACKUP));
                         break;
                     case 2:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.SWITCH_ACCOUNT));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.SWITCH_ACCOUNT));
                         break;
                     case 3:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.SETTINGS));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.SETTINGS));
                         break;
                     case 4:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.ADD_TO_FAVORITES));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.ADD_TO_FAVORITES));
                         break;
                     case 5:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.REMOVE_SONG_FROM_FAVORITES));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.REMOVE_SONG_FROM_FAVORITES));
                         break;
                     case 6:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.ADD_TO_PLAYLIST));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.ADD_TO_PLAYLIST));
                         break;
                     case 7:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.REMOVE_SONG_FROM_PLAYLIST));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.REMOVE_SONG_FROM_PLAYLIST));
                         break;
                     case 8:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.SEARCH_VIEW));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.SEARCH_VIEW));
                         break;
                     case 9:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.CREATE_PLAYLIST));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.CREATE_PLAYLIST));
                         break;
                     case 10:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.DELETE_PLAYLIST));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.DELETE_PLAYLIST));
                         break;
                     case 11:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.PLAYLIST_SETTINGS));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.PLAYLIST_SETTINGS));
                         break;
                     case 12:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.IMPORT_PLAYLIST));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.IMPORT_PLAYLIST));
                         break;
                     case 13:
-                        controller.actionPerformed(new ActionEvent(this, 0, MainControllerActions.EXPORT_PLAYLIST));
+                        controller.actionPerformed(new ActionEvent(this, 0, ControllerActions.EXPORT_PLAYLIST));
                         break;
                     case 14:
                         break;

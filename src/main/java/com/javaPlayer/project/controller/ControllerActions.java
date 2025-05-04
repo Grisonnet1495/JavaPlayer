@@ -1,6 +1,6 @@
 package com.javaPlayer.project.controller;
 
-public abstract class MainControllerActions {
+public abstract class ControllerActions {
     public static final String HOME_VIEW = "HOME_VIEW";
     public static final String SEARCH_VIEW = "SEARCH_VIEW";
     public static final String FAVORITES_VIEW = "FAVORITES_VIEW";
@@ -26,4 +26,5 @@ public abstract class MainControllerActions {
     public static final String EXPORT_PLAYLIST = "EXPORT_PLAYLIST";
     public static final String IMPORT_PLAYLIST = "IMPORT_PLAYLIST";
     public static final String SEARCH_SONG = "SEARCH_SONG";
+    public static final String PLAY_SELECTED_SONG = "PLAY_SELECTED_SONG";
 }

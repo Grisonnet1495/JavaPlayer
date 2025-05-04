@@ -1,5 +1,7 @@
 package com.javaPlayer.project.model.entity;
 
+import com.javaPlayer.project.model.exception.SongException;
+
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -15,21 +17,14 @@ public class Song implements Serializable {
     private LocalDateTime addedDate;
     private String filename;
 
-    public Song() {
-        this.title = "Unknown Title";
-        this.artist = null;
-        this.genre = "Unknown genre";
-        this.duration = Duration.ZERO;
-        this.addedDate = LocalDateTime.now();
-    }
-
-    public Song(int id, String title, Artist artist, String genre, Duration duration, LocalDateTime addedDate) {
-        this.id = id;
+    public Song(String title, Artist artist, String genre, Duration duration, LocalDateTime addedDate, String filename) {
+        this.id = 0;
         this.title = title;
         this.artist = artist;
         this.genre = genre;
         this.duration = duration;
         this.addedDate = addedDate;
+        this.filename = filename;
     }
 
     public int getId() {
@@ -69,15 +64,21 @@ public class Song implements Serializable {
     }
 
     public String getDurationToString() {
+        if (duration == null) {
+            return "00:00";
+        }
+
         long hours = duration.toHours();
         long minutes = duration.toMinutesPart();
         long seconds = duration.toSecondsPart();
 
-        if (hours == 0) {
-            return minutes + ":" + seconds;
+        if (hours <= 0) {
+            // Without hours
+            return String.format("%02d:%02d", minutes, seconds);
+        } else {
+            // With hours
+            return String.format("%d:%02d:%02d", hours, minutes, seconds);
         }
-
-        return hours + ":" + minutes + ":" + seconds;
     }
 
     public void setDuration(Duration duration) {
@@ -92,6 +93,28 @@ public class Song implements Serializable {
         this.addedDate = addedDate;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        if (filename == null || filename.trim().isEmpty()) {
+            throw new SongException("Filename can't be empty !");
+        }
+
+        this.filename = filename;
+    }
+
+    public String getSongFileExtension() {
+        int lastDot = filename.lastIndexOf('.');
+
+        if (lastDot > 0 && lastDot < filename.length() - 1) {
+            return filename.substring(lastDot + 1);
+        }
+
+        return "";
+    }
+
     @Override
     public String toString() {
         return "Song{" +
@@ -101,6 +124,7 @@ public class Song implements Serializable {
                 ", genre='" + genre + '\'' +
                 ", duration=" + duration +
                 ", addedDate=" + addedDate +
+                ", filename='" + filename + '\'' +
                 '}';
     }
 

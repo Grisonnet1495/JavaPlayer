@@ -1,23 +1,26 @@
 package com.javaPlayer.project.model.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class User {
+public class User implements Serializable {
+    private int id;
     private String pseudo;
     private String password;
-//    private ArrayList<Playlist> playlistList;
-
-    public User() {
-        this.pseudo = "Unknown";
-        this.password = "";
-//        this.playlistList = new ArrayList<>();
-    }
 
     public User(String pseudo, String password) {
+        this.id = 0;
         this.pseudo = pseudo;
         this.password = password;
-//        this.playlistList = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPseudo() {
@@ -79,6 +82,15 @@ public class User {
 //    }
 
     @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", pseudo='" + pseudo + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
@@ -88,6 +100,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pseudo, password/*, playlistList*/);
+        return Objects.hash(pseudo, password);
     }
 }
