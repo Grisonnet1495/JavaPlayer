@@ -20,6 +20,14 @@ public class Constants {
     public static final String SEARCH = "SEARCH";
     public static final String PLAYLIST = "PLAYLIST";
 
+    // Song chooser mode
+    public static final String SONG_CHOOSER_MODE_NORMAL = "NORMAL";
+    public static final String SONG_CHOOSER_MODE_RANDOM = "RANDOM";
+
+    // Listening mode
+    public static final String LISTENING_MODE_NORMAL = "NORMAL";
+    public static final String LISTENING_MODE_LOOP = "LOOP";
+
     // Constant numbers
     public static final int RECENT_PLAYLIST_MINUTES = 1;
 }

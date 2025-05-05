@@ -33,7 +33,7 @@ public class JPanelPlaylist extends JPanel {
 
         // By ChatGPT
         songTable.getSelectionModel().addListSelectionListener(e -> {
-            // If it isn't juste a screen update
+            // If it isn't just a screen update
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = songTable.getSelectedRow();
 
@@ -61,7 +61,7 @@ public class JPanelPlaylist extends JPanel {
         for (int i = 0; i < playlist.getSongList().size(); i++) {
             tableData[i][0] = playlist.getSongList().get(i).getId();
             tableData[i][1] = playlist.getSongList().get(i).getTitle();
-            tableData[i][2] = playlist.getSongList().get(i).getArtist().getPseudo();
+            tableData[i][2] = playlist.getSongList().get(i).getArtist();
             tableData[i][3] = playlist.getSongList().get(i).getGenre();
             tableData[i][4] = playlist.getSongList().get(i).getDurationToString();
             tableData[i][5] = playlist.getSongList().get(i).getAddedDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));

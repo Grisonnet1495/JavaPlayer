@@ -2,6 +2,7 @@ package com.javaPlayer.project.model.entity;
 
 import com.javaPlayer.project.model.exception.SongException;
 
+import java.io.File;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -11,13 +12,13 @@ public class Song implements Serializable {
 //    private static int currentSongId = 0;
     private int id;
     private String title;
-    private Artist artist;
+    private String artist;
     private String genre;
     private Duration duration;
     private LocalDateTime addedDate;
     private String filename;
 
-    public Song(String title, Artist artist, String genre, Duration duration, LocalDateTime addedDate, String filename) {
+    public Song(String title, String artist, String genre, Duration duration, LocalDateTime addedDate, String filename) {
         this.id = 0;
         this.title = title;
         this.artist = artist;
@@ -25,6 +26,16 @@ public class Song implements Serializable {
         this.duration = duration;
         this.addedDate = addedDate;
         this.filename = filename;
+    }
+
+    public Song(Song song) {
+        this.id = song.getId();
+        this.title = song.getTitle();
+        this.artist = song.getArtist();
+        this.genre = song.getGenre();
+        this.duration = song.getDuration();
+        this.addedDate = song.getAddedDate();
+        this.filename = song.getFilename();
     }
 
     public int getId() {
@@ -43,11 +54,11 @@ public class Song implements Serializable {
         this.title = title;
     }
 
-    public Artist getArtist() {
+    public String getArtist() {
         return artist;
     }
 
-    public void setArtist(Artist artist) {
+    public void setArtist(String artist) {
         this.artist = artist;
     }
 
@@ -102,6 +113,12 @@ public class Song implements Serializable {
             throw new SongException("Filename can't be empty !");
         }
 
+        File songFile = new File(filename);
+
+        if (!songFile.exists()) {
+            throw new SongException("File doesn't exist !");
+        }
+
         this.filename = filename;
     }
 
@@ -133,6 +150,6 @@ public class Song implements Serializable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Song song = (Song) obj;
-        return title.equals(song.title) && artist.equals(song.artist) && genre.equals(song.genre) && duration == song.duration;
+        return id == song.id;
     }
 }

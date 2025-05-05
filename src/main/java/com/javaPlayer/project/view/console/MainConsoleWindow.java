@@ -63,6 +63,11 @@ public class MainConsoleWindow implements ViewMainWindow {
     }
 
     @Override
+    public void updateSongActionsPanel(boolean isRandom, boolean isPreviousSongPossible, boolean isLooping, boolean isPlaying) {
+        // Note : To do
+    }
+
+    @Override
     public String getSelectedPlaylistTitle() {
         return selectedPlaylistTitle;
     }
@@ -195,7 +200,7 @@ public class MainConsoleWindow implements ViewMainWindow {
     }
 
     @Override
-    public void showSongDetails(String title, String artist, String playlist, String addedDate, String duration) {
+    public SongDetails showSongDetails(String title, String artist, String playlist, String addedDate, String duration) {
         System.out.println();
         System.out.println("--------------- Song details ---------------");
         System.out.println("Title : " + title);
@@ -203,6 +208,7 @@ public class MainConsoleWindow implements ViewMainWindow {
         System.out.println("Playlist : " + playlist);
         System.out.println("Added date : " + addedDate);
         System.out.println("Duration : " + duration);
+        return null;
     }
 
     @Override

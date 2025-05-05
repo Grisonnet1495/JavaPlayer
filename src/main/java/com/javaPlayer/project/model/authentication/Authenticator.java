@@ -5,6 +5,10 @@ public abstract class Authenticator {
         return isLoginExists(pseudo) && getPassword(pseudo).equals(password);
     }
 
+    public abstract void changeUserPseudo(String oldPseudo, String newPseudo);
+
+    public abstract void changeUserPassword(String pseudo, String newPassword);
+
     public abstract boolean isLoginExists(String pseudo);
 
     public abstract String getPassword(String pseudo);

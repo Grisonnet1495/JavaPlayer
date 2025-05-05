@@ -16,28 +16,12 @@
           <text value="Title"/>
         </properties>
       </component>
-      <component id="168b1" class="javax.swing.JLabel" binding="songTitleLabel">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Unknown title"/>
-        </properties>
-      </component>
       <component id="e3181" class="javax.swing.JLabel" binding="songArtistTitleLabel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Artist"/>
-        </properties>
-      </component>
-      <component id="57502" class="javax.swing.JLabel" binding="songArtistLabel">
-        <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Unknown artist"/>
         </properties>
       </component>
       <component id="dbb58" class="javax.swing.JLabel" binding="songPlaylistTitleLabel">
@@ -87,6 +71,22 @@
         <properties>
           <text value="00:00"/>
         </properties>
+      </component>
+      <component id="96291" class="javax.swing.JTextField" binding="songTitleTextField">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="ba5b7" class="javax.swing.JTextField" binding="songArtistTextField">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
       </component>
     </children>
   </grid>

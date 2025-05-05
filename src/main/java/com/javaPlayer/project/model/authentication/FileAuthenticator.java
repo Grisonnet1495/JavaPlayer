@@ -62,18 +62,37 @@ public class FileAuthenticator extends Authenticator {
         saveUsers();
     }
 
-    public void changePseudo(String pseudo, String newPseudo) {
-        if (!usersPasswords.containsKey(pseudo)) {
-            throw new AuthenticatorException("Pseudo to change does not exist.");
+    @Override
+    public void changeUserPseudo(String oldPseudo, String newPseudo) {
+        if (newPseudo == null || newPseudo.trim().isEmpty()) {
+            throw new AuthenticatorException("New pseudo cannot be empty.");
+        }
+
+        if (oldPseudo.equals(newPseudo)) {
+            return;
+        }
+
+        if (!usersPasswords.containsKey(oldPseudo)) {
+            throw new AuthenticatorException("Pseudo to change doesn't exist.");
         }
 
         if (usersPasswords.containsKey(newPseudo)) {
             throw new AuthenticatorException("New pseudo already exists.");
         }
 
-        String password = usersPasswords.getProperty(pseudo);
-        usersPasswords.remove(pseudo);
+        String password = usersPasswords.getProperty(oldPseudo);
+        usersPasswords.remove(oldPseudo);
         usersPasswords.setProperty(newPseudo, password);
+        saveUsers();
+    }
+
+    @Override
+    public void changeUserPassword(String pseudo, String newPassword) {
+        if (!usersPasswords.containsKey(pseudo)) {
+            throw new AuthenticatorException("Pseudo doesn't exist.");
+        }
+
+        usersPasswords.setProperty(pseudo, newPassword);
         saveUsers();
     }
 

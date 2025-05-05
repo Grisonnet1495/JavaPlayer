@@ -1,20 +1,25 @@
 package com.javaPlayer.project.view.GUI;
 
+import com.javaPlayer.project.model.entity.Song;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class JDialogSongDetails extends JDialog {
     public JPanel mainPanel;
     private JLabel songTitleTitleLabel;
-    private JLabel songTitleLabel;
     private JLabel songArtistTitleLabel;
-    private JLabel songArtistLabel;
     private JLabel songPlaylistTitleLabel;
     private JLabel songPlaylistLabel;
     private JLabel songAddedDateTitleLabel;
     private JLabel songAddedDateLabel;
     private JLabel songDurationTitleLabel;
     private JLabel songDurationLabel;
+    private JTextField songTitleTextField;
+    private JTextField songArtistTextField;
+
+    private String songTitle = null;
+    private String songArtist = null;
 
     public JDialogSongDetails(JFrame parent, boolean modal) {
         super(parent, "Song details", modal);
@@ -28,25 +33,29 @@ public class JDialogSongDetails extends JDialog {
         int x = (screenSize.width - this.getWidth()) / 2;
         int y = (screenSize.height - this.getHeight()) / 2;
         this.setLocation(x, y);
+
+        songTitleTextField.addActionListener(e -> {
+            songTitle = songTitleTextField.getText();
+        });
+
+        songArtistTextField.addActionListener(e -> {
+            songArtist = songArtistTextField.getText();
+        });
     }
 
-    public void setSongTitle(String title) {
-        songTitleLabel.setText(title);
+    public void updateSongDetails(String title, String artist, String playlist, String date, String length) {
+        if (title != null) songTitleTextField.setText(title);
+        if (artist != null) songArtistTextField.setText(artist);
+        if (playlist != null) songPlaylistLabel.setText(playlist);
+        if (date != null) songAddedDateLabel.setText(date);
+        if (length != null) songDurationLabel.setText(length);
     }
 
-    public void setSongArtist(String artist) {
-        songArtistLabel.setText(artist);
+    public String getSongTitle() {
+        return songTitle;
     }
 
-    public void setSongPlaylist(String playlist) {
-        songPlaylistLabel.setText(playlist);
-    }
-
-    public void setSongAddedDate(String date) {
-        songAddedDateLabel.setText(date);
-    }
-
-    public void setSongDuration(String length) {
-        songDurationLabel.setText(length);
+    public String getSongArtist() {
+        return songArtist;
     }
 }

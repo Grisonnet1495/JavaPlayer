@@ -19,12 +19,15 @@ public interface ViewMainWindow {
     void updatePlaylistPanel(Playlist playlist);
     void updateSearchPanel(ArrayList<Song> songList);
     void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite);
+
+    void updateSongActionsPanel(boolean isRandom, boolean isPreviousSongPossible, boolean isLooping, boolean isPlaying);
+
     String getSelectedPlaylistTitle();
 //    void clearSelectedPlaylistTitle();
 
     // Show dialog boxes
     Settings showAndGetSettings(String userPseudo, String userPassword);
-    void showSongDetails(String title, String artist, String playlist, String addedDate, String duration);
+    SongDetails showSongDetails(String title, String artist, String playlist, String addedDate, String duration);
     PlaylistSettings showAndGetPlaylistSettings(String playlistTitle, String playlistOwner);
 
     // Show message

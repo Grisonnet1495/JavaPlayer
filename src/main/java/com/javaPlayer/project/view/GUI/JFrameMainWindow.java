@@ -245,6 +245,33 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
+    public void updateSongActionsPanel(boolean isRandom, boolean isPreviousSongPossible, boolean isLooping, boolean isPlaying) {
+        if (isRandom) {
+            randomButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_random_icon.png"))));
+        } else {
+            randomButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_not_random_icon.png"))));
+        }
+
+        if (isPreviousSongPossible) {
+            previousButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/previous_possible_icon.png"))));
+        } else {
+            previousButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/previous_not_possible_icon.png"))));
+        }
+
+        if (isLooping) {
+            loopButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_looping_icon.png"))));
+        } else {
+            loopButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_not_looping_icon.png"))));
+        }
+
+        if (isPlaying) {
+            pausePlayButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/play_icon.png"))));
+        } else {
+            pausePlayButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/pause_icon.png"))));
+        }
+    }
+
+    @Override
     public String getSelectedPlaylistTitle() {
         return homePanel.getSelectedPlaylistTitle();
     }
@@ -289,20 +316,13 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public void showSongDetails(String title, String artist, String playlist, String addedDate, String duration) {
+    public SongDetails showSongDetails(String title, String artist, String playlist, String addedDate, String duration) {
         JDialogSongDetails songDetailsDialog = new JDialogSongDetails(this,true);
-        if (title != null) songDetailsDialog.setSongTitle(title);
-        if (artist != null) songDetailsDialog.setSongArtist(artist);
-        if (playlist != null) songDetailsDialog.setSongPlaylist(playlist);
-        if (addedDate != null) songDetailsDialog.setSongAddedDate(addedDate);
-        if (duration != null) {
-            songDetailsDialog.setSongDuration(duration);
-        } else {
-            // Note : To remove
-            System.out.println("Song duration is null");
-        };
+        songDetailsDialog.updateSongDetails(title, artist, playlist, addedDate, duration);
 
         songDetailsDialog.setVisible(true);
+
+        return new SongDetails(songDetailsDialog.getSongTitle(), songDetailsDialog.getSongArtist());
     }
 
     @Override

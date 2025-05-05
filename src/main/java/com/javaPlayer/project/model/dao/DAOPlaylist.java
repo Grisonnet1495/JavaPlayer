@@ -9,21 +9,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class DAOPlaylist {
     // Playlist config file
     private String playlistsConfigFilename; // Filename of the playlists list config file
-    private Properties playlistsConfig; // Current content of th playlist list config file
+    private Properties playlistsConfig; // Current content of the playlist list config file
 
     // Current user data
-    private String currentUserFileName; // Filename of the file containing all user playlists
+    private String currentUserPlaylistsFileName; // Filename of the file containing all current user playlists
     private String currentUserDataDirectory; // Directory name of all the user playlists data
     private int currentUserId; // Current user id
     private ArrayList<Playlist> playlistsList; // Current playlists of the user
+    private Integer lastPlayedSongId = null; // Id of the current song of the user
 
     public DAOPlaylist(String playlistsConfigFilename) {
 //        playlistsConfigFilename = new DAOConfig(DefaultFilePath.CONFIG).getConfig(Constants.USER_PLAYLISTS_CONFIG_KEY);
@@ -34,6 +32,73 @@ public class DAOPlaylist {
         // Note : To do at the start of the controller
 //        loadPlaylistsConfigFile(userId);
 //        loadPlaylistsFromFile();
+    }
+
+    public Song getLastPlayedSong() {
+        if (lastPlayedSongId == null) {
+            return null;
+        }
+
+        return getSongById(lastPlayedSongId);
+    }
+
+    public void setLastPlayedSong(Song song) {
+        this.lastPlayedSongId = song.getId();
+    }
+
+    public Song getFirstSong() {
+        for (Playlist p : playlistsList) {
+            ArrayList<Song> songList = p.getSongList(); // ou getSongList()
+            if (songList != null && !songList.isEmpty()) {
+                return songList.get(0);
+            }
+        }
+
+        return null;
+    }
+
+    public Song getNextSong(Song currentSong, Playlist currentPlaylist ) {
+        // Verify parameters
+        if (currentSong == null || currentPlaylist == null) return null;
+
+        // Verify if there is songs in the playlist
+        List<Song> songList = currentPlaylist.getSongList();
+        if (songList == null || songList.isEmpty()) return null;
+
+        // Get the newt song
+        int index = songList.indexOf(currentSong);
+        if (index == -1) return null;
+
+        return songList.get((index + 1) % songList.size());
+    }
+
+    public Song getPreviousSong(Song currentSong, Playlist currentPlaylist) {
+        // Verify parameters
+        if (currentSong == null || currentPlaylist == null) return null;
+
+        // Verify if there is songs in the playlist
+        List<Song> songList = currentPlaylist.getSongList();
+        if (songList == null || songList.isEmpty()) return null;
+
+        // Get the newt song
+        int index = songList.indexOf(currentSong);
+        if (index == -1) return null;
+
+        return songList.get((index - 1 + songList.size()) % songList.size());
+    }
+
+    public Song getRandomSong(Playlist playlist) {
+        // Verify parameters
+        if (playlist == null) {
+            return null;
+        }
+
+        // Get a random song
+        int songCount = playlist.getSongList().size();
+        Random random = new Random();
+        int randomSong = random.nextInt(songCount);
+
+        return playlist.getSongList().get(randomSong);
     }
 
     public void loadPlaylistsConfigFile(int userId) {
@@ -73,12 +138,11 @@ public class DAOPlaylist {
             }
         }
 
-        this.currentUserFileName = playlistsConfig.getProperty(String.valueOf(userId));
+        this.currentUserPlaylistsFileName = playlistsConfig.getProperty(String.valueOf(userId));
     }
 
-
     public void savePlaylistsToFile() {
-        try (FileOutputStream fos = new FileOutputStream(currentUserFileName);
+        try (FileOutputStream fos = new FileOutputStream(currentUserPlaylistsFileName);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(playlistsList);
         } catch (IOException e) {
@@ -87,7 +151,7 @@ public class DAOPlaylist {
     }
 
     public void loadPlaylistsFromFile() {
-        try (FileInputStream fis = new FileInputStream(currentUserFileName);
+        try (FileInputStream fis = new FileInputStream(currentUserPlaylistsFileName);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             playlistsList = (ArrayList<Playlist>) ois.readObject();
         } catch (FileNotFoundException e) {
@@ -107,6 +171,33 @@ public class DAOPlaylist {
     // For test purpose
     public void setPlaylistsList(ArrayList<Playlist> playlistsList) {
         this.playlistsList = playlistsList;
+    }
+
+    public ArrayList<Playlist> getPlaylistsList() {
+        return playlistsList;
+    }
+
+    public ArrayList<String> getPlaylistsTitleList() {
+        ArrayList<String> playlistsTitleList = new ArrayList<>();
+
+        for (Playlist p : playlistsList) {
+            playlistsTitleList.add(p.getTitle());
+        }
+        return playlistsTitleList;
+    }
+
+    public ArrayList<Playlist> getRecentPlaylistsList(int minutes) {
+        ArrayList<Playlist> recentPlaylistsList = new ArrayList<>();
+
+        LocalDateTime startTime = LocalDateTime.now().minusMinutes(minutes);
+
+        for (Playlist p : playlistsList) {
+            if (p.getLastViewedDate().isAfter(startTime)) {
+                recentPlaylistsList.add(p);
+            }
+        }
+
+        return recentPlaylistsList;
     }
 
     public void createPlaylist(String playlistTitle) {
@@ -167,32 +258,25 @@ public class DAOPlaylist {
         // Delete the playlist from the list
         playlistsList.removeIf(p -> p.getTitle().equals(playlistName));
     }
-
-    public ArrayList<Playlist> getPlaylistsList() {
-        return playlistsList;
-    }
-
-    public ArrayList<String> getPlaylistsTitleList() {
-        ArrayList<String> playlistsTitleList = new ArrayList<>();
-
-        for (Playlist p : playlistsList) {
-            playlistsTitleList.add(p.getTitle());
-        }
-        return playlistsTitleList;
-    }
-
-    public ArrayList<Playlist> getRecentPlaylistsList(int minutes) {
-        ArrayList<Playlist> recentPlaylistsList = new ArrayList<>();
-
-        LocalDateTime startTime = LocalDateTime.now().minusMinutes(minutes);
-
-        for (Playlist p : playlistsList) {
-            if (p.getLastViewedDate().isAfter(startTime)) {
-                recentPlaylistsList.add(p);
-            }
+    
+    public void changePlaylistTitle(String oldTitle, String newTitle) {
+        // Verify if the playlist name can be changed
+        if (oldTitle.equals("Favorites") || oldTitle.equals("Unclassed songs")) {
+            throw new PlaylistException("This playlist cannot be renamed !");
         }
 
-        return recentPlaylistsList;
+        Playlist playlistToRename = getPlaylistByName(oldTitle);
+        
+        if (playlistToRename == null) {
+            throw new PlaylistException("Playlist not found !");
+        }
+        
+        if (getPlaylistByName(newTitle) != null) {
+            throw new PlaylistException("A playlist with this name already exists !");
+        }
+
+        // Rename the playlist
+        playlistToRename.setTitle(newTitle);
     }
 
     public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
@@ -229,7 +313,7 @@ public class DAOPlaylist {
         return null;
     }
 
-    public void clearPlaylistsData() {
+    public void removeAllPlaylists() {
         for (Playlist p : playlistsList) {
             try {
                 removePlaylist(p.getTitle());
@@ -239,7 +323,64 @@ public class DAOPlaylist {
         }
     }
 
+    public void deleteAllCurrentUserData() {
+        // By ChatGPT
+        // Delete the user data directory
+        try {
+            Path userDataDir = Paths.get(currentUserDataDirectory);
+
+            if (Files.exists(userDataDir)) {
+                Files.walk(userDataDir)
+                        .sorted(Comparator.reverseOrder()) // Delete files before directories
+                        .forEach(path -> {
+                            try {
+                                Files.delete(path);
+                            } catch (IOException e) {
+                                throw new PlaylistException("Cannot delete folder '" + path + "' : " + e.getMessage());
+                            }
+                        });
+            }
+        } catch (IOException e) {
+            throw new PlaylistException("Cannot delete all playlists data : " + e.getMessage());
+        }
+
+        // Delete the user playlists file
+        try {
+            Path userPlaylistsFilename = Paths.get(currentUserPlaylistsFileName);
+
+            Files.deleteIfExists(userPlaylistsFilename);
+        } catch (IOException e) {
+            throw new PlaylistException("Cannot delete user playlists file : " + e.getMessage());
+        }
+
+        // Delete the user in the playlists config file
+        playlistsConfig.remove(String.valueOf(currentUserId));
+
+        // Update the playlists config file
+        try (FileOutputStream fos = new FileOutputStream(playlistsConfigFilename)) {
+            playlistsConfig.store(fos, "User playlists lists configuration file");
+        } catch (IOException e) {
+            throw new PlaylistException("Cannot update playlist config file : " + e.getMessage());
+        }
+    }
+
+    public Song getSongById(int songId) {
+        for (Playlist p : playlistsList) {
+            for (Song s : p.getSongList()) {
+                if (s.getId() == songId) {
+                    return s;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public Playlist getSongPlaylist(Song song) {
+        if (song == null) {
+            return null;
+        }
+
         for (Playlist p : playlistsList) {
             for (Song s : p.getSongList()) {
                 if (s.equals(song)) {
@@ -251,7 +392,35 @@ public class DAOPlaylist {
         return null;
     }
 
+    public boolean isSongInFavoritesPlaylist(Song song) {
+        if (song == null) {
+            return false;
+        }
+
+        if (getSongPlaylist(song).getTitle().equals("Favorites")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void addSongToPlaylist(Playlist playlist, Song song) {
+        // Find an new song id
+        int id = 1;
+        Set<Integer> usedIds = new HashSet<>();
+
+        for (Playlist p : playlistsList) {
+            for (Song s : p.getSongList()) {
+                usedIds.add(s.getId());
+            }
+        }
+
+        while (usedIds.contains(id)) {
+            id++;
+        }
+
+        song.setId(id);
+
         // Copy music file to playlist directory
         Path source = Paths.get(song.getFilename());
         Path destination = Paths.get(currentUserDataDirectory + File.separator + "Playlist_" + playlist.getId() + File.separator + "Song_" + song.getId() + song.getSongFileExtension());
@@ -265,7 +434,7 @@ public class DAOPlaylist {
         // Update the song filename
         song.setFilename(destination.toString());
 
-        // Add the song to playlist
+        // Add the song to the playlist
         playlist.addSong(song);
     }
 
@@ -285,10 +454,12 @@ public class DAOPlaylist {
 
     public void moveSongToPlaylist(Song song, Playlist oldPlaylist, Playlist newPlaylist) {
         if (oldPlaylist.equals(newPlaylist)) {
-            return;
+            throw new PlaylistException("Song already in this playlist !");
         }
 
-        addSongToPlaylist(newPlaylist, song);
+        Song newSong = new Song(song);
+
+        addSongToPlaylist(newPlaylist, newSong);
         removeSongFromPlaylist(oldPlaylist, song);
     }
 }

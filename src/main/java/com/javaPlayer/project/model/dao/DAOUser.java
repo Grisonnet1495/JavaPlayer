@@ -17,7 +17,7 @@ public class DAOUser implements Serializable {
     public DAOUser(String usersFilename) {
         this.usersFilename = usersFilename;
 
-        // If the
+        // Create the users file if it doesn't exist
         if (!new File(usersFilename).exists()) {
             usersList = new ArrayList<>();
             saveUsersToFile();
@@ -68,14 +68,16 @@ public class DAOUser implements Serializable {
         }
 
         usersList.add(newUser);
+        saveUsersToFile();
     }
 
-    public void removeUser(User userToRemove) {
-        if (usersList.stream().noneMatch(user -> user.getId() == userToRemove.getId())) {
+    public void removeUserById(int userId) {
+        if (usersList.stream().noneMatch(user -> user.getId() == userId)) {
             throw new UserException("User does not exist !");
         }
 
-        usersList.removeIf(user -> user.getId() == userToRemove.getId());
+        usersList.removeIf(user -> user.getId() == userId);
+        saveUsersToFile();
     }
 
     public ArrayList<User> getUsersList() {
@@ -100,26 +102,28 @@ public class DAOUser implements Serializable {
         return null;
     }
 
-    public void updateUserById(int userId, User newUser) {
-        if (newUser.getPseudo() == null || newUser.getPseudo().trim().isEmpty()) {
+    public void updateUserById(int userId, String newPseudo, String newPassword) {
+        if (newPseudo == null || newPseudo.trim().isEmpty()) {
             throw new UserException("User pseudo cannot be empty !");
         }
 
-        if (newUser.getPassword() == null || newUser.getPassword().trim().isEmpty()) {
+        if (newPassword == null || newPassword.trim().isEmpty()) {
             throw new UserException("Password cannot be empty !");
         }
 
-        if (usersList.stream().anyMatch(user -> user.getPseudo().equalsIgnoreCase(newUser.getPseudo()))) {
-            throw new UserException("User pseudo already taken !");
-        }
+        User userToUpdate = getUserById(userId);
 
-        User user = getUserById(userId);
-
-        if (user == null) {
+        if (userToUpdate == null) {
             throw new UserException("User not found !");
         }
 
-        user.setPseudo(user.getPseudo());
-        user.setPassword(user.getPassword());
+        if (!userToUpdate.getPseudo().equals(newPseudo) && usersList.stream().anyMatch(user -> user.getPseudo().equalsIgnoreCase(newPseudo))) {
+            throw new UserException("User pseudo already taken !");
+        }
+
+        userToUpdate.setPseudo(newPseudo);
+        userToUpdate.setPassword(newPassword);
+
+        saveUsersToFile();
     }
 }

@@ -1,5 +1,5 @@
 package com.javaPlayer.project.model.entity;
-import com.javaPlayer.project.model.exception.SongException;
+import com.javaPlayer.project.model.exception.PlaylistException;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -59,25 +59,33 @@ public class Playlist implements Serializable {
     }
 
     public void addSong(Song song) {
-        if(songList.stream().noneMatch(list -> list.getTitle().equalsIgnoreCase(song.getTitle()) && list.getArtist().equals(song.getArtist()))) {
-            songList.add(song);
-            System.out.println("Song added : " + song.getTitle());
-        } else {
-            throw new SongException("Song already existing !");
+        // Verify if the song already exists in the playlist
+        if (songList.stream().anyMatch(list -> list.getId() == song.getId())) {
+            throw new PlaylistException("A song with this id already exists !");
         }
 
-        // Note : Copy song file to song folder
+        songList.add(song);
     }
 
     public void removeSong(Song song) {
+        // Verify if the song exists in the playlist
         Song songToRemove = songList.stream()
-                .filter(s -> s.getTitle().equalsIgnoreCase(song.getTitle()))
+                .filter(s -> s.getId() == song.getId())
                 .findFirst()
                 .orElse(null);
 
-        if (songToRemove != null) {
-            songList.remove(songToRemove);
+        if (songToRemove == null) {
+            throw new PlaylistException("Song doesn't exist in the playlist !");
         }
+
+        songList.remove(songToRemove);
+    }
+
+    public Song findSongById(int id) {
+        return songList.stream()
+                .filter(song -> song.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     public Song findSongByTitle(String title) {
@@ -87,19 +95,27 @@ public class Playlist implements Serializable {
                 .orElse(null);
     }
 
+    public void sortSongsById() {
+        songList.sort(Comparator.comparingInt(Song::getId));
+    }
+
     public void sortSongsByTitle() {
         songList.sort(Comparator.comparing(Song::getTitle));
     }
 
     public void sortSongsByArtist() {
-        songList.sort(Comparator.comparing(song -> song.getArtist().getPseudo()));
+        songList.sort(Comparator.comparing(song -> song.getArtist()));
     }
 
     public void sortSongsByGenre() {
         songList.sort(Comparator.comparing(Song::getGenre));
     }
 
-    public void sortSongsByDate() {
+    public void sortSongsByDuration() {
+        songList.sort(Comparator.comparing(Song::getDuration));
+    }
+
+    public void sortSongsByAddedDate() {
         songList.sort(Comparator.comparing(Song::getAddedDate));
     }
 

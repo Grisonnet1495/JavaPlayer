@@ -120,7 +120,7 @@
                     <properties>
                       <background color="-6280301"/>
                       <font style="1"/>
-                      <icon value="icons/pause_icon.png"/>
+                      <icon value="icons/play_icon.png"/>
                       <text value=""/>
                     </properties>
                   </component>
@@ -134,7 +134,7 @@
                     </constraints>
                     <properties>
                       <background color="-1513240"/>
-                      <icon value="icons/previous_icon.png"/>
+                      <icon value="icons/previous_not_possible_icon.png"/>
                       <text value=""/>
                     </properties>
                   </component>
@@ -162,7 +162,7 @@
                     </constraints>
                     <properties>
                       <background color="-1513240"/>
-                      <icon value="icons/random_icon.png"/>
+                      <icon value="icons/is_random_icon.png"/>
                       <text value=""/>
                     </properties>
                   </component>
@@ -176,7 +176,7 @@
                     </constraints>
                     <properties>
                       <background color="-1513240"/>
-                      <icon value="icons/loop_icon.png"/>
+                      <icon value="icons/is_looping_icon.png"/>
                       <text value=""/>
                     </properties>
                   </component>
