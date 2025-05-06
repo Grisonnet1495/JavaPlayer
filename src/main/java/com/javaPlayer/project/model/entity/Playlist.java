@@ -11,13 +11,19 @@ public class Playlist implements Serializable {
     private int id;
     private String title;
     private LocalDateTime lastViewedDate;
+    private byte[] icon;
     private ArrayList<Song> songList;
 
     public Playlist(String title, ArrayList<Song> songList) {
         this.id = 0;
         this.title = title;
         this.lastViewedDate = LocalDateTime.now();
-        this.songList = songList;
+
+        if (songList == null) {
+            this.songList = new ArrayList<>();
+        } else {
+            this.songList = songList;
+        }
     }
 
     public int getId() {
@@ -50,6 +56,14 @@ public class Playlist implements Serializable {
         this.lastViewedDate = LocalDateTime.now();
     }
 
+    public byte[] getIcon() {
+        return icon;
+    }
+
+    public void setIcon(byte[] icon) {
+        this.icon = icon;
+    }
+
     public ArrayList<Song> getSongList() {
         return songList;
     }
@@ -64,6 +78,15 @@ public class Playlist implements Serializable {
             throw new PlaylistException("A song with this id already exists !");
         }
 
+//        byte[] songIcon = MusicPlayer.getSongIcon(song.getFilename());
+        // Note : Temporary
+        byte[] songIcon = null;
+
+        // If it is the first song, set the playlist icon
+        if (songList.isEmpty()) {
+            icon = songIcon;
+        }
+
         songList.add(song);
     }
 
@@ -76,6 +99,17 @@ public class Playlist implements Serializable {
 
         if (songToRemove == null) {
             throw new PlaylistException("Song doesn't exist in the playlist !");
+        }
+
+        // If it is the first song, set the new playlist icon
+        if (songList.get(0).getId() == songToRemove.getId()) {
+            if (songList.size() > 1) {
+//                icon = MusicPlayer.getSongIcon(songList.get(1).getFilename());
+                // Note : Temporary
+                icon = null;
+            } else {
+                icon = null;
+            }
         }
 
         songList.remove(songToRemove);
@@ -125,10 +159,10 @@ public class Playlist implements Serializable {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", lastViewedDate=" + lastViewedDate +
+                ", hasIcon=" + (icon != null && icon.length > 0) +
                 ", songList=" + songList +
                 '}';
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -139,6 +173,6 @@ public class Playlist implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, songList);
+        return Objects.hash(id);
     }
 }

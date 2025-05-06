@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Song implements Serializable {
 //    private static int currentSongId = 0;
@@ -25,7 +24,7 @@ public class Song implements Serializable {
         this.genre = genre;
         this.duration = duration;
         this.addedDate = addedDate;
-        this.filename = filename;
+        setFilename(filename);
     }
 
     public Song(Song song) {
@@ -74,7 +73,7 @@ public class Song implements Serializable {
         return duration;
     }
 
-    public String getDurationToString() {
+    public String getFormattedDuration() {
         if (duration == null) {
             return "00:00";
         }
@@ -151,5 +150,10 @@ public class Song implements Serializable {
         if (obj == null || getClass() != obj.getClass()) return false;
         Song song = (Song) obj;
         return id == song.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 }

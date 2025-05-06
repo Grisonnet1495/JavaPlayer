@@ -1,20 +1,18 @@
-package com.javaPlayer.project.model.player;
-
-import org.jaudiotagger.tag.datatype.Artwork;
+package com.javaPlayer.project.model.entity;
 
 public class SongMetadata {
     String title;
     String artist;
     String album;
     String genre;
-    byte[] albumImage;
+    byte[] songIcon;
 
-    public SongMetadata(String title, String artist, String album, String genre, byte[] albumImage) {
+    public SongMetadata(String title, String artist, String album, String genre, byte[] icon) {
         this.title = title;
         this.artist = artist;
         this.album = album;
         this.genre = genre;
-        this.albumImage = albumImage;
+        this.songIcon = icon;
     }
 
     public String getTitle() {
@@ -33,7 +31,7 @@ public class SongMetadata {
         return genre;
     }
 
-    public byte[] getAlbumImage() {
-        return albumImage;
+    public byte[] getSongIcon() {
+        return songIcon;
     }
 }

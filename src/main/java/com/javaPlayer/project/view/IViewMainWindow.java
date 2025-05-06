@@ -2,11 +2,11 @@ package com.javaPlayer.project.view;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.model.entity.*;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 
-public interface ViewMainWindow {
+public interface IViewMainWindow {
+    // Show authentication dialog
     Credentials promptForCredentials();
 
     // Show panels
@@ -18,17 +18,16 @@ public interface ViewMainWindow {
     void updateHomePanel(ArrayList<Playlist> recentPlaylistsList, ArrayList<Playlist> allPlaylistsList);
     void updatePlaylistPanel(Playlist playlist);
     void updateSearchPanel(ArrayList<Song> songList);
-    void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite);
+    void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite);
 
     void updateSongActionsPanel(boolean isRandom, boolean isPreviousSongPossible, boolean isLooping, boolean isPlaying);
 
     String getSelectedPlaylistTitle();
-//    void clearSelectedPlaylistTitle();
 
     // Show dialog boxes
     Settings showAndGetSettings(String userPseudo, String userPassword);
     SongDetails showSongDetails(String title, String artist, String playlist, String addedDate, String duration);
-    PlaylistSettings showAndGetPlaylistSettings(String playlistTitle, String playlistOwner);
+    PlaylistSettings showAndGetPlaylistSettings(String playlistTitle, String playlistOwner, boolean canPlaylistBeRenamed, boolean canPlaylistBeDeleted);
 
     // Show message
     void showMessage(String message);
@@ -45,6 +44,7 @@ public interface ViewMainWindow {
     // Set controller
     void setController(Controller c);
 
-    // Open file
+    // Open and save file
     File openFile(String fileType, String fileExtension);
+    String saveFile();
 }

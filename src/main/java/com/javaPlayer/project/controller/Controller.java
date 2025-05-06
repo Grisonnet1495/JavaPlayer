@@ -4,6 +4,7 @@ import com.javaPlayer.project.model.authentication.Authenticator;
 import com.javaPlayer.project.model.dao.DAOPlaylist;
 import com.javaPlayer.project.model.dao.DAOUser;
 import com.javaPlayer.project.model.entity.*;
+import com.javaPlayer.project.model.player.IMusicPlayer;
 import com.javaPlayer.project.utils.Constants;
 import com.javaPlayer.project.view.GUI.JFrameMainWindow;
 
@@ -21,6 +22,7 @@ public final class Controller implements ActionListener {
     private Authenticator authenticator;
     private DAOPlaylist daoPlaylist;
     private DAOUser daoUser;
+    private IMusicPlayer musicPlayer;
 
     // Current displayed data
     private String currentView;
@@ -35,11 +37,12 @@ public final class Controller implements ActionListener {
     private Duration remainingSongDuration;
     private Duration elapsedSongDuration;
 
-    public Controller(JFrameMainWindow view, Authenticator authenticator, DAOUser daoUser, DAOPlaylist daoPlaylist) {
+    public Controller(JFrameMainWindow view, Authenticator authenticator, DAOUser daoUser, DAOPlaylist daoPlaylist, IMusicPlayer musicPlayer) {
         this.view = view;
         this.authenticator = authenticator;
         this.daoUser = daoUser;
         this.daoPlaylist = daoPlaylist;
+        this.musicPlayer = musicPlayer;
 
         this.view.setController(this);
         this.daoUser.loadUsersFromFile();
@@ -79,7 +82,17 @@ public final class Controller implements ActionListener {
             updateToPlaylist();
         } else if (e.getActionCommand().equals(ControllerActions.PLAYLIST_VIEW)) {
             currentPlaylist = daoPlaylist.getPlaylistByName(view.getSelectedPlaylistTitle());
-            updateToPlaylist();
+            // Retrieve the playlist selected by the user
+            int playlistId = (int) e.getSource();
+            Playlist selectedPlaylist = daoPlaylist.getPlaylistById(playlistId);
+
+            if (selectedPlaylist != null) {
+                // Set the current song and play it
+                currentPlaylist = selectedPlaylist;
+                updateToPlaylist();
+            } else {
+                view.showMessage("Playlist not found");
+            }
         } else if (e.getActionCommand().equals(ControllerActions.SWITCH_ACCOUNT)) {
             view.stop();
             switchUser(authenticate());
@@ -87,22 +100,61 @@ public final class Controller implements ActionListener {
 
             updateToHome();
         } else if (e.getActionCommand().equals(ControllerActions.SETTINGS)) {
-            openSettings();
+            openAndUpdateSettings();
         } else if (e.getActionCommand().equals(ControllerActions.SONG_DETAILS)) {
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
             showSongDetails();
         } else if (e.getActionCommand().equals(ControllerActions.PLAYLIST_SETTINGS)) {
+            if (currentPlaylist == null) {
+                view.showMessage("No playlist selected");
+                return;
+            }
+
             showAndUpdatePlaylistSettings();
         } else if (e.getActionCommand().equals(ControllerActions.PAUSE_PLAY)) {
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
             if (isCurrentSongPlaying) {
-                resumeCurrentSong();
+                pauseCurrentSong();
             } else {
                 resumeCurrentSong();
             }
         } else if (e.getActionCommand().equals(ControllerActions.PREVIOUS)) {
+            // If there is no song selected
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
+            // If there is no playlist selected
+            if (currentPlaylist == null) {
+                view.showMessage("No playlist selected");
+                return;
+            }
+
             pauseCurrentSong();
             selectPreviousSong();
             playCurrentSong();
         } else if (e.getActionCommand().equals(ControllerActions.NEXT)) {
+            // If there is no song selected
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
+            // If there is no playlist selected
+            if (currentPlaylist == null) {
+                view.showMessage("No playlist selected");
+                return;
+            }
+
             pauseCurrentSong();
             selectNextSong();
             playCurrentSong();
@@ -111,19 +163,39 @@ public final class Controller implements ActionListener {
         } else if (e.getActionCommand().equals(ControllerActions.LOOP)) {
             toggleSongLooping();
         } else if (e.getActionCommand().equals(ControllerActions.TOGGLE_FAVORITE)) {
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
             if (isCurrentSongFavorite) {
                 removeCurrentSongFromFavorites();
             } else {
                 addCurrentSongToFavorites();
             }
         } else if (e.getActionCommand().equals(ControllerActions.ADD_TO_FAVORITES)) {
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
             if (!isCurrentSongFavorite) {
                 addCurrentSongToFavorites();
             }
         } else if (e.getActionCommand().equals(ControllerActions.ADD_TO_PLAYLIST)) {
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
             addCurrentSongToPlaylist();
         } else if (e.getActionCommand().equals(ControllerActions.OPEN_SONG)) {
-            // Note : To do
+            // Note : To do (Sacha)
             File songFile = view.openFile("Audio file (*.mp3)", "mp3");
 
             if (songFile != null) {
@@ -132,37 +204,35 @@ public final class Controller implements ActionListener {
                 // Note : Temporary
                 System.out.println("Song opened : " + songFile.getAbsolutePath());
             }
-        } else if (e.getActionCommand().equals(ControllerActions.CREATE_BACKUP)) {
-            // Note : To do
+        } else if (e.getActionCommand().equals(ControllerActions.EXPORT_SONG)) {
+            String newFilename = view.saveFile();
 
-            // Export all app data
+            if (newFilename != null) {
+                daoPlaylist.exportSong(currentSong, newFilename);
+            }
         } else if (e.getActionCommand().equals(ControllerActions.REMOVE_SONG_FROM_FAVORITES)) {
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
             if (isCurrentSongFavorite) {
                 removeCurrentSongFromFavorites();
                 updateSongPanel();
             }
         } else if (e.getActionCommand().equals(ControllerActions.REMOVE_SONG_FROM_PLAYLIST)) {
+            if (currentSong == null) {
+                view.showMessage("No song selected");
+                return;
+            }
+
             removeCurrentSongFromPlaylist();
         } else if (e.getActionCommand().equals(ControllerActions.CREATE_PLAYLIST)) {
             createPlaylist();
         } else if (e.getActionCommand().equals(ControllerActions.DELETE_PLAYLIST)) {
             deletePlaylist();
-        } else if (e.getActionCommand().equals(ControllerActions.EXPORT_PLAYLIST)) {
-            // Note : to do
-
-            // Export the current playlist
-
-            // Note : Temporary
-            System.out.println("Export playlist triggered");
-        } else if (e.getActionCommand().equals(ControllerActions.IMPORT_PLAYLIST)) {
-            // Note : to do
-
-            // Import a playlist
-
-            // Note : Temporary
-            System.out.println("Import playlist triggered");
         } else if (e.getActionCommand().equals(ControllerActions.SEARCH_SONG)) {
-            // Note : To do
+            // Note : To do (Sacha)
 
             // Retrieve the word to search for
             // Search for all songs containing the given word
@@ -173,17 +243,20 @@ public final class Controller implements ActionListener {
         } else if (e.getActionCommand().equals(ControllerActions.PLAY_SELECTED_SONG)) {
             // Retrieve the song selected by the user
             int songId = (int) e.getSource();
-            Song song = daoPlaylist.getSongById(songId);
+            Song selectedSong = daoPlaylist.getSongById(songId);
 
-            if (song != null) {
+            if (selectedSong != null) {
                 // Set the current song and play it
-                currentSong = song;
+                currentSong = selectedSong;
                 isCurrentSongFavorite = daoPlaylist.isSongInFavoritesPlaylist(currentSong);
-                daoPlaylist.setLastPlayedSong(song);
+                daoPlaylist.setLastPlayedSong(selectedSong);
                 playCurrentSong();
             } else {
                 view.showMessage("Song not found");
             }
+        } else if (e.getActionCommand().equals(ControllerActions.EXIT_APP)) {
+            stop();
+            clearResourcesAndExit();
         } else {
             view.showMessage("Button not implemented !");
         }
@@ -199,7 +272,8 @@ public final class Controller implements ActionListener {
 
             // Clicked on 'Cancel' or closed the dialog
             if (credentials.isCancellingRequest()) {
-                System.exit(0);
+                stop();
+                clearResourcesAndExit();
             }
 
             // Create an account or log in to an existing account
@@ -213,10 +287,14 @@ public final class Controller implements ActionListener {
                     isAuthenticated = true;
                 }
             } else {
-                isAuthenticated = authenticator.authenticate(credentials.getUsername(), credentials.getPassword());
+                if (authenticator.isLoginExists(credentials.getUsername())) {
+                    isAuthenticated = authenticator.authenticate(credentials.getUsername(), credentials.getPassword());
 
-                if (!isAuthenticated) {
-                    view.showMessage("Password incorrect");
+                    if (!isAuthenticated) {
+                        view.showMessage("Password incorrect");
+                    }
+                } else {
+                    view.showMessage("User doesn't exist");
                 }
             }
         } while (!isAuthenticated);
@@ -238,12 +316,17 @@ public final class Controller implements ActionListener {
         view.stop();
     }
 
+    public void clearResourcesAndExit() {
+        musicPlayer.release();
+        view.dispose();
+        System.exit(0);
+    }
+
     public void updateToHome() {
         view.updateHomePanel(daoPlaylist.getRecentPlaylistsList(Constants.RECENT_PLAYLIST_MINUTES), daoPlaylist.getPlaylistsList());
         view.showHome();
         currentView = Constants.HOME;
     }
-
 
     public void updateToSearch() {
         view.updateSearchPanel(new ArrayList<Song>());
@@ -261,37 +344,36 @@ public final class Controller implements ActionListener {
         currentView = Constants.PLAYLIST;
     }
 
-    public void openSettings() {
-        // Retrieve user pseudo and password
-        Settings settings = view.showAndGetSettings(daoUser.getCurrentUser().getPseudo(), daoUser.getCurrentUser().getPassword());
+    public void openAndUpdateSettings() {
+        try {
+            // Retrieve user pseudo and password
+            Settings settings = view.showAndGetSettings(daoUser.getCurrentUser().getPseudo(), daoUser.getCurrentUser().getPassword());
 
-        if (settings != null) {
-            // If the user wants to delete all data
-            if (settings.isDeletingAllData()) {
-                // Delete playlists file
-                daoPlaylist.deleteAllCurrentUserData();
-                // Delete user from password file
-                authenticator.removeUser(daoUser.getCurrentUser().getPseudo());
-                // Delete user from users file
-                daoUser.removeUserById(daoUser.getCurrentUser().getId());
-                System.exit(0);
+            if (settings != null) {
+                // If the user wants to delete all data
+                if (settings.isDeletingAllData()) {
+                    // Delete playlists file
+                    daoPlaylist.deleteAllCurrentUserData();
+                    // Delete user from password file
+                    authenticator.removeUser(daoUser.getCurrentUser().getPseudo());
+                    // Delete user from users file
+                    daoUser.removeUserById(daoUser.getCurrentUser().getId());
+                    System.exit(0);
+                }
+
+                // If the user wants to change his pseudo or password
+                // Change users password file
+                authenticator.changeUserPassword(daoUser.getCurrentUser().getPseudo(), settings.getUserPassword());
+                authenticator.changeUserPseudo(daoUser.getCurrentUser().getPseudo(), settings.getUserPseudo());
+                // Change users file
+                daoUser.updateUserById(daoUser.getCurrentUser().getId(), settings.getUserPseudo(), settings.getUserPassword());
             }
-
-            // If the user wants to change his pseudo or password
-            // Change users password file
-            authenticator.changeUserPassword(daoUser.getCurrentUser().getPseudo(), settings.getUserPassword());
-            authenticator.changeUserPseudo(daoUser.getCurrentUser().getPseudo(), settings.getUserPseudo());
-            // Change users file
-            daoUser.updateUserById(daoUser.getCurrentUser().getId(), settings.getUserPseudo(), settings.getUserPassword());
+        } catch (Exception e) {
+            view.showMessage(e.getMessage());
         }
     }
 
     public void showSongDetails() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
         // Format the added date
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDateTime = currentSong.getAddedDate().format(formatter);
@@ -301,7 +383,7 @@ public final class Controller implements ActionListener {
                 currentSong.getArtist(),
                 daoPlaylist.getSongPlaylist(currentSong).getTitle(),
                 formattedDateTime,
-                currentSong.getDurationToString());
+                currentSong.getFormattedDuration());
 
         // Update current song with new information
         currentSong.setTitle(songDetails.getSongTitle());
@@ -320,19 +402,19 @@ public final class Controller implements ActionListener {
     }
 
     public void showAndUpdatePlaylistSettings() {
-        // Retrieve playlist data
-        if (currentPlaylist == null) {
-            view.showMessage("No playlist selected");
-            return;
-        }
-
         try {
-            PlaylistSettings playlistSettings = view.showAndGetPlaylistSettings(currentPlaylist.getTitle(), daoUser.getCurrentUser().getPseudo());
+            PlaylistSettings playlistSettings = view.showAndGetPlaylistSettings(
+                    currentPlaylist.getTitle(),
+                    daoUser.getCurrentUser().getPseudo(),
+                    daoPlaylist.canPlaylistBeRenamed(currentPlaylist.getTitle()),
+                    daoPlaylist.canPlaylistBeDeleted(currentPlaylist.getTitle())
+            );
 
             if (playlistSettings != null) {
                 // If the user wants to delete the playlist
                 if (playlistSettings.isDeletingPlaylist()) {
                     daoPlaylist.removePlaylist(currentPlaylist.getTitle());
+                    daoPlaylist.savePlaylistsToFile();
 
                     // Update the UI
                     if ((currentView.equals(Constants.PLAYLIST)) || currentView.equals(Constants.HOME)) {
@@ -340,9 +422,15 @@ public final class Controller implements ActionListener {
                     }
 
                     currentPlaylist = null;
-                } else { // If the user wants to update the playlist
-                    daoPlaylist.changePlaylistTitle(currentPlaylist.getTitle(), playlistSettings.getPlaylistName());
-                    currentPlaylist = daoPlaylist.getPlaylistByName(playlistSettings.getPlaylistName());
+
+                    return;
+                }
+
+                // If the user wants to update the playlist
+                if (!currentPlaylist.getTitle().equals(playlistSettings.getPlaylistTitle())) {
+                    daoPlaylist.changePlaylistTitle(currentPlaylist.getTitle(), playlistSettings.getPlaylistTitle());
+                    currentPlaylist = daoPlaylist.getPlaylistByName(playlistSettings.getPlaylistTitle());
+                    daoPlaylist.savePlaylistsToFile();
 
                     // Update the UI
                     if (currentView.equals(Constants.PLAYLIST)) {
@@ -351,8 +439,6 @@ public final class Controller implements ActionListener {
                         updateToHome();
                     }
                 }
-
-                daoPlaylist.savePlaylistsToFile();
             }
         } catch (Exception e) {
             view.showMessage(e.getMessage());
@@ -372,7 +458,7 @@ public final class Controller implements ActionListener {
             view.updateSongPanel(currentSong.getTitle(),
                     currentSong.getArtist(),
                     null, // Note : Temporary
-                    currentSong.getDurationToString(),
+                    currentSong.getFormattedDuration(),
                     formatDuration(remainingSongDuration),
                     formatDuration(elapsedSongDuration),
                     isCurrentSongFavorite);
@@ -384,12 +470,7 @@ public final class Controller implements ActionListener {
     }
 
     public void playCurrentSong() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
-        // Note : To continue
+        // Note : To continue (Sacha)
         // Play the current song playing with the Music player
         isCurrentSongPlaying = true;
 
@@ -397,12 +478,7 @@ public final class Controller implements ActionListener {
     }
 
     public void pauseCurrentSong() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
-        // Note : To continue
+        // Note : To continue (Sacha)
         // Pause the current song playing with the Music player
         isCurrentSongPlaying = false;
 
@@ -410,12 +486,7 @@ public final class Controller implements ActionListener {
     }
 
     public void resumeCurrentSong() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
-        // Note : To continue
+        // Note : To continue (Sacha)
         // Resume the current song playing with the Music player
         isCurrentSongPlaying = true;
 
@@ -425,8 +496,6 @@ public final class Controller implements ActionListener {
     public void toggleRandomSongChooser() {
         isCurrentSongChooserRandom = !isCurrentSongChooserRandom;
 
-        // Note : To continue ?
-
         // Update the UI
         updateSongActionsPanel();
     }
@@ -434,25 +503,11 @@ public final class Controller implements ActionListener {
     public void toggleSongLooping() {
         isCurrentSongLooping = !isCurrentSongLooping;
 
-        // Note : To continue ?
-
         // Update the UI
         updateSongActionsPanel();
     }
 
     public void selectPreviousSong() {
-        // If there is no song selected
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
-        // If there is no playlist selected
-        if (currentPlaylist == null) {
-            view.showMessage("No playlist selected");
-            return;
-        }
-
         // If the current mode is random
         if (isCurrentSongChooserRandom) {
             return;
@@ -466,18 +521,6 @@ public final class Controller implements ActionListener {
     }
 
     public void selectNextSong() {
-        // If there is no song selected
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
-        // If there is no playlist selected
-        if (currentPlaylist == null) {
-            view.showMessage("No playlist selected");
-            return;
-        }
-
         // Choose a new song
         Playlist currentPlaylist = daoPlaylist.getSongPlaylist(currentSong);
 
@@ -501,11 +544,6 @@ public final class Controller implements ActionListener {
     }
 
     public void addCurrentSongToFavorites() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
         try {
             // Remove current song from the current playlist
             daoPlaylist.moveSongToPlaylist(currentSong, daoPlaylist.getSongPlaylist(currentSong), daoPlaylist.getPlaylistByName("Favorites"));
@@ -526,11 +564,6 @@ public final class Controller implements ActionListener {
     }
 
     public void removeCurrentSongFromFavorites() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
         // Remove current song from the Favorites playlist
         try {
             if (!daoPlaylist.getSongPlaylist(currentSong).getTitle().equals("Favorites")) {
@@ -559,11 +592,6 @@ public final class Controller implements ActionListener {
     }
 
     public void addCurrentSongToPlaylist() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
         try {
             ArrayList<String> playlistTitleList = daoPlaylist.getPlaylistsTitleList();
 
@@ -586,11 +614,6 @@ public final class Controller implements ActionListener {
     }
 
     public void removeCurrentSongFromPlaylist() {
-        if (currentSong == null) {
-            view.showMessage("No song selected");
-            return;
-        }
-
         try {
             daoPlaylist.moveSongToPlaylist(currentSong, daoPlaylist.getSongPlaylist(currentSong), daoPlaylist.getPlaylistByName("Unclassed songs"));
             daoPlaylist.savePlaylistsToFile();
@@ -642,14 +665,19 @@ public final class Controller implements ActionListener {
                     }
                 }
 
+                // Update currentSong if necessary
+                if (currentSong != null && daoPlaylist.getSongPlaylist(currentSong).getTitle().equals(playlistToDelete)) {
+                    currentSong = null;
+                }
+
+                // Update currentPlaylist if necessary
+                if (currentPlaylist != null && currentPlaylist.getTitle().equals(playlistToDelete)) {
+                    currentPlaylist = null;
+                }
+
                 // Delete playlist
                 daoPlaylist.removePlaylist(playlistToDelete);
                 daoPlaylist.savePlaylistsToFile();
-
-                if (currentPlaylist.getTitle().equals(playlistToDelete)) {
-                    currentPlaylist = null;
-                    // Note : Verify if the current song is in this playlist ?
-                }
 
                 // Update the UI
                 if ((currentView.equals(Constants.PLAYLIST) && currentPlaylist.getTitle().equals(playlistToDelete)) || currentView.equals(Constants.HOME)) {

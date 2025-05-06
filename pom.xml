@@ -31,22 +31,16 @@
 
         <!-- Jaudiotagger -->
         <dependency>
-            <groupId>org</groupId>
-            <artifactId>jaudiotagger</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
             <version>3.0.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj -->
+        <!-- vlcj -->
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj</artifactId>
-            <version>5.0.0-M4</version>
+            <version>4.7.1</version>
         </dependency>
     </dependencies>
 </project>

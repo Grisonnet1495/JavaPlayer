@@ -4,8 +4,12 @@ import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.Playlist;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 public class JPanelHome extends JPanel {
@@ -53,7 +57,7 @@ public class JPanelHome extends JPanel {
         } else {
             for (Playlist p : playlistsList) {
                 // Creation of the components
-                JPanel playlistButtonPanel = createButtonPanel(p.getTitle());
+                JPanel playlistButtonPanel = createButtonPanel(p);
 
                 recentPlaylistsContentPanel.add(playlistButtonPanel);
             }
@@ -70,7 +74,7 @@ public class JPanelHome extends JPanel {
             allPlaylistsContentPanel.add(noAllPlaylistsLabel);
         } else {
             for (Playlist p : playlistsList) {
-                JPanel playlistButtonPanel = createButtonPanel(p.getTitle());
+                JPanel playlistButtonPanel = createButtonPanel(p);
                 allPlaylistsContentPanel.add(playlistButtonPanel);
             }
         }
@@ -79,13 +83,32 @@ public class JPanelHome extends JPanel {
         allPlaylistsContentPanel.repaint();
     }
 
-    JPanel createButtonPanel(String playlistTitle) {
+    JPanel createButtonPanel(Playlist playlist) {
         // Creation of the components
         JPanel playlistButtonPanel = new JPanel();
         playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
-        JButton playlistButton = new JButton(playlistTitle.substring(0, 1));
-        JLabel playlistLabel = new JLabel(playlistTitle);
 
+        JButton playlistButton;
+
+        // Set the icon of the button
+        byte[] buttonIcon = playlist.getIcon();
+        if (buttonIcon != null) {
+            try {
+                ByteArrayInputStream bais = new ByteArrayInputStream(buttonIcon);
+                BufferedImage bufferedImage = ImageIO.read(bais);
+                playlistButton = new JButton();
+                playlistButton.setIcon(new ImageIcon(bufferedImage));
+            } catch (Exception e) {
+                throw new RuntimeException("Error while loading the playlist icon", e);
+            }
+        } else {
+            playlistButton = new JButton(playlist.getTitle().substring(0, 1));
+        }
+
+        // Set the playlist label
+        JLabel playlistLabel = new JLabel(playlist.getTitle());
+
+        // Add the button panel to the all playlists content panel
         allPlaylistsContentPanel.add(playlistButtonPanel);
 
         // Setup of the components
@@ -105,12 +128,14 @@ public class JPanelHome extends JPanel {
         allPlaylistsContentPanel.revalidate();
         allPlaylistsContentPanel.repaint();
 
-        playlistButton.setActionCommand(ControllerActions.PLAYLIST_VIEW);
-        playlistButton.addActionListener(controller);
         playlistButton.addActionListener(e -> {
-            selectedPlaylistTitle = playlistTitle;
-        });
+            selectedPlaylistTitle = playlist.getTitle();
 
+            if (controller != null) {
+                ActionEvent event = new ActionEvent(playlist.getId(), ActionEvent.ACTION_PERFORMED, ControllerActions.PLAYLIST_VIEW);
+                controller.actionPerformed(event);
+            }
+        });
 
         return playlistButtonPanel;
     }

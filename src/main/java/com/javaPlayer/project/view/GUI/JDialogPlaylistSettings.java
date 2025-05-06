@@ -25,7 +25,7 @@ public class JDialogPlaylistSettings extends JDialog {
     private String playlistName = null;
 
 
-    public JDialogPlaylistSettings(JFrame parent, boolean modal, String playlistTitle, String playlistOwner) {
+    public JDialogPlaylistSettings(JFrame parent, boolean modal, String playlistTitle, String playlistOwner, boolean canPlaylistBeRenamed, boolean canPlaylistBeDeleted) {
         super(parent, "Playlist settings", modal);
         this.setContentPane(mainPanel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -38,6 +38,15 @@ public class JDialogPlaylistSettings extends JDialog {
         int x = (screenSize.width - this.getWidth()) / 2;
         int y = (screenSize.height - this.getHeight()) / 2;
         this.setLocation(x, y);
+
+        if (!canPlaylistBeRenamed) {
+            playlistNameTextField.setEnabled(false);
+        }
+
+        if (!canPlaylistBeDeleted) {
+            deletePlaylistButton.setEnabled(false);
+            acceptConsequencesCheckBox.setEnabled(false);
+        }
 
         // Add action listeners
         saveButton.addActionListener(e -> {
@@ -54,8 +63,8 @@ public class JDialogPlaylistSettings extends JDialog {
             if (acceptConsequencesCheckBox.isSelected()) {
                 isDeletingPlaylist = true;
                 deletePlaylistButton.setText("Please save to confirm...");
-                playlistNameTextField.setEnabled(false);
                 acceptConsequencesCheckBox.setEnabled(false);
+                playlistNameTextField.setEnabled(false);
             }
         });
 

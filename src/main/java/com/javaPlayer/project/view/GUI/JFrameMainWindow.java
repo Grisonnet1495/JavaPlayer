@@ -4,17 +4,22 @@ import com.formdev.flatlaf.themes.*;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.*;
-import com.javaPlayer.project.view.ViewMainWindow;
-import org.jaudiotagger.tag.datatype.Artwork;
+import com.javaPlayer.project.view.IViewMainWindow;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class JFrameMainWindow extends JFrame implements ViewMainWindow {
+public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     // Main panel
     private JPanel mainPanel;
 
@@ -25,19 +30,18 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private final JMenu songMenu;
     private final JMenu playlistMenu;
     private final JMenuItem openSongMenuItem;
-    private final JMenuItem createBackupMenuItem;
     private final JMenuItem accountMenuItem;
     private final JMenuItem settingsMenuItem;
+    private final JMenuItem exitMenuItem;
     private final JMenuItem addSongToFavoritesMenuItem;
     private final JMenuItem removeSongFromFavoritesMenuItem;
     private final JMenuItem addSongToPlaylistMenuItem;
     private final JMenuItem removeSongFromPlaylistMenuItem;
     private final JMenuItem searchSongMenuItem;
+    private final JMenuItem exportSongMenuItem;
     private final JMenuItem createPlaylistMenuItem;
     private final JMenuItem deletePlaylistMenuItem;
     private final JMenuItem editPlaylistMenuItem;
-    private final JMenuItem importPlaylistMenuItem;
-    private final JMenuItem exportPlaylistMenuItem;
 
 
     // Left Menu Panel
@@ -76,15 +80,16 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     private JPanelHome homePanel = new JPanelHome();
     private JPanelPlaylist playlistPanel = new JPanelPlaylist();
     private JPanelSearch searchPanel = new JPanelSearch();
-    private boolean isSongFavorite;
 
     private Controller controller;
-//    private User user;
 
     public JFrameMainWindow() {
         // Set the window
         super("JavaPlayer - Playlist");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/app_icon.png"))).getImage());
+
         this.setSize(1200,1000);
         this.setMinimumSize(new Dimension(1200, 1000));
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -98,7 +103,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
         // Set the different menus
         fileMenu = new JMenu("Files");
-        editMenu = new JMenu ("Edit"); // Note : Useful ?
+        editMenu = new JMenu ("Edit");
         songMenu = new JMenu ("Song");
         playlistMenu = new JMenu ("Playlist");
         menuBar.add(fileMenu);
@@ -108,15 +113,15 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
         // Set the menu items for the 'Files' menu
         openSongMenuItem = new JMenuItem("Open file");
-        createBackupMenuItem = new JMenuItem("Create a backup");
         fileMenu.add(openSongMenuItem);
-        fileMenu.add(createBackupMenuItem);
 
         // Set the menu items for the 'Edit' menu
         accountMenuItem = new JMenuItem("Switch account");
         settingsMenuItem = new JMenuItem("Settings");
+        exitMenuItem = new JMenuItem("Exit");
         editMenu.add(accountMenuItem);
         editMenu.add(settingsMenuItem);
+        editMenu.add(exitMenuItem);
 
         // Set the menu items for the 'Song' menu
         addSongToFavoritesMenuItem = new JMenuItem("Add to favorites");
@@ -124,23 +129,21 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         addSongToPlaylistMenuItem = new JMenuItem("Add to playlist");
         removeSongFromPlaylistMenuItem = new JMenuItem("Remove from playlist");
         searchSongMenuItem = new JMenuItem("Search for a song");
+        exportSongMenuItem = new JMenuItem("Export song");
         songMenu.add(addSongToFavoritesMenuItem);
         songMenu.add(removeSongFromFavoritesMenuItem);
         songMenu.add(addSongToPlaylistMenuItem);
         songMenu.add(removeSongFromPlaylistMenuItem);
         songMenu.add(searchSongMenuItem);
+        songMenu.add(exportSongMenuItem);
 
         // Set the menu items for the 'Playlist' menu
         createPlaylistMenuItem = new JMenuItem("Create playlist");
         deletePlaylistMenuItem = new JMenuItem("Delete playlist");
         editPlaylistMenuItem = new JMenuItem("Edit playlist");
-        importPlaylistMenuItem = new JMenuItem("Import playlist");
-        exportPlaylistMenuItem = new JMenuItem("Export playlist");
         playlistMenu.add(createPlaylistMenuItem);
         playlistMenu.add(deletePlaylistMenuItem);
         playlistMenu.add(editPlaylistMenuItem);
-        playlistMenu.add(importPlaylistMenuItem);
-        playlistMenu.add(exportPlaylistMenuItem);
 
         // Delete the border of some buttons
         randomButton.setBorderPainted(false);
@@ -227,12 +230,18 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public void updateSongPanel(String songTitle, String artistPseudo, Icon songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite) {
+    public void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite) {
         songTitleLabel.setText(songTitle);
         songArtistLabel.setText(artistPseudo);
 
         if (songIcon != null) {
-            songIconButton.setIcon(songIcon);
+            try {
+                ByteArrayInputStream bais = new ByteArrayInputStream(songIcon);
+                BufferedImage bufferedImage = ImageIO.read(bais);
+                songIconButton.setIcon(new ImageIcon(bufferedImage));
+            } catch (Exception e) {
+                throw new RuntimeException("Error while loading song icon : " + e.getMessage());
+            }
         } else {
             songIconButton.setText(songTitle.substring(0, 1));
         }
@@ -278,7 +287,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
     @Override
     public void showHome() {
-        cardLayout.show(contentPanel, "Home"); // Note : Do it need to be destroyed and re-created ?
+        cardLayout.show(contentPanel, "Home");
     }
 
     @Override
@@ -326,9 +335,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     }
 
     @Override
-    public PlaylistSettings showAndGetPlaylistSettings(String playlistTitle, String playlistOwner)
-    {
-        JDialogPlaylistSettings playlistSettingsDialog = new JDialogPlaylistSettings(this, true, playlistTitle, playlistOwner);
+    public PlaylistSettings showAndGetPlaylistSettings(String playlistTitle, String playlistOwner, boolean canPlaylistBeRenamed, boolean canPlaylistBeDeleted) {
+        JDialogPlaylistSettings playlistSettingsDialog = new JDialogPlaylistSettings(this, true, playlistTitle, playlistOwner, canPlaylistBeRenamed, canPlaylistBeDeleted);
         playlistSettingsDialog.setVisible(true);
 
         if (playlistSettingsDialog.isSaving()) {
@@ -388,6 +396,18 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
 
     @Override
     public void setController(Controller c) {
+        // Set the controller
+        controller = c;
+
+        // Close window button action
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ControllerActions.EXIT_APP);
+                controller.actionPerformed(event);
+            }
+        });
+
         // Menu items
         openSongMenuItem.setActionCommand(ControllerActions.OPEN_SONG);
         openSongMenuItem.addActionListener(c);
@@ -395,8 +415,8 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         accountMenuItem.addActionListener(c);
         settingsMenuItem.setActionCommand(ControllerActions.SETTINGS);
         settingsMenuItem.addActionListener(c);
-        createBackupMenuItem.setActionCommand(ControllerActions.CREATE_BACKUP);
-        createBackupMenuItem.addActionListener(c);
+        exitMenuItem.setActionCommand(ControllerActions.EXIT_APP);
+        exitMenuItem.addActionListener(c);
         addSongToFavoritesMenuItem.setActionCommand(ControllerActions.ADD_TO_FAVORITES);
         addSongToFavoritesMenuItem.addActionListener(c);
         addSongToPlaylistMenuItem.setActionCommand(ControllerActions.ADD_TO_PLAYLIST);
@@ -407,16 +427,14 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         removeSongFromPlaylistMenuItem.addActionListener(c);
         searchSongMenuItem.setActionCommand(ControllerActions.SEARCH_VIEW);
         searchSongMenuItem.addActionListener(c);
+        exportSongMenuItem.setActionCommand(ControllerActions.EXPORT_SONG);
+        exportSongMenuItem.addActionListener(c);
         createPlaylistMenuItem.setActionCommand(ControllerActions.CREATE_PLAYLIST);
         createPlaylistMenuItem.addActionListener(c);
         deletePlaylistMenuItem.setActionCommand(ControllerActions.DELETE_PLAYLIST);
         deletePlaylistMenuItem.addActionListener(c);
         editPlaylistMenuItem.setActionCommand(ControllerActions.PLAYLIST_SETTINGS);
         editPlaylistMenuItem.addActionListener(c);
-        importPlaylistMenuItem.setActionCommand(ControllerActions.IMPORT_PLAYLIST);
-        importPlaylistMenuItem.addActionListener(c);
-        exportPlaylistMenuItem.setActionCommand(ControllerActions.EXPORT_PLAYLIST);
-        exportPlaylistMenuItem.addActionListener(c);
 
         // Other components
         homeButton.setActionCommand(ControllerActions.HOME_VIEW);
@@ -451,6 +469,7 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
     @Override
     public File openFile(String fileType, String fileExtension) {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Open file");
         FileNameExtensionFilter filter = new FileNameExtensionFilter(fileType, fileExtension);
         fileChooser.setFileFilter(filter);
         int result = fileChooser.showOpenDialog(null); // Note : Does parent could be "this" ?
@@ -466,25 +485,20 @@ public class JFrameMainWindow extends JFrame implements ViewMainWindow {
         return currentFile;
     }
 
-    private void updateSongData(String title, String artist, Artwork albumImage, boolean isSongFavorite) {
-        songTitleLabel.setText(title);
-        songArtistLabel.setText(artist);
+    @Override
+    public String saveFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save file");
 
-        if (albumImage != null) {
-            byte[] imageData = albumImage.getBinaryData();
-            ImageIcon originalIcon = new ImageIcon(imageData);
-            Image scaledImage = originalIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH); // Note : Size need to be changer
+        int userSelection = fileChooser.showSaveDialog(null);
 
-            songIconButton.setIcon(new ImageIcon(scaledImage));
-        } else {
-            songIconButton.setText(title.substring(0, 1));
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+
+            return fileToSave.getAbsolutePath();
         }
 
-        if (isSongFavorite) {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_favorite_song_icon.png"))));
-        } else {
-            addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/favorite_song_icon.png"))));
-        }
+        return null;
     }
 
     public static void main(String[] args) {

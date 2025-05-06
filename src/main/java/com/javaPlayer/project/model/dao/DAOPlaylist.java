@@ -236,7 +236,7 @@ public class DAOPlaylist {
 
     public void removePlaylist(String playlistName) {
         // Verify if the playlist can be deleted
-        if (playlistName.equals("Favorites") || playlistName.equals("Unclassed songs")) {
+        if (!canPlaylistBeDeleted(playlistName)) {
             throw new PlaylistException("This playlist cannot be removed !");
         }
 
@@ -261,7 +261,7 @@ public class DAOPlaylist {
     
     public void changePlaylistTitle(String oldTitle, String newTitle) {
         // Verify if the playlist name can be changed
-        if (oldTitle.equals("Favorites") || oldTitle.equals("Unclassed songs")) {
+        if (!canPlaylistBeRenamed(oldTitle)) {
             throw new PlaylistException("This playlist cannot be renamed !");
         }
 
@@ -277,6 +277,14 @@ public class DAOPlaylist {
 
         // Rename the playlist
         playlistToRename.setTitle(newTitle);
+    }
+
+    public boolean canPlaylistBeRenamed(String playlistName) {
+        return !playlistName.equals("Favorites") && !playlistName.equals("Unclassed songs");
+    }
+
+    public boolean canPlaylistBeDeleted(String playlistName) {
+        return !playlistName.equals("Favorites") && !playlistName.equals("Unclassed songs");
     }
 
     public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
@@ -461,5 +469,12 @@ public class DAOPlaylist {
 
         addSongToPlaylist(newPlaylist, newSong);
         removeSongFromPlaylist(oldPlaylist, song);
+    }
+
+    public void exportSong(Song song, String newFilename) {
+        // To do (Sacha)
+        // Verify if song exists
+        // Verify if the music file exists
+        // Copy the music file to the newFilename
     }
 }

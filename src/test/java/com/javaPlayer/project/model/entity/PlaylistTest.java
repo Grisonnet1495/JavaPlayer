@@ -1,4 +1,4 @@
-//package com.javaPlayer.project.model.entity;
+package com.javaPlayer.project.model.entity;//package com.javaPlayer.project.model.entity;
 //
 //import org.junit.jupiter.api.Test;
 //

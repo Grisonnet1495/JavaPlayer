@@ -63,7 +63,7 @@ public class JPanelPlaylist extends JPanel {
             tableData[i][1] = playlist.getSongList().get(i).getTitle();
             tableData[i][2] = playlist.getSongList().get(i).getArtist();
             tableData[i][3] = playlist.getSongList().get(i).getGenre();
-            tableData[i][4] = playlist.getSongList().get(i).getDurationToString();
+            tableData[i][4] = playlist.getSongList().get(i).getFormattedDuration();
             tableData[i][5] = playlist.getSongList().get(i).getAddedDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
 
@@ -71,8 +71,6 @@ public class JPanelPlaylist extends JPanel {
 
         songTable.setModel(tableModel);
     }
-
-
 
     private void createUIComponents() {
         songTable = new JTablePlaylist(new DefaultTableModel());

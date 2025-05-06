@@ -62,7 +62,6 @@
                 </constraints>
                 <properties>
                   <font size="24"/>
-                  <labelFor value="bbe1"/>
                   <text value="Search for a song"/>
                 </properties>
               </component>
