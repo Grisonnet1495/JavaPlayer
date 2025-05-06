@@ -36,11 +36,17 @@
             <version>2.0.3</version>
         </dependency>
 
-        <!-- BasicPlayer API -->
         <dependency>
-            <groupId>com.googlecode.soundlibs</groupId>
-            <artifactId>basicplayer</artifactId>
-            <version>3.0.0.0</version>
+            <groupId>net.jthink</groupId>
+            <artifactId>jaudiotagger</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj -->
+        <dependency>
+            <groupId>uk.co.caprica</groupId>
+            <artifactId>vlcj</artifactId>
+            <version>5.0.0-M4</version>
         </dependency>
     </dependencies>
 </project>

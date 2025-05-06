@@ -72,6 +72,8 @@ public class JPanelPlaylist extends JPanel {
         songTable.setModel(tableModel);
     }
 
+
+
     private void createUIComponents() {
         songTable = new JTablePlaylist(new DefaultTableModel());
     }

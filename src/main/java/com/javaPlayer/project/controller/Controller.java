@@ -244,6 +244,7 @@ public final class Controller implements ActionListener {
         currentView = Constants.HOME;
     }
 
+
     public void updateToSearch() {
         view.updateSearchPanel(new ArrayList<Song>());
         view.showSearch();
