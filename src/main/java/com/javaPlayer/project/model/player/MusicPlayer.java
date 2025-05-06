@@ -1,96 +1,139 @@
 package com.javaPlayer.project.model.player;
 
-import com.javaPlayer.project.model.entity.SongMetadata;
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import javazoom.jlgui.basicplayer.BasicPlayerException;
+import org.jaudiotagger.tag.images.ArtworkFactory;
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.media.MediaParsedStatus;
+import uk.co.caprica.vlcj.media.Meta;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
+import uk.co.caprica.vlcj.player.base.State;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.datatype.Artwork;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
+
 
 public class MusicPlayer {
-    private BasicPlayer player = new BasicPlayer();
-    private boolean isPaused = false;
-    private File currentFile;
+    private final MediaPlayerFactory mediaPlayerFactory;
+    private final MediaPlayer mediaPlayer;
+    private State state;
+    private static byte[] imageByte = null;
 
     public MusicPlayer() {
-        // Nothing to do
+        mediaPlayerFactory = new MediaPlayerFactory();
+        mediaPlayer = mediaPlayerFactory.mediaPlayers().newMediaPlayer(); // Control the music playback
     }
 
-//    private void openFile(ActionEvent e) {
-//        JFileChooser chooser = new JFileChooser();
-//        int result = chooser.showOpenDialog(null);
-//        if (result == JFileChooser.APPROVE_OPTION) {
-//            currentFile = chooser.getSelectedFile();
-//            getSongMetadata(currentFile);
-//            playAudio();
-//        }
-//    }
+    public SongMetadata getSongMetadata(String filePath) {
+        CountDownLatch latch = new CountDownLatch(1);
+        final SongMetadata[] metadataHolder = new SongMetadata[1];
 
-    private void setCurrentFile(File file) {
-        currentFile = file;
-    }
+        mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            public void mediaParsedChanged(MediaPlayer mediaPlayer, MediaParsedStatus status) {
+                if (status == MediaParsedStatus.DONE) {
+                    String title = mediaPlayer.media().meta().get(Meta.TITLE);
+                    String artist = mediaPlayer.media().meta().get(Meta.ARTIST);
+                    String album = mediaPlayer.media().meta().get(Meta.ALBUM);
+                    String genre = mediaPlayer.media().meta().get(Meta.GENRE);
 
-    private void stopAudio() {
-        try {
-            player.stop();
-            isPaused = false;
-        } catch (BasicPlayerException ex) {
-            ex.printStackTrace();
-        }
-    }
+                    imageByte = imageToBytes(filePath);
 
-    private void playAudio() {
-        try {
-            if (isPaused) {
-                player.resume();
-                isPaused = false;
-            } else {
-                player.open(currentFile);
-                player.play();
+                    metadataHolder[0] = new SongMetadata(title, artist, album, genre, imageByte);
+                    latch.countDown();
+                }
             }
-        } catch (BasicPlayerException ex) {
-            ex.printStackTrace();
-        }
-    }
+        });
 
-    private void pauseAudio() {
+        mediaPlayer.media().prepare(filePath);//call the mediaPlayerEvent
+
         try {
-            player.pause();
-            isPaused = true;
-        } catch (BasicPlayerException ex) {
-            ex.printStackTrace();
+            latch.await(); // wait the parsing finished
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
         }
+
+        return metadataHolder[0];
     }
 
-    private void setVolume(double value) {
+    public static byte[] getImage(String filePath) {
+        return imageToBytes(filePath);
+    }
+
+    public static byte[] imageToBytes(String filePath) {
+        Artwork artwork = null;
         try {
-            player.setGain(value); // Between 0.0 and 1.0
-        } catch (BasicPlayerException ex) {
-            ex.printStackTrace();
+            AudioFile audioFile = AudioFileIO.read(new File(filePath));
+            Tag tag = audioFile.getTag();
+            if (tag != null && tag.getFirstArtwork() != null) {
+                artwork = tag.getFirstArtwork();
+                imageByte = artwork.getBinaryData();
+            } else {
+                File defaultImage = new File("picture/defaultCoverAlbum.png");
+                if (defaultImage.exists()) {
+                    artwork = (Artwork) ArtworkFactory.createArtworkFromFile(defaultImage);
+                    imageByte = artwork.getBinaryData();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return imageByte;
+    }
+
+
+    public void loadAndPlay(String filePath) {
+        state = mediaPlayer.status().state();
+
+        if(state == State.STOPPED || state == State.NOTHING_SPECIAL) {
+            mediaPlayer.media().play(filePath);
+        }
+        else if(state == State.PLAYING) {
+            Stop();
+            mediaPlayer.media().play(filePath);
+        }
+        else if(state == State.PAUSED) {
+            mediaPlayer.controls().play();
         }
     }
 
-//    private SongMetadata getSongMetadata(File file) {
-//        try {
-//            AudioFile audioFile = AudioFileIO.read(file);
-//            Tag tag = audioFile.getTag();
-//
-//            Artwork artwork = tag.getFirstArtwork();
-//
-//            return new SongMetadata(tag.getFirst(org.jaudiotagger.tag.FieldKey.TITLE),
-//                    tag.getFirst(org.jaudiotagger.tag.FieldKey.ARTIST),
-//                    tag.getFirst(org.jaudiotagger.tag.FieldKey.ALBUM) ,
-//                    tag.getFirst(org.jaudiotagger.tag.FieldKey.GENRE),
-//                    artwork
-//            );
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            return null;
-//        }
-//    }
+    public void play() {
+        state = mediaPlayer.status().state();
+        if (state == State.PAUSED || state == State.STOPPED) {
+            mediaPlayer.controls().play();
+        }
+    }
+
+    public void pause() {
+        state = mediaPlayer.status().state();
+        if (state == State.PLAYING) {
+            mediaPlayer.controls().pause();
+        }
+    }
+
+    public void Stop() {
+        state = mediaPlayer.status().state();
+        if(state == State.PAUSED || state == State.PLAYING) {
+            mediaPlayer.controls().stop();
+        }
+    }
+
+    public void Release() {
+        state = mediaPlayer.status().state();
+        if(state == State.PAUSED || state == State.PLAYING) {
+            mediaPlayer.release();
+            mediaPlayerFactory.release();
+        }
+    }
+
+    public boolean isPlaying() {
+        return mediaPlayer.status().isPlaying();
+    }
+
+    public void setVolume(int volume) {
+        mediaPlayer.audio().setVolume(volume);
+    }
 }

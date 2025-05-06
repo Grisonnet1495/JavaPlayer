@@ -1,4 +1,4 @@
-package com.javaPlayer.project.model.entity;
+package com.javaPlayer.project.model.player;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
@@ -7,9 +7,9 @@ public class SongMetadata {
     String artist;
     String album;
     String genre;
-    Artwork albumImage;
+    byte[] albumImage;
 
-    public SongMetadata(String title, String artist, String album, String genre, Artwork albumImage) {
+    public SongMetadata(String title, String artist, String album, String genre, byte[] albumImage) {
         this.title = title;
         this.artist = artist;
         this.album = album;
@@ -33,7 +33,7 @@ public class SongMetadata {
         return genre;
     }
 
-    public Artwork getAlbumImage() {
+    public byte[] getAlbumImage() {
         return albumImage;
     }
 }
