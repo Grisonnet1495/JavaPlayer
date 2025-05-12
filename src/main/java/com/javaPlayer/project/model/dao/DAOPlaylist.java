@@ -3,11 +3,16 @@ package com.javaPlayer.project.model.dao;
 import com.javaPlayer.project.model.exception.PlaylistException;
 import com.javaPlayer.project.model.entity.Playlist;
 import com.javaPlayer.project.model.entity.Song;
+import com.javaPlayer.project.model.player.MusicPlayer;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -22,6 +27,8 @@ public class DAOPlaylist {
     private int currentUserId; // Current user id
     private ArrayList<Playlist> playlistsList; // Current playlists of the user
     private Integer lastPlayedSongId = null; // Id of the current song of the user
+
+
 
     public DAOPlaylist(String playlistsConfigFilename) {
 //        playlistsConfigFilename = new DAOConfig(DefaultFilePath.CONFIG).getConfig(Constants.USER_PLAYLISTS_CONFIG_KEY);
@@ -154,6 +161,9 @@ public class DAOPlaylist {
         try (FileInputStream fis = new FileInputStream(currentUserPlaylistsFileName);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             playlistsList = (ArrayList<Playlist>) ois.readObject();
+            for (Playlist p : playlistsList) {
+                System.out.println(p.getSongList().toString());
+            }
         } catch (FileNotFoundException e) {
             initialisePlaylistsList();
             savePlaylistsToFile();
@@ -224,6 +234,9 @@ public class DAOPlaylist {
         newPlaylist.setId(id);
         playlistsList.add(newPlaylist);
 
+        byte[] defaultPlaylistJacket = loadImageAsBytes("/icons/default_song_icon_black.png");
+        newPlaylist.setIcon(defaultPlaylistJacket);
+
         // Create a new directory for the playlist
         File playlistDataDirectory = new File(currentUserDataDirectory + File.separator + "Playlist_" + newPlaylist.getId());
 
@@ -233,6 +246,21 @@ public class DAOPlaylist {
             }
         }
     }
+
+    private byte[] loadImageAsBytes(String path) {
+        try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Image introuvable : " + path);
+            }
+            BufferedImage bufferedImage = ImageIO.read(is);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lecture image : " + path, e);
+        }
+    }
+
 
     public void removePlaylist(String playlistName) {
         // Verify if the playlist can be deleted
@@ -301,6 +329,19 @@ public class DAOPlaylist {
         return recentPlaylistsTitleList;
     }
 
+    public ArrayList<Song> getPlaylistList() {
+        if (!playlistsList.isEmpty()) {
+            ArrayList<Song> allSong = new ArrayList<>();
+            for (Playlist p : playlistsList) {
+                for (Song song : p.getSongList()) {
+                    allSong.add(song);
+                }
+            }
+            return allSong;
+        }
+        return null;
+    }
+
     public Playlist getPlaylistByName(String playlistName) {
         for (Playlist p : playlistsList) {
             if (p.getTitle().equals(playlistName)) {
@@ -320,6 +361,7 @@ public class DAOPlaylist {
 
         return null;
     }
+
 
     public void removeAllPlaylists() {
         for (Playlist p : playlistsList) {
@@ -431,10 +473,10 @@ public class DAOPlaylist {
 
         // Copy music file to playlist directory
         Path source = Paths.get(song.getFilename());
-        Path destination = Paths.get(currentUserDataDirectory + File.separator + "Playlist_" + playlist.getId() + File.separator + "Song_" + song.getId() + song.getSongFileExtension());
+        Path destination = Paths.get(currentUserDataDirectory + File.separator + "Playlist_" + playlist.getId() + File.separator + "Song_" + song.getId() + "." + song.getSongFileExtension());
 
         try {
-            Files.copy(source, destination);
+            Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new PlaylistException("Cannot copy music file to playlist directory", e);
         }
@@ -445,6 +487,7 @@ public class DAOPlaylist {
         // Add the song to the playlist
         playlist.addSong(song);
     }
+
 
     public void removeSongFromPlaylist(Playlist playlist, Song song) {
         // Delete music file from playlist directory
@@ -458,6 +501,11 @@ public class DAOPlaylist {
 
         // Remove the song from the playlist
         playlist.removeSong(song);
+    }
+
+
+    public void updatePlaylistIcon(Playlist playlist, byte[] icon) {
+        playlist.setIcon(icon);
     }
 
     public void moveSongToPlaylist(Song song, Playlist oldPlaylist, Playlist newPlaylist) {

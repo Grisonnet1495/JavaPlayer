@@ -4,9 +4,13 @@ import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.Playlist;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.time.format.DateTimeFormatter;
 
 public class JPanelPlaylist extends JPanel {
@@ -31,6 +35,8 @@ public class JPanelPlaylist extends JPanel {
         playlistSettingsButton.setActionCommand("PLAYLIST_SETTINGS");
         playlistSettingsButton.addActionListener(c);
 
+
+
         // By ChatGPT
         songTable.getSelectionModel().addListSelectionListener(e -> {
             // If it isn't just a screen update
@@ -53,6 +59,19 @@ public class JPanelPlaylist extends JPanel {
     void updatePlaylist(Playlist playlist) {
         // Update playlist title
         playlistTitleLabel.setText(playlist.getTitle());
+        // Update playlist icon
+        byte[] buttonIcon = playlist.getIcon();
+        if (buttonIcon != null) {
+            try {
+                ByteArrayInputStream bais = new ByteArrayInputStream(buttonIcon);
+                BufferedImage bufferedImage = ImageIO.read(bais);
+                int targetSize = 100;
+                Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
+                playlistSettingsButton.setIcon(new ImageIcon(scaledImage));
+            } catch (Exception e) {
+                throw new RuntimeException("Error while loading the playlist icon", e);
+            }
+        }
 
         // Update song table
         String[] columnTitles = {"N°", "Title", "Artist", "Genre", "Duration", "Added date"};

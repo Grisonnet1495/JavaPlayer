@@ -45,6 +45,7 @@ public interface IViewMainWindow {
     void setController(Controller c);
 
     // Open and save file
-    File openFile(String fileType, String fileExtension);
+    File[] openFile(String fileType, String... fileExtension);
     String saveFile();
+
 }

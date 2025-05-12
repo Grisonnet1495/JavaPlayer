@@ -238,7 +238,10 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream(songIcon);
                 BufferedImage bufferedImage = ImageIO.read(bais);
-                songIconButton.setIcon(new ImageIcon(bufferedImage));
+                int targetSize = 75;
+                Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
+                songIconButton.setIcon(new ImageIcon(scaledImage));
+
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading song icon : " + e.getMessage());
             }
@@ -274,9 +277,9 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         }
 
         if (isPlaying) {
-            pausePlayButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/play_icon.png"))));
-        } else {
             pausePlayButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/pause_icon.png"))));
+        } else {
+            pausePlayButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/play_icon.png"))));
         }
     }
 
@@ -466,23 +469,28 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         playlistPanel.setController(c);
     }
 
+    public JPanelSearch getSearchPanel() {
+        return searchPanel;
+    }
+
     @Override
-    public File openFile(String fileType, String fileExtension) {
+    public File[] openFile(String fileType, String... fileExtension) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Open file");
         FileNameExtensionFilter filter = new FileNameExtensionFilter(fileType, fileExtension);
         fileChooser.setFileFilter(filter);
+        fileChooser.setMultiSelectionEnabled(true);
         int result = fileChooser.showOpenDialog(null); // Note : Does parent could be "this" ?
 
-        File currentFile;
+        File[] selectedFiles;
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            currentFile = fileChooser.getSelectedFile();
+            selectedFiles = fileChooser.getSelectedFiles();
         } else {
-            currentFile = null;
+            selectedFiles = null;
         }
 
-        return currentFile;
+        return selectedFiles;
     }
 
     @Override

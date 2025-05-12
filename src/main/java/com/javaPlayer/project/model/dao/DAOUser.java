@@ -67,6 +67,8 @@ public class DAOUser implements Serializable {
             id++;
         }
 
+        newUser.setId(id);
+
         usersList.add(newUser);
         saveUsersToFile();
     }

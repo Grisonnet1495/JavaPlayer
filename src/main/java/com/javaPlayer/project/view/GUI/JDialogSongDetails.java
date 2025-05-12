@@ -49,6 +49,8 @@ public class JDialogSongDetails extends JDialog {
         if (playlist != null) songPlaylistLabel.setText(playlist);
         if (date != null) songAddedDateLabel.setText(date);
         if (length != null) songDurationLabel.setText(length);
+        songTitle = songTitleTextField.getText();
+        songArtist = songArtistTextField.getText();
     }
 
     public String getSongTitle() {

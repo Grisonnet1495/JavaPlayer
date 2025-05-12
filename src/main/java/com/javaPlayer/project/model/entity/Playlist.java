@@ -1,5 +1,6 @@
 package com.javaPlayer.project.model.entity;
 import com.javaPlayer.project.model.exception.PlaylistException;
+import com.javaPlayer.project.model.player.MusicPlayer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -76,15 +77,6 @@ public class Playlist implements Serializable {
         // Verify if the song already exists in the playlist
         if (songList.stream().anyMatch(list -> list.getId() == song.getId())) {
             throw new PlaylistException("A song with this id already exists !");
-        }
-
-//        byte[] songIcon = MusicPlayer.getSongIcon(song.getFilename());
-        // Note : Temporary
-        byte[] songIcon = null;
-
-        // If it is the first song, set the playlist icon
-        if (songList.isEmpty()) {
-            icon = songIcon;
         }
 
         songList.add(song);

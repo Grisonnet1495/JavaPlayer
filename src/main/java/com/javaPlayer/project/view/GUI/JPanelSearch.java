@@ -3,10 +3,19 @@ package com.javaPlayer.project.view.GUI;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.Song;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.Tag;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -36,16 +45,37 @@ public class JPanelSearch extends JPanel {
         searchTextField.setActionCommand(ControllerActions.SEARCH_SONG);
         searchTextField.addActionListener(c);
 
-        // By ChatGPT
+        //add a listenner at the searchTextField
+        searchTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                notifyChange();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                notifyChange();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                notifyChange();
+            }
+
+            public void notifyChange() {
+                if(controller != null) {
+                    ActionEvent actionEvent = new ActionEvent(searchTextField, ActionEvent.ACTION_PERFORMED, ControllerActions.SEARCH_SONG);
+                    controller.actionPerformed(actionEvent);
+                }
+            }
+        });
+
+        // Sélectionner une chanson
         songResultsTable.getSelectionModel().addListSelectionListener(e -> {
-            // If it isn't just a screen update
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = songResultsTable.getSelectedRow();
-
-                // If a row is selected
                 if (selectedRow != -1) {
                     int songId = (int) songResultsTable.getValueAt(selectedRow, 0);
-
                     if (controller != null) {
                         ActionEvent event = new ActionEvent(songId, ActionEvent.ACTION_PERFORMED, ControllerActions.PLAY_SELECTED_SONG);
                         controller.actionPerformed(event);
@@ -55,7 +85,12 @@ public class JPanelSearch extends JPanel {
         });
     }
 
-    void updateResults(ArrayList<Song> songList) {
+    // Mettre à jour les résultats dans le tableau
+    public void updateResults(ArrayList<Song> songList) {
+        if (songList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Aucune chanson trouvée.", "Avertissement", JOptionPane.WARNING_MESSAGE);
+        }
+
         String[] columnTitles = {"N°", "Title", "Artist", "Genre", "Duration", "Added date"};
         Object[][] tableData = new Object[songList.size()][columnTitles.length];
 
@@ -69,10 +104,14 @@ public class JPanelSearch extends JPanel {
         }
 
         DefaultTableModel tableModel = new DefaultTableModel(tableData, columnTitles);
-
         songResultsTable.setModel(tableModel);
     }
 
+    public String getSearchText() {
+        return searchTextField.getText().trim();//get the text and delete the blank space
+    }
+
+    // Créer un composant personnalisé pour la table des chansons
     private void createUIComponents() {
         songResultsTable = new JTablePlaylist(new DefaultTableModel());
     }

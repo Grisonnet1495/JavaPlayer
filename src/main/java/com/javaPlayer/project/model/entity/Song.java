@@ -1,11 +1,16 @@
 package com.javaPlayer.project.model.entity;
 
 import com.javaPlayer.project.model.exception.SongException;
+import com.javaPlayer.project.view.IViewMainWindow;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Song implements Serializable {
 //    private static int currentSongId = 0;
@@ -16,6 +21,7 @@ public class Song implements Serializable {
     private Duration duration;
     private LocalDateTime addedDate;
     private String filename;
+    private IViewMainWindow view;
 
     public Song(String title, String artist, String genre, Duration duration, LocalDateTime addedDate, String filename) {
         this.id = 0;

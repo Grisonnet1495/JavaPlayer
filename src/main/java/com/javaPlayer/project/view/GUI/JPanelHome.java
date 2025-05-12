@@ -84,20 +84,22 @@ public class JPanelHome extends JPanel {
     }
 
     JPanel createButtonPanel(Playlist playlist) {
-        // Creation of the components
         JPanel playlistButtonPanel = new JPanel();
         playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
 
         JButton playlistButton;
 
-        // Set the icon of the button
+        int targetSize = 212;
+        int panelSize = 250;
+
         byte[] buttonIcon = playlist.getIcon();
         if (buttonIcon != null) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream(buttonIcon);
                 BufferedImage bufferedImage = ImageIO.read(bais);
+                Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
                 playlistButton = new JButton();
-                playlistButton.setIcon(new ImageIcon(bufferedImage));
+                playlistButton.setIcon(new ImageIcon(scaledImage));
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading the playlist icon", e);
             }
@@ -105,29 +107,31 @@ public class JPanelHome extends JPanel {
             playlistButton = new JButton(playlist.getTitle().substring(0, 1));
         }
 
-        // Set the playlist label
         JLabel playlistLabel = new JLabel(playlist.getTitle());
-
-        // Add the button panel to the all playlists content panel
-        allPlaylistsContentPanel.add(playlistButtonPanel);
-
-        // Setup of the components
-        playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Dimension size = new Dimension(180, 230);
-        playlistButton.setPreferredSize(size);
-        playlistButton.setMaximumSize(size);
-        playlistButton.setMinimumSize(size);
-
         playlistLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         playlistLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        playlistLabel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
-        // Adding the components
+        playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Dimension buttonSize = new Dimension(targetSize, targetSize);
+        playlistButton.setPreferredSize(buttonSize);
+        playlistButton.setMaximumSize(buttonSize);
+        playlistButton.setMinimumSize(buttonSize);
+        playlistButtonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
+
+
+        playlistButtonPanel.setPreferredSize(new Dimension(panelSize, panelSize));
+        playlistButtonPanel.setMaximumSize(new Dimension(panelSize, panelSize));
+        playlistButtonPanel.setMinimumSize(new Dimension(panelSize, panelSize));
+
         playlistButtonPanel.add(playlistButton);
         playlistButtonPanel.add(playlistLabel);
 
+        allPlaylistsContentPanel.add(playlistButtonPanel);
         allPlaylistsContentPanel.revalidate();
         allPlaylistsContentPanel.repaint();
 
+        // Action du bouton
         playlistButton.addActionListener(e -> {
             selectedPlaylistTitle = playlist.getTitle();
 
