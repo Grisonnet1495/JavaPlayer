@@ -50,61 +50,6 @@ public class DAOPlaylist implements IDAOPlaylist {
 //        this.lastPlayedSongId = song.getId();
 //    }
 
-    public Song getFirstSong() {
-        for (Playlist p : playlistsList) {
-            ArrayList<Song> songList = p.getSongList(); // ou getSongList()
-            if (songList != null && !songList.isEmpty()) {
-                return songList.get(0);
-            }
-        }
-
-        return null;
-    }
-
-    public Song getNextSong(Song currentSong, Playlist currentPlaylist ) {
-        // Verify parameters
-        if (currentSong == null || currentPlaylist == null) return null;
-
-        // Verify if there is songs in the playlist
-        List<Song> songList = currentPlaylist.getSongList();
-        if (songList == null || songList.isEmpty()) return null;
-
-        // Get the newt song
-        int index = songList.indexOf(currentSong);
-        if (index == -1) return null;
-
-        return songList.get((index + 1) % songList.size());
-    }
-
-    public Song getPreviousSong(Song currentSong, Playlist currentPlaylist) {
-        // Verify parameters
-        if (currentSong == null || currentPlaylist == null) return null;
-
-        // Verify if there is songs in the playlist
-        List<Song> songList = currentPlaylist.getSongList();
-        if (songList == null || songList.isEmpty()) return null;
-
-        // Get the newt song
-        int index = songList.indexOf(currentSong);
-        if (index == -1) return null;
-
-        return songList.get((index - 1 + songList.size()) % songList.size());
-    }
-
-    public Song getRandomSong(Playlist playlist) {
-        // Verify parameters
-        if (playlist == null) {
-            return null;
-        }
-
-        // Get a random song
-        int songCount = playlist.getSongList().size();
-        Random random = new Random();
-        int randomSong = random.nextInt(songCount);
-
-        return playlist.getSongList().get(randomSong);
-    }
-
     public void loadPlaylistsConfigFile(int userId) {
         currentUserId = userId;
 
@@ -215,6 +160,40 @@ public class DAOPlaylist implements IDAOPlaylist {
         return recentPlaylistsList;
     }
 
+    public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
+        ArrayList<String> recentPlaylistsTitleList = new ArrayList<>();
+
+        LocalDateTime startTime = LocalDateTime.now().minusMinutes(minutes);
+
+        for (Playlist p : playlistsList) {
+            if (p.getLastViewedDate().isAfter(startTime)) {
+                recentPlaylistsTitleList.add(p.getTitle());
+            }
+        }
+
+        return recentPlaylistsTitleList;
+    }
+
+    public Playlist getPlaylistByName(String playlistName) {
+        for (Playlist p : playlistsList) {
+            if (p.getTitle().equals(playlistName)) {
+                return p;
+            }
+        }
+
+        return null;
+    }
+
+    public Playlist getPlaylistById(int playlistId) {
+        for (Playlist p : playlistsList) {
+            if (p.getId() == playlistId) {
+                return p;
+            }
+        }
+
+        return null;
+    }
+
     public void createPlaylist(String playlistTitle) {
         if (playlistTitle == null) {
             throw new PlaylistException("Playlist title cannot be null !");
@@ -246,20 +225,6 @@ public class DAOPlaylist implements IDAOPlaylist {
         // Set the new id and add the playlist
         newPlaylist.setId(id);
         playlistsList.add(newPlaylist);
-    }
-
-    public byte[] loadImageAsBytes(String path) {
-        try (InputStream is = getClass().getResourceAsStream(path)) {
-            if (is == null) {
-                throw new IllegalArgumentException("Cannot find following file : " + path);
-            }
-            BufferedImage bufferedImage = ImageIO.read(is);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while reading the following file : " + path, e);
-        }
     }
 
     public void removePlaylist(Playlist playlist) {
@@ -307,71 +272,17 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
 
         Playlist playlistToRename = getPlaylistByName(oldTitle);
-        
+
         if (playlistToRename == null) {
             throw new PlaylistException("Playlist not found !");
         }
-        
+
         if (getPlaylistByName(newTitle) != null) {
             throw new PlaylistException("A playlist with this name already exists !");
         }
 
         // Rename the playlist
         playlistToRename.setTitle(newTitle);
-    }
-
-    public boolean canPlaylistBeRenamed(String playlistName) {
-        return !playlistName.equals(Constants.FAVORITES_PLAYLIST) && !playlistName.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
-    }
-
-    public boolean canPlaylistBeDeleted(String playlistTitle) {
-        return !playlistTitle.equals(Constants.FAVORITES_PLAYLIST) && !playlistTitle.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
-    }
-
-    public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
-        ArrayList<String> recentPlaylistsTitleList = new ArrayList<>();
-
-        LocalDateTime startTime = LocalDateTime.now().minusMinutes(minutes);
-
-        for (Playlist p : playlistsList) {
-            if (p.getLastViewedDate().isAfter(startTime)) {
-                recentPlaylistsTitleList.add(p.getTitle());
-            }
-        }
-
-        return recentPlaylistsTitleList;
-    }
-
-    public ArrayList<Song> getAllSongs() {
-        ArrayList<Song> allSongs = new ArrayList<>();
-
-        for (Playlist p : playlistsList) {
-            for (Song song : p.getSongList()) {
-                allSongs.add(song);
-            }
-        }
-
-        return allSongs;
-    }
-
-    public Playlist getPlaylistByName(String playlistName) {
-        for (Playlist p : playlistsList) {
-            if (p.getTitle().equals(playlistName)) {
-                return p;
-            }
-        }
-
-        return null;
-    }
-
-    public Playlist getPlaylistById(int playlistId) {
-        for (Playlist p : playlistsList) {
-            if (p.getId() == playlistId) {
-                return p;
-            }
-        }
-
-        return null;
     }
 
     public void deleteAllCurrentUserData() {
@@ -415,6 +326,26 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
     }
 
+    public boolean canPlaylistBeRenamed(String playlistName) {
+        return !playlistName.equals(Constants.FAVORITES_PLAYLIST) && !playlistName.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
+    }
+
+    public boolean canPlaylistBeDeleted(String playlistTitle) {
+        return !playlistTitle.equals(Constants.FAVORITES_PLAYLIST) && !playlistTitle.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
+    }
+
+    public ArrayList<Song> getAllSongs() {
+        ArrayList<Song> allSongs = new ArrayList<>();
+
+        for (Playlist p : playlistsList) {
+            for (Song song : p.getSongList()) {
+                allSongs.add(song);
+            }
+        }
+
+        return allSongs;
+    }
+
     public Song getSongById(int songId) {
         for (Playlist p : playlistsList) {
             for (Song s : p.getSongList()) {
@@ -441,18 +372,6 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
 
         return null;
-    }
-
-    public boolean isSongInFavoritesPlaylist(Song song) {
-        if (song == null) {
-            throw new PlaylistException("Song cannot be null !");
-        }
-
-        if (getSongPlaylist(song).getTitle().equals("Favorites")) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public void importSongToPlaylist(Playlist playlist, Song song) {
@@ -523,9 +442,17 @@ public class DAOPlaylist implements IDAOPlaylist {
         newPlaylist.addSong(song);
     }
 
-//    public void updatePlaylistIcon(Playlist playlist, byte[] icon) {
-//        playlist.setIcon(icon);
-//    }
+    public boolean isSongInFavoritesPlaylist(Song song) {
+        if (song == null) {
+            throw new PlaylistException("Song cannot be null !");
+        }
+
+        if (getSongPlaylist(song).getTitle().equals("Favorites")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void exportSong(Song song, String newFilename) {
         // To do (Sacha)
@@ -533,4 +460,77 @@ public class DAOPlaylist implements IDAOPlaylist {
         // Verify if the music file exists
         // Copy the music file to the newFilename
     }
+
+    public Song getFirstSong() {
+        for (Playlist p : playlistsList) {
+            ArrayList<Song> songList = p.getSongList(); // ou getSongList()
+            if (songList != null && !songList.isEmpty()) {
+                return songList.get(0);
+            }
+        }
+
+        return null;
+    }
+
+    public Song getNextSong(Song currentSong, Playlist currentPlaylist ) {
+        // Verify parameters
+        if (currentSong == null || currentPlaylist == null) return null;
+
+        // Verify if there is songs in the playlist
+        List<Song> songList = currentPlaylist.getSongList();
+        if (songList == null || songList.isEmpty()) return null;
+
+        // Get the newt song
+        int index = songList.indexOf(currentSong);
+        if (index == -1) return null;
+
+        return songList.get((index + 1) % songList.size());
+    }
+
+    public Song getPreviousSong(Song currentSong, Playlist currentPlaylist) {
+        // Verify parameters
+        if (currentSong == null || currentPlaylist == null) return null;
+
+        // Verify if there is songs in the playlist
+        List<Song> songList = currentPlaylist.getSongList();
+        if (songList == null || songList.isEmpty()) return null;
+
+        // Get the newt song
+        int index = songList.indexOf(currentSong);
+        if (index == -1) return null;
+
+        return songList.get((index - 1 + songList.size()) % songList.size());
+    }
+
+    public Song getRandomSong(Playlist playlist) {
+        // Verify parameters
+        if (playlist == null) {
+            return null;
+        }
+
+        // Get a random song
+        int songCount = playlist.getSongList().size();
+        Random random = new Random();
+        int randomSong = random.nextInt(songCount);
+
+        return playlist.getSongList().get(randomSong);
+    }
+
+    public byte[] loadImageAsBytes(String path) {
+        try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Cannot find following file : " + path);
+            }
+            BufferedImage bufferedImage = ImageIO.read(is);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Error while reading the following file : " + path, e);
+        }
+    }
+
+//    public void updatePlaylistIcon(Playlist playlist, byte[] icon) {
+//        playlist.setIcon(icon);
+//    }
 }
