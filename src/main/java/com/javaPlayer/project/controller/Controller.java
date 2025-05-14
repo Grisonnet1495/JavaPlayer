@@ -69,6 +69,11 @@ public final class Controller implements ActionListener {
 //            pauseCurrentSong();
 //        }
 
+        // Update all playlist icons
+        for (Playlist playlist : daoPlaylist.getPlaylistsList()) {
+            updatePlaylistJacket(playlist);
+        }
+
         updateSongPanel();
         updateSongActionsPanel();
 
