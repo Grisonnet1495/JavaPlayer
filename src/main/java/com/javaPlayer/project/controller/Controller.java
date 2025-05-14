@@ -3,6 +3,8 @@ package com.javaPlayer.project.controller;
 import com.javaPlayer.project.model.authentication.Authenticator;
 import com.javaPlayer.project.model.dao.DAOPlaylist;
 import com.javaPlayer.project.model.dao.DAOUser;
+import com.javaPlayer.project.model.dao.IDAOPlaylist;
+import com.javaPlayer.project.model.dao.IDAOUser;
 import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.model.player.IMusicPlayer;
 import com.javaPlayer.project.utils.Constants;
@@ -21,8 +23,8 @@ import static com.javaPlayer.project.utils.DurationFormatter.formatDuration;
 public final class Controller implements ActionListener {
     private JFrameMainWindow view;
     private Authenticator authenticator;
-    private DAOPlaylist daoPlaylist;
-    private DAOUser daoUser;
+    private IDAOPlaylist daoPlaylist;
+    private IDAOUser daoUser;
     private IMusicPlayer musicPlayer;
 
     // Current displayed data
@@ -41,7 +43,7 @@ public final class Controller implements ActionListener {
     private Duration remainingSongDuration;
     private Duration elapsedSongDuration;
 
-    public Controller(JFrameMainWindow view, Authenticator authenticator, DAOUser daoUser, DAOPlaylist daoPlaylist, IMusicPlayer musicPlayer) {
+    public Controller(JFrameMainWindow view, Authenticator authenticator, IDAOUser daoUser, IDAOPlaylist daoPlaylist, IMusicPlayer musicPlayer) {
         this.view = view;
         this.authenticator = authenticator;
         this.daoUser = daoUser;

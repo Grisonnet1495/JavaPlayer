@@ -4,6 +4,7 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.model.dao.DAOPlaylist;
 import com.javaPlayer.project.model.dao.DAOUser;
+import com.javaPlayer.project.model.dao.IDAOConfig;
 import com.javaPlayer.project.model.player.MusicPlayer;
 import com.javaPlayer.project.utils.Constants;
 import com.javaPlayer.project.model.authentication.FileAuthenticator;
@@ -21,7 +22,7 @@ public class Main {
         }
 
         SwingUtilities.invokeLater(() -> {
-            DAOConfig daoConfig = new DAOConfig(Constants.CONFIG_FILENAME);
+            IDAOConfig daoConfig = new DAOConfig(Constants.CONFIG_FILENAME);
 
             Controller controller = new Controller(new JFrameMainWindow(),
                     new FileAuthenticator(daoConfig.getConfig(Constants.USER_PASSWORDS_CONFIG_KEY)),

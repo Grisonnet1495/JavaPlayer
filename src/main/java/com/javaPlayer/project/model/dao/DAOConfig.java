@@ -7,7 +7,7 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-public class DAOConfig {
+public class DAOConfig implements IDAOConfig {
     public String configFilename;
     Properties config;
 
@@ -88,11 +88,11 @@ public class DAOConfig {
         }
     }
 
-    public boolean isConfigPresent(String configName) {
-        return config.containsKey(configName);
-    }
-
     public String getConfig(String configName) {
         return (String)config.getOrDefault(configName, null);
+    }
+
+    public boolean isConfigPresent(String configName) {
+        return config.containsKey(configName);
     }
 }
