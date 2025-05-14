@@ -4,7 +4,6 @@ import com.javaPlayer.project.model.exception.ConfigException;
 import com.javaPlayer.project.utils.Constants;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class DAOConfig implements IDAOConfig {
@@ -24,7 +23,9 @@ public class DAOConfig implements IDAOConfig {
 
             File configFile = new File(configFilename);
             if (!configFile.exists()) {
-                configFile.createNewFile();
+                if (!configFile.createNewFile()) {
+                    throw new ConfigException("Cannot create config file");
+                }
             }
 
             loadConfig();

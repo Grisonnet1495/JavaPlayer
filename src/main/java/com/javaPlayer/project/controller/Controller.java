@@ -1,8 +1,6 @@
 package com.javaPlayer.project.controller;
 
 import com.javaPlayer.project.model.authentication.Authenticator;
-import com.javaPlayer.project.model.dao.DAOPlaylist;
-import com.javaPlayer.project.model.dao.DAOUser;
 import com.javaPlayer.project.model.dao.IDAOPlaylist;
 import com.javaPlayer.project.model.dao.IDAOUser;
 import com.javaPlayer.project.model.entity.*;
@@ -32,7 +30,6 @@ public final class Controller implements ActionListener {
     private Playlist currentPlaylist = null;
     private Song currentSong = null;
     private byte[] currentSongIcon = null;
-    private User currentUser = null;
     private boolean isCurrentSongFavorite;
     private boolean isCurrentSongChooserRandom = false;
     private boolean isCurrentSongLooping = false;
@@ -236,11 +233,6 @@ public final class Controller implements ActionListener {
             case ControllerActions.ADD_TO_PLAYLIST: {
                 if (currentSong == null) {
                     view.showMessage("No song selected");
-                    return;
-                }
-
-                if (currentPlaylist == null) {
-                    view.showMessage("No playlist selected");
                     return;
                 }
 
@@ -774,10 +766,10 @@ public final class Controller implements ActionListener {
     }
 
     public void updatePlaylistJacket(Playlist playlist) {
-        byte[] playlistJacket = null;
+        byte[] playlistJacket;
 
         if (!playlist.getSongList().isEmpty()) {
-            playlistJacket = musicPlayer.getSongIcon(playlist.getSongList().get(0).getFilename());
+            playlistJacket = musicPlayer.getSongIcon(playlist.getSongList().getFirst().getFilename());
         } else {
             playlistJacket = daoPlaylist.loadImageAsBytes(Constants.DEFAULT_PLAYLIST_ICON);
         }

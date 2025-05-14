@@ -17,19 +17,19 @@ public class Main {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(new FlatMacLightLaf());
-        } catch (UnsupportedLookAndFeelException e) {
+
+            SwingUtilities.invokeLater(() -> {
+                IDAOConfig daoConfig = new DAOConfig(Constants.CONFIG_FILENAME);
+
+                Controller controller = new Controller(new JFrameMainWindow(),
+                        new FileAuthenticator(daoConfig.getConfig(Constants.USER_PASSWORDS_CONFIG_KEY)),
+                        new DAOUser(daoConfig.getConfig(Constants.USERS_CONFIG_KEY)),
+                        new DAOPlaylist(daoConfig.getConfig(Constants.USER_PLAYLISTS_CONFIG_KEY)),
+                        new MusicPlayer());
+                controller.run();
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        SwingUtilities.invokeLater(() -> {
-            IDAOConfig daoConfig = new DAOConfig(Constants.CONFIG_FILENAME);
-
-            Controller controller = new Controller(new JFrameMainWindow(),
-                    new FileAuthenticator(daoConfig.getConfig(Constants.USER_PASSWORDS_CONFIG_KEY)),
-                    new DAOUser(daoConfig.getConfig(Constants.USERS_CONFIG_KEY)),
-                    new DAOPlaylist(daoConfig.getConfig(Constants.USER_PLAYLISTS_CONFIG_KEY)),
-                    new MusicPlayer());
-            controller.run();
-        });
     }
 }
