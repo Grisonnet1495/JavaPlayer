@@ -31,6 +31,7 @@
         </constraints>
         <properties>
           <background color="-23132"/>
+          <foreground color="-1"/>
           <text value="Delete"/>
         </properties>
       </component>

@@ -284,11 +284,6 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     }
 
     @Override
-    public String getSelectedPlaylistTitle() {
-        return homePanel.getSelectedPlaylistTitle();
-    }
-
-    @Override
     public void showHome() {
         cardLayout.show(contentPanel, "Home");
     }
@@ -301,16 +296,6 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     @Override
     public void showPlaylist() {
         cardLayout.show(contentPanel, "Playlist");
-    }
-
-    public JDialogAccountChooser showAccountChooserDialog() {
-        JDialogAccountChooser accountChooserDialog = new JDialogAccountChooser();
-        accountChooserDialog.setTitle("Login or create an account");
-        accountChooserDialog.setModal(true);
-        accountChooserDialog.setLocationRelativeTo(null);
-        accountChooserDialog.setVisible(true);
-
-        return accountChooserDialog;
     }
 
     @Override
@@ -356,8 +341,8 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     }
 
     @Override
-    public String promptChooseAddToPlaylist(ArrayList<String> playlistTitleList) {
-        JDialogAddToPlaylist addToPlaylistDialog = new JDialogAddToPlaylist(this, true, playlistTitleList);
+    public String promptChooseAddToPlaylist(ArrayList<Playlist> playlistList) {
+        JDialogAddToPlaylist addToPlaylistDialog = new JDialogAddToPlaylist(this, true, playlistList);
         addToPlaylistDialog.setVisible(true);
 
         if (addToPlaylistDialog.isAddingSongToPlaylist()) {
@@ -380,11 +365,19 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     }
 
     @Override
-    public String promptChoosePlaylistToDelete(ArrayList<String> playlistTitleList) {
-        JDialogDeletePlaylist playlistToDeleteDialog = new JDialogDeletePlaylist(this, true, playlistTitleList);
+    public String promptChoosePlaylistToDelete(ArrayList<Playlist> playlistList) {
+        JDialogDeletePlaylist playlistToDeleteDialog = new JDialogDeletePlaylist(this, true, playlistList);
         playlistToDeleteDialog.setVisible(true);
 
         return playlistToDeleteDialog.getSelectedPlaylist();
+    }
+
+    @Override
+    public String promptChoosePlaylistToEdit(ArrayList<Playlist> playlistList) {
+        JDialogEditPlaylist playlistToEditDialog = new JDialogEditPlaylist(this, true, playlistList);
+        playlistToEditDialog.setVisible(true);
+
+        return playlistToEditDialog.getSelectedPlaylist();
     }
 
     @Override
@@ -436,7 +429,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         createPlaylistMenuItem.addActionListener(c);
         deletePlaylistMenuItem.setActionCommand(ControllerActions.DELETE_PLAYLIST);
         deletePlaylistMenuItem.addActionListener(c);
-        editPlaylistMenuItem.setActionCommand(ControllerActions.PLAYLIST_SETTINGS);
+        editPlaylistMenuItem.setActionCommand(ControllerActions.EDIT_PLAYLIST);
         editPlaylistMenuItem.addActionListener(c);
 
         // Other components

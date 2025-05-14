@@ -2,6 +2,7 @@ package com.javaPlayer.project.model.player;
 
 import com.javaPlayer.project.model.entity.SongMetadata;
 import com.javaPlayer.project.model.exception.MusicPlayerException;
+import com.javaPlayer.project.utils.Constants;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.images.ArtworkFactory;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
@@ -32,14 +33,15 @@ public class MusicPlayer implements IMusicPlayer {
     // Load a music file from the start and play it
     public void loadAndPlay(String filePath) {
         State state = mediaPlayer.status().state();
-        if (state == State.PLAYING) {
+        if (state == State.PLAYING || state == State.PAUSED) {
             mediaPlayer.controls().stop();
         }
+
         mediaPlayer.media().play(filePath);
     }
 
     // Play or resume the music
-    public void play() {
+    public void resume() {
         State state = mediaPlayer.status().state();
         if (state == State.PAUSED || state == State.STOPPED) {
             mediaPlayer.controls().play();
@@ -101,11 +103,9 @@ public class MusicPlayer implements IMusicPlayer {
 
             return metadata;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new MusicPlayerException("Erreur lors de la lecture des métadonnées : " + e.getMessage(), e);
+            throw new MusicPlayerException("Error while reading file metadata : " + e.getMessage());
         }
     }
-
 
     // Get the song icon
     public byte[] getSongIcon(String filePath) {
@@ -120,7 +120,7 @@ public class MusicPlayer implements IMusicPlayer {
             if (tag != null && tag.getFirstArtwork() != null) {
                 return tag.getFirstArtwork().getBinaryData();
             }
-            File defaultImg = new File("/icons/default_song_icon_black.png");
+            File defaultImg = new File(Constants.DEFAULT_PLAYLIST_ICON);
             if (defaultImg.exists()) {
                 return ArtworkFactory.createArtworkFromFile(defaultImg)
                         .getBinaryData();
@@ -128,6 +128,7 @@ public class MusicPlayer implements IMusicPlayer {
         } catch (Exception e) {
             throw new MusicPlayerException("Cannot read song icon from " + filePath, e);
         }
+
         return null;
     }
 }

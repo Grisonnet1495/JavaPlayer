@@ -3,10 +3,9 @@ package com.javaPlayer.project.model.dao;
 import com.javaPlayer.project.model.exception.PlaylistException;
 import com.javaPlayer.project.model.entity.Playlist;
 import com.javaPlayer.project.model.entity.Song;
-import com.javaPlayer.project.model.player.MusicPlayer;
+import com.javaPlayer.project.utils.Constants;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
@@ -16,7 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class DAOPlaylist {
+public class DAOPlaylist implements IDAOPlaylist {
     // Playlist config file
     private String playlistsConfigFilename; // Filename of the playlists list config file
     private Properties playlistsConfig; // Current content of the playlist list config file
@@ -26,9 +25,7 @@ public class DAOPlaylist {
     private String currentUserDataDirectory; // Directory name of all the user playlists data
     private int currentUserId; // Current user id
     private ArrayList<Playlist> playlistsList; // Current playlists of the user
-    private Integer lastPlayedSongId = null; // Id of the current song of the user
-
-
+//    private Integer lastPlayedSongId = null; // Id of the current song of the user
 
     public DAOPlaylist(String playlistsConfigFilename) {
 //        playlistsConfigFilename = new DAOConfig(DefaultFilePath.CONFIG).getConfig(Constants.USER_PLAYLISTS_CONFIG_KEY);
@@ -41,17 +38,17 @@ public class DAOPlaylist {
 //        loadPlaylistsFromFile();
     }
 
-    public Song getLastPlayedSong() {
-        if (lastPlayedSongId == null) {
-            return null;
-        }
+//    public Song getLastPlayedSong() {
+//        if (lastPlayedSongId == null) {
+//            return null;
+//        }
+//
+//        return getSongById(lastPlayedSongId);
+//    }
 
-        return getSongById(lastPlayedSongId);
-    }
-
-    public void setLastPlayedSong(Song song) {
-        this.lastPlayedSongId = song.getId();
-    }
+//    public void setLastPlayedSong(Song song) {
+//        this.lastPlayedSongId = song.getId();
+//    }
 
     public Song getFirstSong() {
         for (Playlist p : playlistsList) {
@@ -174,8 +171,8 @@ public class DAOPlaylist {
 
     public void initialisePlaylistsList() {
         playlistsList = new ArrayList<>();
-        createPlaylist("Favorites"); // Add a Favorites playlist
-        createPlaylist("Unclassed songs"); // Add an Unclassed songs playlist
+        createPlaylist(Constants.FAVORITES_PLAYLIST); // Add a Favorites playlist
+        createPlaylist(Constants.UNCLASSED_SONGS_PLAYLIST); // Add an Unclassed songs playlist
     }
 
     // For test purpose
@@ -185,6 +182,14 @@ public class DAOPlaylist {
 
     public ArrayList<Playlist> getPlaylistsList() {
         return playlistsList;
+    }
+
+    public ArrayList<Playlist> getBasePlaylistsList() {
+        ArrayList<Playlist> basePlaylistsList = new ArrayList<>(playlistsList);
+
+        basePlaylistsList.removeIf(playlist -> playlist.getTitle().equals(Constants.FAVORITES_PLAYLIST) || playlist.getTitle().equals(Constants.UNCLASSED_SONGS_PLAYLIST));
+
+        return basePlaylistsList;
     }
 
     public ArrayList<String> getPlaylistsTitleList() {
@@ -211,6 +216,14 @@ public class DAOPlaylist {
     }
 
     public void createPlaylist(String playlistTitle) {
+        if (playlistTitle == null) {
+            throw new PlaylistException("Playlist title cannot be null !");
+        }
+
+        if (playlistTitle.trim().isEmpty()) {
+            throw new PlaylistException("Playlist title cannot be empty !");
+        }
+
         // Verify if another playlist has the same title
         if (playlistsList.stream().anyMatch(list -> list.getTitle().equalsIgnoreCase(playlistTitle))) {
             throw new PlaylistException("Playlist already exists !");
@@ -233,61 +246,61 @@ public class DAOPlaylist {
         // Set the new id and add the playlist
         newPlaylist.setId(id);
         playlistsList.add(newPlaylist);
-
-        byte[] defaultPlaylistJacket = loadImageAsBytes("/icons/default_song_icon_black.png");
-        newPlaylist.setIcon(defaultPlaylistJacket);
-
-        // Create a new directory for the playlist
-        File playlistDataDirectory = new File(currentUserDataDirectory + File.separator + "Playlist_" + newPlaylist.getId());
-
-        if (!playlistDataDirectory.exists() || !playlistDataDirectory.isDirectory()) {
-            if (!playlistDataDirectory.mkdirs()) {
-                throw new PlaylistException("Cannot create playlist data directory");
-            }
-        }
     }
 
-    private byte[] loadImageAsBytes(String path) {
+    public byte[] loadImageAsBytes(String path) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             if (is == null) {
-                throw new IllegalArgumentException("Image introuvable : " + path);
+                throw new IllegalArgumentException("Cannot find following file : " + path);
             }
             BufferedImage bufferedImage = ImageIO.read(is);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("Erreur lecture image : " + path, e);
+            throw new RuntimeException("Error while reading the following file : " + path, e);
         }
     }
 
+    public void removePlaylist(Playlist playlist) {
+        // Find playlist to remove
+        if (playlist == null) {
+            throw new PlaylistException("Playlist cannot be null !");
+        }
 
-    public void removePlaylist(String playlistName) {
         // Verify if the playlist can be deleted
-        if (!canPlaylistBeDeleted(playlistName)) {
+        if (!canPlaylistBeDeleted(playlist.getTitle())) {
             throw new PlaylistException("This playlist cannot be removed !");
         }
 
-        // Find playlist to remove
-        Playlist playlistToRemove = getPlaylistByName(playlistName);
-        if (playlistToRemove == null) {
-            throw new PlaylistException("Playlist not found !");
-        }
-
-        // Delete the playlist data directory
-        File playlistDataDirectory = new File(currentUserDataDirectory + File.separator + "Playlist_" + playlistToRemove.getId());
-
-        if (playlistDataDirectory.exists()) {
-            if (!playlistDataDirectory.delete()) {
-                throw new PlaylistException("Failed to delete playlist data directory");
-            }
+        // Delete all songs from the playlist
+        for (Song s : playlist.getSongList()) {
+            deleteSongFromPlaylist(playlist, s);
         }
 
         // Delete the playlist from the list
-        playlistsList.removeIf(p -> p.getTitle().equals(playlistName));
+        playlistsList.remove(playlist);
     }
-    
+
+    public void removeAllPlaylists() {
+        for (Playlist p : playlistsList) {
+            try {
+                removePlaylist(p);
+            } catch (PlaylistException e) {
+                System.out.println("Cannot delete " + p.getTitle() + "playlist : " + e.getMessage());
+            }
+        }
+    }
+
     public void changePlaylistTitle(String oldTitle, String newTitle) {
+        if (oldTitle == null || newTitle == null) {
+            throw new PlaylistException("Playlist title cannot be null !");
+        }
+
+        if (newTitle.trim().isEmpty()) {
+            throw new PlaylistException("Playlist title cannot be empty !");
+        }
+
         // Verify if the playlist name can be changed
         if (!canPlaylistBeRenamed(oldTitle)) {
             throw new PlaylistException("This playlist cannot be renamed !");
@@ -308,11 +321,11 @@ public class DAOPlaylist {
     }
 
     public boolean canPlaylistBeRenamed(String playlistName) {
-        return !playlistName.equals("Favorites") && !playlistName.equals("Unclassed songs");
+        return !playlistName.equals(Constants.FAVORITES_PLAYLIST) && !playlistName.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
     }
 
-    public boolean canPlaylistBeDeleted(String playlistName) {
-        return !playlistName.equals("Favorites") && !playlistName.equals("Unclassed songs");
+    public boolean canPlaylistBeDeleted(String playlistTitle) {
+        return !playlistTitle.equals(Constants.FAVORITES_PLAYLIST) && !playlistTitle.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
     }
 
     public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
@@ -329,17 +342,16 @@ public class DAOPlaylist {
         return recentPlaylistsTitleList;
     }
 
-    public ArrayList<Song> getPlaylistList() {
-        if (!playlistsList.isEmpty()) {
-            ArrayList<Song> allSong = new ArrayList<>();
-            for (Playlist p : playlistsList) {
-                for (Song song : p.getSongList()) {
-                    allSong.add(song);
-                }
+    public ArrayList<Song> getAllSongs() {
+        ArrayList<Song> allSongs = new ArrayList<>();
+
+        for (Playlist p : playlistsList) {
+            for (Song song : p.getSongList()) {
+                allSongs.add(song);
             }
-            return allSong;
         }
-        return null;
+
+        return allSongs;
     }
 
     public Playlist getPlaylistByName(String playlistName) {
@@ -360,17 +372,6 @@ public class DAOPlaylist {
         }
 
         return null;
-    }
-
-
-    public void removeAllPlaylists() {
-        for (Playlist p : playlistsList) {
-            try {
-                removePlaylist(p.getTitle());
-            } catch (PlaylistException e) {
-                System.out.println("Cannot delete " + p.getTitle() + "playlist : " + e.getMessage());
-            }
-        }
     }
 
     public void deleteAllCurrentUserData() {
@@ -428,7 +429,7 @@ public class DAOPlaylist {
 
     public Playlist getSongPlaylist(Song song) {
         if (song == null) {
-            return null;
+            throw new PlaylistException("Song cannot be null !");
         }
 
         for (Playlist p : playlistsList) {
@@ -444,7 +445,7 @@ public class DAOPlaylist {
 
     public boolean isSongInFavoritesPlaylist(Song song) {
         if (song == null) {
-            return false;
+            throw new PlaylistException("Song cannot be null !");
         }
 
         if (getSongPlaylist(song).getTitle().equals("Favorites")) {
@@ -454,7 +455,7 @@ public class DAOPlaylist {
         }
     }
 
-    public void addSongToPlaylist(Playlist playlist, Song song) {
+    public void importSongToPlaylist(Playlist playlist, Song song) {
         // Find an new song id
         int id = 1;
         Set<Integer> usedIds = new HashSet<>();
@@ -473,12 +474,12 @@ public class DAOPlaylist {
 
         // Copy music file to playlist directory
         Path source = Paths.get(song.getFilename());
-        Path destination = Paths.get(currentUserDataDirectory + File.separator + "Playlist_" + playlist.getId() + File.separator + "Song_" + song.getId() + "." + song.getSongFileExtension());
+        Path destination = Paths.get(currentUserDataDirectory + File.separator + "Song_" + song.getId() + "." + song.getSongFileExtension());
 
         try {
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new PlaylistException("Cannot copy music file to playlist directory", e);
+            throw new PlaylistException("Cannot copy music file to playlist directory : " + e.getMessage());
         }
 
         // Update the song filename
@@ -488,8 +489,7 @@ public class DAOPlaylist {
         playlist.addSong(song);
     }
 
-
-    public void removeSongFromPlaylist(Playlist playlist, Song song) {
+    public void deleteSongFromPlaylist(Playlist playlist, Song song) {
         // Delete music file from playlist directory
         Path filepath = Paths.get(song.getFilename());
 
@@ -503,21 +503,29 @@ public class DAOPlaylist {
         playlist.removeSong(song);
     }
 
+    public void changeSongPlaylist(Song song, Playlist newPlaylist) {
+        if (newPlaylist == null) {
+            throw new PlaylistException("New playlist cannot be null !");
+        }
 
-    public void updatePlaylistIcon(Playlist playlist, byte[] icon) {
-        playlist.setIcon(icon);
-    }
+        Playlist oldPlaylist = getSongPlaylist(song);
 
-    public void moveSongToPlaylist(Song song, Playlist oldPlaylist, Playlist newPlaylist) {
+        if (oldPlaylist == null) {
+            throw new PlaylistException("Song need to be in a playlist to be moved !");
+        }
+
         if (oldPlaylist.equals(newPlaylist)) {
             throw new PlaylistException("Song already in this playlist !");
         }
 
-        Song newSong = new Song(song);
-
-        addSongToPlaylist(newPlaylist, newSong);
-        removeSongFromPlaylist(oldPlaylist, song);
+        // Change the song playlist
+        oldPlaylist.removeSong(song);
+        newPlaylist.addSong(song);
     }
+
+//    public void updatePlaylistIcon(Playlist playlist, byte[] icon) {
+//        playlist.setIcon(icon);
+//    }
 
     public void exportSong(Song song, String newFilename) {
         // To do (Sacha)

@@ -35,8 +35,6 @@ public class JPanelPlaylist extends JPanel {
         playlistSettingsButton.setActionCommand("PLAYLIST_SETTINGS");
         playlistSettingsButton.addActionListener(c);
 
-
-
         // By ChatGPT
         songTable.getSelectionModel().addListSelectionListener(e -> {
             // If it isn't just a screen update
@@ -59,18 +57,23 @@ public class JPanelPlaylist extends JPanel {
     void updatePlaylist(Playlist playlist) {
         // Update playlist title
         playlistTitleLabel.setText(playlist.getTitle());
+
         // Update playlist icon
+        int targetSize = 100;
+
         byte[] buttonIcon = playlist.getIcon();
+
         if (buttonIcon != null) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream(buttonIcon);
                 BufferedImage bufferedImage = ImageIO.read(bais);
-                int targetSize = 100;
                 Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
                 playlistSettingsButton.setIcon(new ImageIcon(scaledImage));
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading the playlist icon", e);
             }
+        } else {
+            playlistSettingsButton.setText(playlist.getTitle().substring(0, 1));
         }
 
         // Update song table

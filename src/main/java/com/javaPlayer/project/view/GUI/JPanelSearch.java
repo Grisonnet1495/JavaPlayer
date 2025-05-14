@@ -25,8 +25,6 @@ public class JPanelSearch extends JPanel {
     private JLabel searchTitleLabel;
     private JPanel searchTitlePanel;
     private JPanel searchPanel;
-    private JButton searchButton;
-    private JPanel searchButtonPanel;
     private JPanel searchResultsPanel;
     private JScrollPane searchResultsScrollPane;
     private JTable songResultsTable;
@@ -40,12 +38,11 @@ public class JPanelSearch extends JPanel {
     void setController(Controller c) {
         this.controller = c;
 
-        searchButton.setActionCommand(ControllerActions.SEARCH_SONG);
-        searchButton.addActionListener(c);
+        // Note : Useful ?
         searchTextField.setActionCommand(ControllerActions.SEARCH_SONG);
         searchTextField.addActionListener(c);
 
-        //add a listenner at the searchTextField
+        // Add a listener at the searchTextField
         searchTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -63,8 +60,9 @@ public class JPanelSearch extends JPanel {
             }
 
             public void notifyChange() {
-                if(controller != null) {
-                    ActionEvent actionEvent = new ActionEvent(searchTextField, ActionEvent.ACTION_PERFORMED, ControllerActions.SEARCH_SONG);
+                if (controller != null) {
+                    String searchText = searchTextField.getText().trim();
+                    ActionEvent actionEvent = new ActionEvent(searchText, ActionEvent.ACTION_PERFORMED, ControllerActions.SEARCH_SONG);
                     controller.actionPerformed(actionEvent);
                 }
             }
@@ -72,10 +70,14 @@ public class JPanelSearch extends JPanel {
 
         // Sélectionner une chanson
         songResultsTable.getSelectionModel().addListSelectionListener(e -> {
+            // If it isn't just a screen update
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = songResultsTable.getSelectedRow();
+
+                // If a row is selected
                 if (selectedRow != -1) {
                     int songId = (int) songResultsTable.getValueAt(selectedRow, 0);
+
                     if (controller != null) {
                         ActionEvent event = new ActionEvent(songId, ActionEvent.ACTION_PERFORMED, ControllerActions.PLAY_SELECTED_SONG);
                         controller.actionPerformed(event);
@@ -85,12 +87,8 @@ public class JPanelSearch extends JPanel {
         });
     }
 
-    // Mettre à jour les résultats dans le tableau
+    // Update results table
     public void updateResults(ArrayList<Song> songList) {
-        if (songList.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Aucune chanson trouvée.", "Avertissement", JOptionPane.WARNING_MESSAGE);
-        }
-
         String[] columnTitles = {"N°", "Title", "Artist", "Genre", "Duration", "Added date"};
         Object[][] tableData = new Object[songList.size()][columnTitles.length];
 
@@ -105,10 +103,6 @@ public class JPanelSearch extends JPanel {
 
         DefaultTableModel tableModel = new DefaultTableModel(tableData, columnTitles);
         songResultsTable.setModel(tableModel);
-    }
-
-    public String getSearchText() {
-        return searchTextField.getText().trim();//get the text and delete the blank space
     }
 
     // Créer un composant personnalisé pour la table des chansons

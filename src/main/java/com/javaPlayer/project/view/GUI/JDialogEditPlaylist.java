@@ -6,14 +6,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class JDialogDeletePlaylist extends JDialog {
+public class JDialogEditPlaylist extends JDialog {
     private JPanel mainPanel;
-    private JComboBox playlistComboBox;
+    private JButton editButton;
     private JButton cancelButton;
-    private JButton deleteButton;
+    private JComboBox playlistComboBox;
     private String selectedPlaylist = null;
 
-    public JDialogDeletePlaylist(JFrame parent, boolean modal, ArrayList<Playlist> playlistList) {
+    public JDialogEditPlaylist(JFrame parent, boolean modal, ArrayList<Playlist> playlistList) {
         super(parent, "Select playlist", modal);
         this.setContentPane(mainPanel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -28,7 +28,7 @@ public class JDialogDeletePlaylist extends JDialog {
         this.setLocation(x, y);
 
         // Add action listeners
-        deleteButton.addActionListener(e -> {
+        editButton.addActionListener(e -> {
             selectedPlaylist = (String) playlistComboBox.getSelectedItem();
             this.dispose();
         });

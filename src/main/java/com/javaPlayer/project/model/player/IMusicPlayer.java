@@ -4,7 +4,7 @@ import com.javaPlayer.project.model.entity.SongMetadata;
 
 public interface IMusicPlayer {
     void loadAndPlay(String filePath);
-    void play();
+    void resume();
     void pause();
     void stop();
     void release();

@@ -33,17 +33,7 @@ public class JPanelHome extends JPanel {
         allPlaylistsScrollPane.setBorder(null);
         recentPlaylistsContentPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         allPlaylistsContentPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-//        updateRecentPlaylists();
-//        updateAllPlaylists();
     }
-
-    public String getSelectedPlaylistTitle() {
-        return selectedPlaylistTitle;
-    }
-
-//    public void clearSelectedPlaylistTitle() {
-//        selectedPlaylistTitle = null;
-//    }
 
     void setController(Controller c) {
         this.controller = c;

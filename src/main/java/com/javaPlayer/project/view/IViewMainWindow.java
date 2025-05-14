@@ -22,8 +22,6 @@ public interface IViewMainWindow {
 
     void updateSongActionsPanel(boolean isRandom, boolean isPreviousSongPossible, boolean isLooping, boolean isPlaying);
 
-    String getSelectedPlaylistTitle();
-
     // Show dialog boxes
     Settings showAndGetSettings(String userPseudo, String userPassword);
     SongDetails showSongDetails(String title, String artist, String playlist, String addedDate, String duration);
@@ -33,9 +31,10 @@ public interface IViewMainWindow {
     void showMessage(String message);
 
     // Prompt for actions
-    String promptChooseAddToPlaylist(ArrayList<String> playlistTitleList);
+    String promptChooseAddToPlaylist(ArrayList<Playlist> playlistList);
     String promptToCreatePlaylist();
-    String promptChoosePlaylistToDelete(ArrayList<String> playlistTitleList);
+    String promptChoosePlaylistToDelete(ArrayList<Playlist> playlistList);
+    String promptChoosePlaylistToEdit(ArrayList<Playlist> playlistList);
 
     // Run and stop
     void run();

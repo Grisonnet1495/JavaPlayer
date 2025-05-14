@@ -51,5 +51,4 @@ public class SongMetadata {
                 ", duration=" + duration +
                 '}';
     }
-
 }

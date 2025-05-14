@@ -24,6 +24,7 @@ public abstract class ControllerActions {
     public static final String EXPORT_SONG = "EXPORT_SONG";
     public static final String CREATE_PLAYLIST = "CREATE_PLAYLIST";
     public static final String DELETE_PLAYLIST = "DELETE_PLAYLIST";
+    public static final String EDIT_PLAYLIST = "EDIT_PLAYLIST";
 //    public static final String EXPORT_PLAYLIST = "EXPORT_PLAYLIST";
 //    public static final String IMPORT_PLAYLIST = "IMPORT_PLAYLIST";
     public static final String SEARCH_SONG = "SEARCH_SONG";

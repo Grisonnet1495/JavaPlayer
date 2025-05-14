@@ -1,5 +1,7 @@
 package com.javaPlayer.project.view.GUI;
 
+import com.javaPlayer.project.model.entity.Playlist;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ public class JDialogAddToPlaylist extends JDialog {
     private String selectedPlaylist = null;
     private boolean isAddingSongToPlaylist = false;
 
-    public JDialogAddToPlaylist(JFrame parent, boolean modal, ArrayList<String> playlistTitleList ) {
+    public JDialogAddToPlaylist(JFrame parent, boolean modal, ArrayList<Playlist> playlistList ) {
         super(parent, "Select playlist", modal);
         this.setContentPane(mainPanel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -37,8 +39,8 @@ public class JDialogAddToPlaylist extends JDialog {
             this.dispose();
         });
 
-        for (String playlistTitle : playlistTitleList) {
-            playlistComboBox.addItem(playlistTitle);
+        for (Playlist p : playlistList) {
+            playlistComboBox.addItem(p.getTitle());
         }
     }
 
