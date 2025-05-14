@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DAOUser implements Serializable {
+public class DAOUser implements IDAOUser, Serializable {
     private String usersFilename; // Filename of the file containing all users
     private ArrayList<User> usersList; // All users list
 
