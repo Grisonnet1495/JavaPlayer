@@ -50,6 +50,7 @@ public class DAOPlaylist implements IDAOPlaylist {
 //        this.lastPlayedSongId = song.getId();
 //    }
 
+    @Override
     public void loadPlaylistsConfigFile(int userId) {
         currentUserId = userId;
 
@@ -90,6 +91,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         this.currentUserPlaylistsFileName = playlistsConfig.getProperty(String.valueOf(userId));
     }
 
+    @Override
     public void savePlaylistsToFile() {
         try (FileOutputStream fos = new FileOutputStream(currentUserPlaylistsFileName);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
@@ -99,6 +101,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
     }
 
+    @Override
     public void loadPlaylistsFromFile() {
         try (FileInputStream fis = new FileInputStream(currentUserPlaylistsFileName);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
@@ -114,6 +117,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
     }
 
+    @Override
     public void initialisePlaylistsList() {
         playlistsList = new ArrayList<>();
         createPlaylist(Constants.FAVORITES_PLAYLIST); // Add a Favorites playlist
@@ -121,14 +125,17 @@ public class DAOPlaylist implements IDAOPlaylist {
     }
 
     // For test purpose
+    @Override
     public void setPlaylistsList(ArrayList<Playlist> playlistsList) {
         this.playlistsList = playlistsList;
     }
 
+    @Override
     public ArrayList<Playlist> getPlaylistsList() {
         return playlistsList;
     }
 
+    @Override
     public ArrayList<Playlist> getBasePlaylistsList() {
         ArrayList<Playlist> basePlaylistsList = new ArrayList<>(playlistsList);
 
@@ -137,6 +144,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return basePlaylistsList;
     }
 
+    @Override
     public ArrayList<String> getPlaylistsTitleList() {
         ArrayList<String> playlistsTitleList = new ArrayList<>();
 
@@ -146,6 +154,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return playlistsTitleList;
     }
 
+    @Override
     public ArrayList<Playlist> getRecentPlaylistsList(int minutes) {
         ArrayList<Playlist> recentPlaylistsList = new ArrayList<>();
 
@@ -160,6 +169,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return recentPlaylistsList;
     }
 
+    @Override
     public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
         ArrayList<String> recentPlaylistsTitleList = new ArrayList<>();
 
@@ -174,6 +184,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return recentPlaylistsTitleList;
     }
 
+    @Override
     public Playlist getPlaylistByName(String playlistName) {
         for (Playlist p : playlistsList) {
             if (p.getTitle().equals(playlistName)) {
@@ -184,6 +195,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return null;
     }
 
+    @Override
     public Playlist getPlaylistById(int playlistId) {
         for (Playlist p : playlistsList) {
             if (p.getId() == playlistId) {
@@ -227,6 +239,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         playlistsList.add(newPlaylist);
     }
 
+    @Override
     public void removePlaylist(Playlist playlist) {
         // Find playlist to remove
         if (playlist == null) {
@@ -247,6 +260,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         playlistsList.remove(playlist);
     }
 
+    @Override
     public void removeAllPlaylists() {
         for (Playlist p : playlistsList) {
             try {
@@ -257,6 +271,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
     }
 
+    @Override
     public void changePlaylistTitle(String oldTitle, String newTitle) {
         if (oldTitle == null || newTitle == null) {
             throw new PlaylistException("Playlist title cannot be null !");
@@ -285,6 +300,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         playlistToRename.setTitle(newTitle);
     }
 
+    @Override
     public void deleteAllCurrentUserData() {
         // By ChatGPT
         // Delete the user data directory
@@ -326,14 +342,17 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
     }
 
+    @Override
     public boolean canPlaylistBeRenamed(String playlistName) {
         return !playlistName.equals(Constants.FAVORITES_PLAYLIST) && !playlistName.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
     }
 
+    @Override
     public boolean canPlaylistBeDeleted(String playlistTitle) {
         return !playlistTitle.equals(Constants.FAVORITES_PLAYLIST) && !playlistTitle.equals(Constants.UNCLASSED_SONGS_PLAYLIST);
     }
 
+    @Override
     public ArrayList<Song> getAllSongs() {
         ArrayList<Song> allSongs = new ArrayList<>();
 
@@ -346,6 +365,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return allSongs;
     }
 
+    @Override
     public Song getSongById(int songId) {
         for (Playlist p : playlistsList) {
             for (Song s : p.getSongList()) {
@@ -358,6 +378,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return null;
     }
 
+    @Override
     public Playlist getSongPlaylist(Song song) {
         if (song == null) {
             throw new PlaylistException("Song cannot be null !");
@@ -374,6 +395,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return null;
     }
 
+    @Override
     public void importSongToPlaylist(Playlist playlist, Song song) {
         // Find an new song id
         int id = 1;
@@ -408,6 +430,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         playlist.addSong(song);
     }
 
+    @Override
     public void deleteSongFromPlaylist(Playlist playlist, Song song) {
         // Delete music file from playlist directory
         Path filepath = Paths.get(song.getFilename());
@@ -422,6 +445,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         playlist.removeSong(song);
     }
 
+    @Override
     public void changeSongPlaylist(Song song, Playlist newPlaylist) {
         if (newPlaylist == null) {
             throw new PlaylistException("New playlist cannot be null !");
@@ -442,6 +466,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         newPlaylist.addSong(song);
     }
 
+    @Override
     public boolean isSongInFavoritesPlaylist(Song song) {
         if (song == null) {
             throw new PlaylistException("Song cannot be null !");
@@ -454,6 +479,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
     }
 
+    @Override
     public void exportSong(Song song, String newFilename) {
         // To do (Sacha)
         // Verify if song exists
@@ -461,6 +487,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         // Copy the music file to the newFilename
     }
 
+    @Override
     public Song getFirstSong() {
         for (Playlist p : playlistsList) {
             ArrayList<Song> songList = p.getSongList(); // ou getSongList()
@@ -472,6 +499,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return null;
     }
 
+    @Override
     public Song getNextSong(Song currentSong, Playlist currentPlaylist ) {
         // Verify parameters
         if (currentSong == null || currentPlaylist == null) return null;
@@ -480,13 +508,14 @@ public class DAOPlaylist implements IDAOPlaylist {
         List<Song> songList = currentPlaylist.getSongList();
         if (songList == null || songList.isEmpty()) return null;
 
-        // Get the newt song
+        // Get the new song
         int index = songList.indexOf(currentSong);
         if (index == -1) return null;
 
         return songList.get((index + 1) % songList.size());
     }
 
+    @Override
     public Song getPreviousSong(Song currentSong, Playlist currentPlaylist) {
         // Verify parameters
         if (currentSong == null || currentPlaylist == null) return null;
@@ -495,13 +524,14 @@ public class DAOPlaylist implements IDAOPlaylist {
         List<Song> songList = currentPlaylist.getSongList();
         if (songList == null || songList.isEmpty()) return null;
 
-        // Get the newt song
+        // Get the new song
         int index = songList.indexOf(currentSong);
         if (index == -1) return null;
 
         return songList.get((index - 1 + songList.size()) % songList.size());
     }
 
+    @Override
     public Song getRandomSong(Playlist playlist) {
         // Verify parameters
         if (playlist == null) {
@@ -516,6 +546,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         return playlist.getSongList().get(randomSong);
     }
 
+    @Override
     public byte[] loadImageAsBytes(String path) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             if (is == null) {
@@ -529,8 +560,4 @@ public class DAOPlaylist implements IDAOPlaylist {
             throw new RuntimeException("Error while reading the following file : " + path, e);
         }
     }
-
-//    public void updatePlaylistIcon(Playlist playlist, byte[] icon) {
-//        playlist.setIcon(icon);
-//    }
 }

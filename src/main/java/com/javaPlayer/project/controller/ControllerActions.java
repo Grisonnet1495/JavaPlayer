@@ -21,6 +21,7 @@ public abstract class ControllerActions {
 //    public static final String CREATE_BACKUP = "CREATE_BACKUP";
     public static final String REMOVE_SONG_FROM_FAVORITES = "REMOVE_SONG_FROM_FAVORITES";
     public static final String REMOVE_SONG_FROM_PLAYLIST = "REMOVE_SONG_FROM_PLAYLIST";
+    public static final String DELETE_SONG = "DELETE_SONG";
     public static final String EXPORT_SONG = "EXPORT_SONG";
     public static final String CREATE_PLAYLIST = "CREATE_PLAYLIST";
     public static final String DELETE_PLAYLIST = "DELETE_PLAYLIST";
@@ -29,5 +30,6 @@ public abstract class ControllerActions {
 //    public static final String IMPORT_PLAYLIST = "IMPORT_PLAYLIST";
     public static final String SEARCH_SONG = "SEARCH_SONG";
     public static final String PLAY_SELECTED_SONG = "PLAY_SELECTED_SONG";
+    public static final String CHANGE_MUSIC_POSITION = "CHANGE_MUSIC_POSITION";
     public static final String EXIT_APP = "EXIT_APP";
 }

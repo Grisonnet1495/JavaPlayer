@@ -18,9 +18,9 @@ public interface IViewMainWindow {
     void updateHomePanel(ArrayList<Playlist> recentPlaylistsList, ArrayList<Playlist> allPlaylistsList);
     void updatePlaylistPanel(Playlist playlist);
     void updateSearchPanel(ArrayList<Song> songList);
-    void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite);
-
+    void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, boolean isSongFavorite);
     void updateSongActionsPanel(boolean isRandom, boolean isPreviousSongPossible, boolean isLooping, boolean isPlaying);
+    void updateTime(int currentPosition, int total, String elapsedTime, String remainingTime);
 
     // Show dialog boxes
     Settings showAndGetSettings(String userPseudo, String userPassword);
@@ -46,5 +46,4 @@ public interface IViewMainWindow {
     // Open and save file
     File[] openFile(String fileType, String... fileExtension);
     String saveFile();
-
 }

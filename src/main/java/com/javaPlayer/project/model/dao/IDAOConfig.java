@@ -1,9 +1,6 @@
 package com.javaPlayer.project.model.dao;
 
 public interface IDAOConfig {
-    // Setup methods
-    void setupConfig(String filename);
-
     // Backup methods
     void loadConfig();
     void saveConfig();

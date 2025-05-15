@@ -4,6 +4,7 @@ import com.formdev.flatlaf.themes.*;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.*;
+import com.javaPlayer.project.utils.Constants;
 import com.javaPlayer.project.view.IViewMainWindow;
 
 import javax.imageio.ImageIO;
@@ -16,6 +17,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -37,6 +39,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     private final JMenuItem removeSongFromFavoritesMenuItem;
     private final JMenuItem addSongToPlaylistMenuItem;
     private final JMenuItem removeSongFromPlaylistMenuItem;
+    private final JMenuItem deleteSongMenuItem;
     private final JMenuItem searchSongMenuItem;
     private final JMenuItem exportSongMenuItem;
     private final JMenuItem createPlaylistMenuItem;
@@ -128,12 +131,14 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         removeSongFromFavoritesMenuItem = new JMenuItem("Remove from favorites");
         addSongToPlaylistMenuItem = new JMenuItem("Add to playlist");
         removeSongFromPlaylistMenuItem = new JMenuItem("Remove from playlist");
+        deleteSongMenuItem = new JMenuItem("Delete song");
         searchSongMenuItem = new JMenuItem("Search for a song");
         exportSongMenuItem = new JMenuItem("Export song");
         songMenu.add(addSongToFavoritesMenuItem);
         songMenu.add(removeSongFromFavoritesMenuItem);
         songMenu.add(addSongToPlaylistMenuItem);
         songMenu.add(removeSongFromPlaylistMenuItem);
+        songMenu.add(deleteSongMenuItem);
         songMenu.add(searchSongMenuItem);
         songMenu.add(exportSongMenuItem);
 
@@ -189,7 +194,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     @Override
     public Credentials promptForCredentials() {
         Credentials credentials;
-        boolean isCredentialEmpty = false;
+        boolean isCredentialEmpty;
 
         do {
             JDialogAccountChooser accountChooserDialog = new JDialogAccountChooser();
@@ -200,7 +205,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
             credentials = new Credentials(accountChooserDialog.isCancelled(), accountChooserDialog.isCreatingAccount(), accountChooserDialog.getPseudo(), accountChooserDialog.getPassword());
 
-            if (!accountChooserDialog.isCancelled() && (accountChooserDialog.getPassword().isEmpty() || accountChooserDialog.getPassword().isEmpty())) {
+            if (!accountChooserDialog.isCancelled() && (accountChooserDialog.getPseudo().isEmpty() || accountChooserDialog.getPassword().isEmpty())) {
                 showMessage("Pseudo or password cannot be empty.");
                 isCredentialEmpty = true;
             }
@@ -230,23 +235,30 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     }
 
     @Override
-    public void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, String duration, String elapsedTime, String remainingTime, boolean isSongFavorite) {
+    public void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, boolean isSongFavorite) {
         songTitleLabel.setText(songTitle);
         songArtistLabel.setText(artistPseudo);
+
+        int targetSize = 75;
 
         if (songIcon != null) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream(songIcon);
                 BufferedImage bufferedImage = ImageIO.read(bais);
-                int targetSize = 75;
                 Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
                 songIconButton.setIcon(new ImageIcon(scaledImage));
-
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading song icon : " + e.getMessage());
             }
+
         } else {
-            songIconButton.setText(songTitle.substring(0, 1));
+            try {
+                BufferedImage defaultImage = ImageIO.read(Objects.requireNonNull(getClass().getResource(Constants.DEFAULT_PLAYLIST_ICON)));
+                Image scaledDefaultImage = defaultImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
+                songIconButton.setIcon(new ImageIcon(scaledDefaultImage));
+            } catch (IOException e) {
+                throw new RuntimeException("Error while loading the default playlist icon" + e.getMessage());
+            }
         }
 
         if (isSongFavorite) {
@@ -281,6 +293,14 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         } else {
             pausePlayButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/play_icon.png"))));
         }
+    }
+
+    @Override
+    public void updateTime(int currentPosition, int total, String elapsedTime, String remainingTime) {
+        timeSlider.setMaximum(total);
+        timeSlider.setValue(currentPosition);
+        elapsedTimeLabel.setText(elapsedTime);
+        remainingTimeLabel.setText(remainingTime);
     }
 
     @Override
@@ -421,6 +441,8 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         removeSongFromFavoritesMenuItem.addActionListener(c);
         removeSongFromPlaylistMenuItem.setActionCommand(ControllerActions.REMOVE_SONG_FROM_PLAYLIST);
         removeSongFromPlaylistMenuItem.addActionListener(c);
+        deleteSongMenuItem.setActionCommand(ControllerActions.DELETE_SONG);
+        deleteSongMenuItem.addActionListener(c);
         searchSongMenuItem.setActionCommand(ControllerActions.SEARCH_VIEW);
         searchSongMenuItem.addActionListener(c);
         exportSongMenuItem.setActionCommand(ControllerActions.EXPORT_SONG);
@@ -456,14 +478,16 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         songIconButton.setActionCommand(ControllerActions.SONG_DETAILS);
         songIconButton.addActionListener(c);
 
+        // Add an action for the time slider
+        timeSlider.addChangeListener(e -> {
+            ActionEvent event = new ActionEvent(timeSlider.getValue(), ActionEvent.ACTION_PERFORMED, ControllerActions.CHANGE_MUSIC_POSITION);
+            controller.actionPerformed(event);
+        });
+
         // Set the controller for each Panel
         homePanel.setController(c);
         searchPanel.setController(c);
         playlistPanel.setController(c);
-    }
-
-    public JPanelSearch getSearchPanel() {
-        return searchPanel;
     }
 
     @Override

@@ -26,6 +26,7 @@ public class DAOUser implements IDAOUser, Serializable {
         loadUsersFromFile();
     }
 
+    @Override
     public void loadUsersFromFile() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(usersFilename))) {
             usersList = (ArrayList<User>) ois.readObject();
@@ -34,6 +35,7 @@ public class DAOUser implements IDAOUser, Serializable {
         }
     }
 
+    @Override
     public void saveUsersToFile() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(usersFilename))) {
             oos.writeObject(usersList);
@@ -42,14 +44,17 @@ public class DAOUser implements IDAOUser, Serializable {
         }
     }
 
+    @Override
     public void setCurrentUser(User user) {
         this.currentUser = user;
     }
 
+    @Override
     public User getCurrentUser() {
         return currentUser;
     }
 
+    @Override
     public void addUser(User newUser) {
         if (usersList.stream().anyMatch(user -> user.getPseudo().equalsIgnoreCase(newUser.getPseudo()))) {
             throw new UserException("This user pseudo already exists !");
@@ -73,6 +78,7 @@ public class DAOUser implements IDAOUser, Serializable {
         saveUsersToFile();
     }
 
+    @Override
     public void removeUserById(int userId) {
         if (usersList.stream().noneMatch(user -> user.getId() == userId)) {
             throw new UserException("User does not exist !");
@@ -82,10 +88,12 @@ public class DAOUser implements IDAOUser, Serializable {
         saveUsersToFile();
     }
 
+    @Override
     public ArrayList<User> getUsersList() {
         return usersList;
     }
 
+    @Override
     public User getUserById(int userId) {
         for (User u : usersList) {
             if (u.getId() == userId) {
@@ -95,6 +103,7 @@ public class DAOUser implements IDAOUser, Serializable {
         return null;
     }
 
+    @Override
     public User getUserByPseudo(String pseudo) {
         for (User u : usersList) {
             if (u.getPseudo().equalsIgnoreCase(pseudo)) {
@@ -104,6 +113,7 @@ public class DAOUser implements IDAOUser, Serializable {
         return null;
     }
 
+    @Override
     public void updateUserById(int userId, String newPseudo, String newPassword) {
         if (newPseudo == null || newPseudo.trim().isEmpty()) {
             throw new UserException("User pseudo cannot be empty !");

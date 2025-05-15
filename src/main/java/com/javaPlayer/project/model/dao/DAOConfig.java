@@ -16,7 +16,7 @@ public class DAOConfig implements IDAOConfig {
         loadConfig();
     }
 
-    public void setupConfig(String filename) {
+    private void setupConfig(String filename) {
         try {
             // Create the config file if it doesn't exist
             configFilename = filename;
@@ -51,6 +51,7 @@ public class DAOConfig implements IDAOConfig {
         }
     }
 
+    @Override
     public void loadConfig() {
         try (FileInputStream fis = new FileInputStream(configFilename)) {
             config.load(fis);
@@ -61,6 +62,7 @@ public class DAOConfig implements IDAOConfig {
         }
     }
 
+    @Override
     public void saveConfig() {
         try (FileOutputStream fos = new FileOutputStream(configFilename)) {
             config.store(fos, "Config");
@@ -71,6 +73,7 @@ public class DAOConfig implements IDAOConfig {
         }
     }
 
+    @Override
     public void addConfig(String configName, String configValue) {
         if (!config.containsKey(configName)) {
             config.put(configName, configValue);
@@ -80,6 +83,7 @@ public class DAOConfig implements IDAOConfig {
         }
     }
 
+    @Override
     public void removeConfig(String configName) {
         if (config.containsKey(configName)) {
             config.remove(configName);
@@ -89,10 +93,12 @@ public class DAOConfig implements IDAOConfig {
         }
     }
 
+    @Override
     public String getConfig(String configName) {
         return (String)config.getOrDefault(configName, null);
     }
 
+    @Override
     public boolean isConfigPresent(String configName) {
         return config.containsKey(configName);
     }

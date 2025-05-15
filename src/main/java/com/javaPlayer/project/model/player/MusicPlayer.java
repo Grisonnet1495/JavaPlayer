@@ -1,13 +1,13 @@
 package com.javaPlayer.project.model.player;
 
+import com.javaPlayer.project.controller.Controller;
+import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.SongMetadata;
 import com.javaPlayer.project.model.exception.MusicPlayerException;
 import com.javaPlayer.project.utils.Constants;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.images.ArtworkFactory;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
-import uk.co.caprica.vlcj.media.MediaParsedStatus;
-import uk.co.caprica.vlcj.media.Meta;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.base.State;
@@ -15,14 +15,15 @@ import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.Tag;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
 
 public class MusicPlayer implements IMusicPlayer {
 
     private final MediaPlayerFactory factory;
     private final MediaPlayer mediaPlayer;
+    private Controller controller;
     private boolean released = false;
 
     public MusicPlayer() {
@@ -30,7 +31,21 @@ public class MusicPlayer implements IMusicPlayer {
         this.mediaPlayer = factory.mediaPlayers().newMediaPlayer();
     }
 
+    @Override
+    public void setController(Controller c) {
+        controller = c;
+
+        mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                ActionEvent event = new ActionEvent(mediaPlayer, ActionEvent.ACTION_PERFORMED, ControllerActions.NEXT);
+                controller.actionPerformed(event);
+            }
+        });
+    }
+
     // Load a music file from the start and play it
+    @Override
     public void loadAndPlay(String filePath) {
         State state = mediaPlayer.status().state();
         if (state == State.PLAYING || state == State.PAUSED) {
@@ -41,6 +56,7 @@ public class MusicPlayer implements IMusicPlayer {
     }
 
     // Play or resume the music
+    @Override
     public void resume() {
         State state = mediaPlayer.status().state();
         if (state == State.PAUSED || state == State.STOPPED) {
@@ -49,6 +65,7 @@ public class MusicPlayer implements IMusicPlayer {
     }
 
     // Pause the music
+    @Override
     public void pause() {
         if (mediaPlayer.status().state() == State.PLAYING) {
             mediaPlayer.controls().pause();
@@ -56,6 +73,7 @@ public class MusicPlayer implements IMusicPlayer {
     }
 
     // Stop the music
+    @Override
     public void stop() {
         State state = mediaPlayer.status().state();
         if (state == State.PLAYING || state == State.PAUSED) {
@@ -64,6 +82,7 @@ public class MusicPlayer implements IMusicPlayer {
     }
 
     // Free all VLC resources
+    @Override
     public void release() {
         if (!released) {
             mediaPlayer.release();
@@ -72,17 +91,46 @@ public class MusicPlayer implements IMusicPlayer {
         }
     }
 
+    // Get current position in the music in milliseconds
+    @Override
+    public long getCurrentPosition() {
+        return mediaPlayer.status().time(); // Note : Return 0 if there is no media loaded
+    }
+
+    // Get the total duration of the music in milliseconds
+    @Override
+    public long getTotalDuration() {
+        State state = mediaPlayer.status().state();
+        if (state == State.PLAYING || state == State.PAUSED || state == State.STOPPED) {
+            return mediaPlayer.status().length();
+        }
+
+        return 0;
+    }
+
+    // Go to a specific position in the music
+    @Override
+    public void seek(long position) {
+        State state = mediaPlayer.status().state();
+        if (state == State.PLAYING || state == State.PAUSED || state == State.STOPPED) {
+            mediaPlayer.controls().setTime(position);
+        }
+    }
+
     // Return if a music is currently playing
+    @Override
     public boolean isPlaying() {
         return mediaPlayer.status().isPlaying();
     }
 
     // Set the volume
+    @Override
     public void setVolume(int volume) {
         mediaPlayer.audio().setVolume(volume);
     }
 
     // Get the song metadata
+    @Override
     public SongMetadata getSongMetadata(String filePath) {
         try {
             AudioFile audioFile = AudioFileIO.read(new File(filePath));
@@ -90,7 +138,7 @@ public class MusicPlayer implements IMusicPlayer {
             int durationInSeconds = audioFile.getAudioHeader().getTrackLength();
             Duration duration = Duration.ofSeconds(durationInSeconds);
 
-            SongMetadata metadata = new SongMetadata(
+            return new SongMetadata(
                     tag != null ? tag.getFirst(FieldKey.TITLE) : null,
                     tag != null ? tag.getFirst(FieldKey.ARTIST) : null,
                     tag != null ? tag.getFirst(FieldKey.ALBUM) : null,
@@ -98,16 +146,13 @@ public class MusicPlayer implements IMusicPlayer {
                     duration,
                     imageToBytes(filePath)
             );
-
-            System.out.println(metadata); // Affiche l'objet en console
-
-            return metadata;
         } catch (Exception e) {
             throw new MusicPlayerException("Error while reading file metadata : " + e.getMessage());
         }
     }
 
     // Get the song icon
+    @Override
     public byte[] getSongIcon(String filePath) {
         return imageToBytes(filePath);
     }

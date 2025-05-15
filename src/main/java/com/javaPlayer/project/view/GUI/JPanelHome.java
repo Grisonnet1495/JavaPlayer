@@ -3,6 +3,7 @@ package com.javaPlayer.project.view.GUI;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.Playlist;
+import com.javaPlayer.project.utils.Constants;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,7 +11,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class JPanelHome extends JPanel {
     public JPanel mainPanel;
@@ -77,10 +80,9 @@ public class JPanelHome extends JPanel {
         JPanel playlistButtonPanel = new JPanel();
         playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
 
-        JButton playlistButton;
+        JButton playlistButton = new JButton();
 
         int targetSize = 212;
-        int panelSize = 250;
 
         byte[] buttonIcon = playlist.getIcon();
         if (buttonIcon != null) {
@@ -88,13 +90,18 @@ public class JPanelHome extends JPanel {
                 ByteArrayInputStream bais = new ByteArrayInputStream(buttonIcon);
                 BufferedImage bufferedImage = ImageIO.read(bais);
                 Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
-                playlistButton = new JButton();
                 playlistButton.setIcon(new ImageIcon(scaledImage));
             } catch (Exception e) {
-                throw new RuntimeException("Error while loading the playlist icon", e);
+                throw new RuntimeException("Error while loading the playlist icon" + e.getMessage());
             }
         } else {
-            playlistButton = new JButton(playlist.getTitle().substring(0, 1));
+            try {
+                BufferedImage defaultImage = ImageIO.read(Objects.requireNonNull(getClass().getResource(Constants.DEFAULT_PLAYLIST_ICON)));
+                Image scaledDefaultImage = defaultImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
+                playlistButton.setIcon(new ImageIcon(scaledDefaultImage));
+            } catch (IOException e) {
+                throw new RuntimeException("Error while loading the default playlist icon" + e.getMessage());
+            }
         }
 
         JLabel playlistLabel = new JLabel(playlist.getTitle());
@@ -109,6 +116,7 @@ public class JPanelHome extends JPanel {
         playlistButton.setMinimumSize(buttonSize);
         playlistButtonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
 
+        int panelSize = 250;
 
         playlistButtonPanel.setPreferredSize(new Dimension(panelSize, panelSize));
         playlistButtonPanel.setMaximumSize(new Dimension(panelSize, panelSize));

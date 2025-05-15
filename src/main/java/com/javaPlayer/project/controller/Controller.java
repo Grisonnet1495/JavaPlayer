@@ -8,6 +8,7 @@ import com.javaPlayer.project.model.player.IMusicPlayer;
 import com.javaPlayer.project.utils.Constants;
 import com.javaPlayer.project.view.GUI.JFrameMainWindow;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -37,6 +38,7 @@ public final class Controller implements ActionListener {
     private ArrayList<Song> searchResults = null;
 
     // Note : Not used yet
+    private Timer songTimer;
     private Duration remainingSongDuration;
     private Duration elapsedSongDuration;
 
@@ -49,6 +51,7 @@ public final class Controller implements ActionListener {
 
         this.view.setController(this);
         this.daoUser.loadUsersFromFile();
+        this.musicPlayer.setController(this);
 
         // Authenticate user
         switchUser(authenticate());
@@ -74,6 +77,7 @@ public final class Controller implements ActionListener {
             updatePlaylistJacket(playlist);
         }
 
+        resetTime();
         updateSongPanel();
         updateSongActionsPanel();
 
@@ -285,6 +289,11 @@ public final class Controller implements ActionListener {
 
                 break;
             }
+            case ControllerActions.DELETE_SONG: {
+                deleteCurrentSong();
+
+                break;
+            }
             case ControllerActions.CREATE_PLAYLIST: {
                 createPlaylist();
 
@@ -337,6 +346,14 @@ public final class Controller implements ActionListener {
                     view.showMessage("Song not found");
                 }
 
+                break;
+            }
+            case ControllerActions.CHANGE_MUSIC_POSITION: {
+                int selectedPosition = (int) e.getSource();
+
+                if (currentSong != null) {
+                    musicPlayer.seek(selectedPosition);
+                }
                 break;
             }
             case ControllerActions.EXIT_APP: {
@@ -542,17 +559,11 @@ public final class Controller implements ActionListener {
             view.updateSongPanel("No song selected",
                     "",
                     null,
-                    "",
-                    "00:00",
-                    "00:00",
                     false);
         } else {
             view.updateSongPanel(currentSong.getTitle(),
                     currentSong.getArtist(),
                     currentSongIcon,
-                    currentSong.getFormattedDuration(),
-                    formatDuration(remainingSongDuration),
-                    formatDuration(elapsedSongDuration),
                     isCurrentSongFavorite);
         }
     }
@@ -566,6 +577,7 @@ public final class Controller implements ActionListener {
 
         if (file.exists()) {
             musicPlayer.loadAndPlay(currentSong.getFilename());
+            startSongTimer();
             isCurrentSongPlaying = true;
 
             // Update the UI
@@ -580,6 +592,7 @@ public final class Controller implements ActionListener {
         if (isCurrentSongPlaying) {
             musicPlayer.pause();
             isCurrentSongPlaying = false;
+            if (songTimer != null) songTimer.stop();
 
             // Update the UI
             updateSongActionsPanel();
@@ -589,6 +602,7 @@ public final class Controller implements ActionListener {
     public void resumeCurrentSong() {
         if (!isCurrentSongPlaying) {
             musicPlayer.resume();
+            startSongTimer();
             isCurrentSongPlaying = true;
 
             // Update the UI
@@ -597,16 +611,32 @@ public final class Controller implements ActionListener {
     }
 
     public void releaseCurrentSong() {
+        if (songTimer != null) songTimer.stop();
         musicPlayer.stop();
-
-        if (isCurrentSongPlaying) {
-            isCurrentSongPlaying = false;
-        }
-
-        currentSong = null;
+        isCurrentSongPlaying = false;
 
         // Update the UI
         updateSongActionsPanel();
+    }
+
+    private void startSongTimer() {
+        if (songTimer != null) {
+            songTimer.stop();
+        }
+
+        songTimer = new Timer(1000, e -> {
+            long total = musicPlayer.getTotalDuration();
+            long current = musicPlayer.getCurrentPosition();
+
+            // Update the UI
+            view.updateTime((int) current, (int) total, formatDuration(Duration.ofMillis(current)), formatDuration(Duration.ofMillis(total - current)));
+            updateSongPanel();
+        });
+        songTimer.start();
+    }
+
+    public void resetTime() {
+        view.updateTime(0, 0, formatDuration(Duration.ofMillis(0)), formatDuration(Duration.ofMillis(0)));
     }
 
     public void toggleRandomSongChooser() {
@@ -622,8 +652,6 @@ public final class Controller implements ActionListener {
         // Update the UI
         updateSongActionsPanel();
     }
-
-    // Note : Add a method to automatically choose the next song after the current song has finished playing
 
     public void selectPreviousSong() {
         // If the current mode is random
@@ -643,9 +671,9 @@ public final class Controller implements ActionListener {
         Playlist currentPlaylist = daoPlaylist.getSongPlaylist(currentSong);
 
         if (isCurrentSongChooserRandom) {
-            currentSong = daoPlaylist.getNextSong(currentSong, currentPlaylist);
-        } else {
             currentSong = daoPlaylist.getRandomSong(currentPlaylist);
+        } else {
+            currentSong = daoPlaylist.getNextSong(currentSong, currentPlaylist);
         }
 
         // Update the UI
@@ -770,16 +798,47 @@ public final class Controller implements ActionListener {
         }
     }
 
+    public void deleteCurrentSong() {
+        if (currentSong == null) {
+            view.showMessage("No song selected");
+            return;
+        }
+
+        Playlist songPlaylist = daoPlaylist.getSongPlaylist(currentSong);
+
+        if (songPlaylist != null) {
+            Song oldFirstSong = songPlaylist.getSongList().getFirst();
+
+            releaseCurrentSong();
+            daoPlaylist.deleteSongFromPlaylist(songPlaylist, currentSong);
+
+            if (oldFirstSong.equals(currentSong)) {
+                updatePlaylistJacket(songPlaylist);
+            }
+
+            currentSong = null;
+            currentSongIcon = null;
+
+            daoPlaylist.savePlaylistsToFile();
+
+            if (currentView.equals(Constants.PLAYLIST) && currentPlaylist.equals(songPlaylist)) {
+                updateToPlaylist();
+            }
+
+            updateSongPanel();
+            resetTime();
+        } else {
+            view.showMessage("Song not found in any playlist");
+        }
+    }
+
     public void updatePlaylistJacket(Playlist playlist) {
         byte[] playlistJacket;
 
         if (!playlist.getSongList().isEmpty()) {
             playlistJacket = musicPlayer.getSongIcon(playlist.getSongList().getFirst().getFilename());
-        } else {
-            playlistJacket = daoPlaylist.loadImageAsBytes(Constants.DEFAULT_PLAYLIST_ICON);
+            playlist.setIcon(playlistJacket);
         }
-
-        playlist.setIcon(playlistJacket);
     }
 
     public void createPlaylist() {
@@ -811,6 +870,7 @@ public final class Controller implements ActionListener {
                 if (currentSong != null) {
                     if (daoPlaylist.getSongPlaylist(currentSong).getTitle().equals(playlistToDelete)) {
                         releaseCurrentSong();
+                        currentSong = null;
                     }
                 }
 
@@ -835,7 +895,14 @@ public final class Controller implements ActionListener {
 
     public void editPlaylist() {
         try {
-            String playlistName = view.promptChoosePlaylistToEdit(daoPlaylist.getBasePlaylistsList());
+            ArrayList<Playlist> basePlaylistsList = daoPlaylist.getBasePlaylistsList();
+
+            if (basePlaylistsList.isEmpty()) {
+                view.showMessage("No playlists to edit");
+                return;
+            }
+
+            String playlistName = view.promptChoosePlaylistToEdit(basePlaylistsList);
 
             if (playlistName != null) {
                 Playlist playlistToEdit = daoPlaylist.getPlaylistByName(playlistName);

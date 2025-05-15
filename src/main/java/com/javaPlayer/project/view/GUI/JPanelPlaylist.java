@@ -3,6 +3,7 @@ package com.javaPlayer.project.view.GUI;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.Playlist;
+import com.javaPlayer.project.utils.Constants;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,7 +12,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class JPanelPlaylist extends JPanel {
     public JPanel mainPanel;
@@ -62,7 +65,6 @@ public class JPanelPlaylist extends JPanel {
         int targetSize = 100;
 
         byte[] buttonIcon = playlist.getIcon();
-
         if (buttonIcon != null) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream(buttonIcon);
@@ -70,10 +72,16 @@ public class JPanelPlaylist extends JPanel {
                 Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
                 playlistSettingsButton.setIcon(new ImageIcon(scaledImage));
             } catch (Exception e) {
-                throw new RuntimeException("Error while loading the playlist icon", e);
+                throw new RuntimeException("Error while loading the playlist icon" + e.getMessage());
             }
         } else {
-            playlistSettingsButton.setText(playlist.getTitle().substring(0, 1));
+            try {
+                BufferedImage defaultImage = ImageIO.read(Objects.requireNonNull(getClass().getResource(Constants.DEFAULT_PLAYLIST_ICON)));
+                Image scaledDefaultImage = defaultImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
+                playlistSettingsButton.setIcon(new ImageIcon(scaledDefaultImage));
+            } catch (IOException e) {
+                throw new RuntimeException("Error while loading the default playlist icon" + e.getMessage());
+            }
         }
 
         // Update song table
