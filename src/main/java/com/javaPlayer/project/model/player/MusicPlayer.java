@@ -144,15 +144,15 @@ public class MusicPlayer implements IMusicPlayer {
             Duration duration = Duration.ofSeconds(durationInSeconds);
 
             return new SongMetadata(
-                    tag != null ? tag.getFirst(FieldKey.TITLE) : null,
-                    tag != null ? tag.getFirst(FieldKey.ARTIST) : null,
-                    tag != null ? tag.getFirst(FieldKey.ALBUM) : null,
-                    tag != null ? tag.getFirst(FieldKey.GENRE) : null,
+                    tag != null && tag.getFirst(FieldKey.TITLE) != null ? tag.getFirst(FieldKey.TITLE) : "Unknown title",
+                    tag != null && tag.getFirst(FieldKey.ARTIST) != null ? tag.getFirst(FieldKey.ARTIST) : "Unknown author",
+                    tag != null && tag.getFirst(FieldKey.ALBUM) != null ? tag.getFirst(FieldKey.ALBUM) : "Unknown album",
+                    tag != null && tag.getFirst(FieldKey.GENRE) != null ? tag.getFirst(FieldKey.GENRE) : "Unknown genre",
                     duration,
                     imageToBytes(filePath)
             );
         } catch (Exception e) {
-            throw new MusicPlayerException("Error while reading file metadata : " + e.getMessage());
+            throw new MusicPlayerException("Error while reading file metadata: " + e.getMessage());
         }
     }
 

@@ -36,11 +36,7 @@ public final class Controller implements ActionListener {
     private boolean isCurrentSongLooping = false;
     private boolean isCurrentSongPlaying = false;
     private ArrayList<Song> searchResults = null;
-
-    // Note : Not used yet
     private Timer songTimer;
-    private Duration remainingSongDuration;
-    private Duration elapsedSongDuration;
 
     public Controller(JFrameMainWindow view, Authenticator authenticator, IDAOUser daoUser, IDAOPlaylist daoPlaylist, IMusicPlayer musicPlayer) {
         this.view = view;
@@ -258,11 +254,7 @@ public final class Controller implements ActionListener {
                 break;
             }
             case ControllerActions.EXPORT_SONG: {
-                String newFilename = view.saveFile();
-
-                if (newFilename != null) {
-                    daoPlaylist.exportSong(currentSong, newFilename);
-                }
+                exportSong();
 
                 break;
             }
@@ -969,6 +961,20 @@ public final class Controller implements ActionListener {
             updatePlaylistJacket(currentPlaylist);
             daoPlaylist.savePlaylistsToFile();
             updateToPlaylist();
+        }
+    }
+
+    private void exportSong() {
+        try {
+            String newFilename = view.saveFile("Audio files (*.mp3, *.m4a)", "mp3", "m4a");
+
+            if (newFilename != null) {
+                daoPlaylist.exportSong(currentSong, newFilename);
+
+                view.showMessage("Song exported to : " + newFilename);
+            }
+        } catch (Exception e) {
+            view.showMessage(e.getMessage());
         }
     }
 

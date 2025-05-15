@@ -513,6 +513,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(fileType, fileExtension);
         fileChooser.setFileFilter(filter);
         fileChooser.setMultiSelectionEnabled(true);
+
         int result = fileChooser.showOpenDialog(null); // Note : Does parent could be "this" ?
 
         File[] selectedFiles;
@@ -527,9 +528,11 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     }
 
     @Override
-    public String saveFile() {
+    public String saveFile(String fileType, String... fileExtension) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Save file");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(fileType, fileExtension);
+        fileChooser.setFileFilter(filter);
 
         int userSelection = fileChooser.showSaveDialog(null);
 

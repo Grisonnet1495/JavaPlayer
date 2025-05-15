@@ -45,5 +45,5 @@ public interface IViewMainWindow {
 
     // Open and save file
     File[] openFile(String fileType, String... fileExtension);
-    String saveFile();
+    String saveFile(String fileType, String... fileExtension);
 }

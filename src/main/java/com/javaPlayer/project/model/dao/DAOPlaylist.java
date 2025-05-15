@@ -478,10 +478,34 @@ public class DAOPlaylist implements IDAOPlaylist {
 
     @Override
     public void exportSong(Song song, String newFilename) {
-        // To do (Sacha)
-        // Verify if song exists
-        // Verify if the music file exists
-        // Copy the music file to the newFilename
+        if (song == null) {
+            throw new PlaylistException("Song cannot be null !");
+        }
+
+        if (song.getFilename() == null) {
+            throw new PlaylistException("Incorrect music file");
+        }
+
+        File newFile = new File(song.getFilename());
+
+        if (!newFile.exists()) {
+            throw new PlaylistException("Music file not found !");
+        }
+
+        if (newFilename == null || newFilename.trim().isEmpty()) {
+            throw new PlaylistException("New filename cannot be null or empty !");
+        }
+
+        // Export the music file to the chosen directory
+        Path source = Paths.get(song.getFilename());
+        Path destination;
+        destination = Paths.get(newFilename + "." + song.getSongFileExtension());
+
+        try {
+            Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new PlaylistException("Cannot copy music file to playlist directory : " + e.getMessage());
+        }
     }
 
     @Override
