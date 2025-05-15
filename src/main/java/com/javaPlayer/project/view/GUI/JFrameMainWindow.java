@@ -94,8 +94,8 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
         this.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/app_icon.png"))).getImage());
 
-        this.setSize(1200,1000);
-        this.setMinimumSize(new Dimension(1200, 1000));
+        this.setSize(1500,1000);
+        this.setMinimumSize(new Dimension(1500, 1000));
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setContentPane(mainPanel);
 
@@ -237,8 +237,19 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
     @Override
     public void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, boolean isSongFavorite) {
-        songTitleLabel.setText(songTitle);
-        songArtistLabel.setText(artistPseudo);
+        if (songTitle.length() > 30) {
+            String newSongTitle = songTitle.substring(0, 30) + "...";
+            songTitleLabel.setText(newSongTitle);
+        } else {
+            songTitleLabel.setText(songTitle);
+        }
+
+        if (artistPseudo.length() > 30) {
+            String newArtistPseudo = artistPseudo.substring(0, 30) + "...";
+            songArtistLabel.setText(newArtistPseudo);
+        } else {
+            songArtistLabel.setText(artistPseudo);
+        }
 
         int targetSize = 75;
 
