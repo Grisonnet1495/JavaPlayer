@@ -78,6 +78,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     private CardLayout cardLayout;
     private JPanel contentPanel;
     private JPanel recentPlaylistsButtonsPanel;
+    private JPanel spacerPanel;
 
     // Add the different content panels
     private JPanelHome homePanel = new JPanelHome();
@@ -297,8 +298,8 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
     @Override
     public void updateTime(int currentPosition, int total, String elapsedTime, String remainingTime) {
-        timeSlider.setMaximum(total);
         timeSlider.setValue(currentPosition);
+        timeSlider.setMaximum(total);
         elapsedTimeLabel.setText(elapsedTime);
         remainingTimeLabel.setText(remainingTime);
     }
@@ -339,7 +340,9 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
         songDetailsDialog.setVisible(true);
 
-        return new SongDetails(songDetailsDialog.getSongTitle(), songDetailsDialog.getSongArtist());
+        SongDetails songDetails = new SongDetails(songDetailsDialog.getSongTitle(), songDetailsDialog.getSongArtist());
+        System.out.println("Title : " + songDetails.getSongTitle() + ", Artist : " + songDetails.getSongArtist());
+        return songDetails;
     }
 
     @Override
@@ -480,8 +483,10 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
         // Add an action for the time slider
         timeSlider.addChangeListener(e -> {
-            ActionEvent event = new ActionEvent(timeSlider.getValue(), ActionEvent.ACTION_PERFORMED, ControllerActions.CHANGE_MUSIC_POSITION);
-            controller.actionPerformed(event);
+            if (timeSlider.getValueIsAdjusting()) {
+                ActionEvent event = new ActionEvent(timeSlider.getValue(), ActionEvent.ACTION_PERFORMED, ControllerActions.CHANGE_MUSIC_POSITION);
+                controller.actionPerformed(event);
+            }
         });
 
         // Set the controller for each Panel

@@ -18,29 +18,18 @@ public class JDialogSongDetails extends JDialog {
     private JTextField songTitleTextField;
     private JTextField songArtistTextField;
 
-    private String songTitle = null;
-    private String songArtist = null;
-
     public JDialogSongDetails(JFrame parent, boolean modal) {
         super(parent, "Song details", modal);
         this.setContentPane(mainPanel);
 
         // Set the properties of the dialog box
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.setSize(500, 250);
+        this.setSize(400, 250);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (screenSize.width - this.getWidth()) / 2;
         int y = (screenSize.height - this.getHeight()) / 2;
         this.setLocation(x, y);
-
-        songTitleTextField.addActionListener(e -> {
-            songTitle = songTitleTextField.getText();
-        });
-
-        songArtistTextField.addActionListener(e -> {
-            songArtist = songArtistTextField.getText();
-        });
     }
 
     public void updateSongDetails(String title, String artist, String playlist, String date, String length) {
@@ -49,15 +38,13 @@ public class JDialogSongDetails extends JDialog {
         if (playlist != null) songPlaylistLabel.setText(playlist);
         if (date != null) songAddedDateLabel.setText(date);
         if (length != null) songDurationLabel.setText(length);
-        songTitle = songTitleTextField.getText();
-        songArtist = songArtistTextField.getText();
     }
 
     public String getSongTitle() {
-        return songTitle;
+        return songTitleTextField.getText();
     }
 
     public String getSongArtist() {
-        return songArtist;
+        return songArtistTextField.getText();
     }
 }

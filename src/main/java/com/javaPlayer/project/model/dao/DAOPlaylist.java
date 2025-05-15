@@ -106,9 +106,6 @@ public class DAOPlaylist implements IDAOPlaylist {
         try (FileInputStream fis = new FileInputStream(currentUserPlaylistsFileName);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             playlistsList = (ArrayList<Playlist>) ois.readObject();
-            for (Playlist p : playlistsList) {
-                System.out.println(p.getSongList().toString());
-            }
         } catch (FileNotFoundException e) {
             initialisePlaylistsList();
             savePlaylistsToFile();

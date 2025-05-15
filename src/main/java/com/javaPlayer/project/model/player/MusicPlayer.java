@@ -38,8 +38,8 @@ public class MusicPlayer implements IMusicPlayer {
         mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
-                ActionEvent event = new ActionEvent(mediaPlayer, ActionEvent.ACTION_PERFORMED, ControllerActions.NEXT);
-                controller.actionPerformed(event);
+                ActionEvent event = new ActionEvent(mediaPlayer, ActionEvent.ACTION_PERFORMED, ControllerActions.CHOOSE_NEW_SONG);
+                javax.swing.SwingUtilities.invokeLater(() -> controller.actionPerformed(event));
             }
         });
     }
@@ -50,6 +50,11 @@ public class MusicPlayer implements IMusicPlayer {
         State state = mediaPlayer.status().state();
         if (state == State.PLAYING || state == State.PAUSED) {
             mediaPlayer.controls().stop();
+
+            // Make a pause
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {}
         }
 
         mediaPlayer.media().play(filePath);
@@ -100,8 +105,8 @@ public class MusicPlayer implements IMusicPlayer {
     // Get the total duration of the music in milliseconds
     @Override
     public long getTotalDuration() {
-        State state = mediaPlayer.status().state();
-        if (state == State.PLAYING || state == State.PAUSED || state == State.STOPPED) {
+        // If the media is loaded
+        if (mediaPlayer.media().info().mrl() != null) {
             return mediaPlayer.status().length();
         }
 

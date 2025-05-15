@@ -30,6 +30,7 @@ public abstract class ControllerActions {
 //    public static final String IMPORT_PLAYLIST = "IMPORT_PLAYLIST";
     public static final String SEARCH_SONG = "SEARCH_SONG";
     public static final String PLAY_SELECTED_SONG = "PLAY_SELECTED_SONG";
+    public static final String CHOOSE_NEW_SONG = "CHOOSE_NEW_SONG";
     public static final String CHANGE_MUSIC_POSITION = "CHANGE_MUSIC_POSITION";
     public static final String EXIT_APP = "EXIT_APP";
 }

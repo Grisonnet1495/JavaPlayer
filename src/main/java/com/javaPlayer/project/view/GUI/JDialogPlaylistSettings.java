@@ -22,7 +22,6 @@ public class JDialogPlaylistSettings extends JDialog {
     private JPanel playlistOwnerPanel;
     private boolean isSaving = false;
     private boolean isDeletingPlaylist = false;
-    private String playlistName = null;
 
 
     public JDialogPlaylistSettings(JFrame parent, boolean modal, String playlistTitle, String playlistOwner, boolean canPlaylistBeRenamed, boolean canPlaylistBeDeleted) {
@@ -51,7 +50,6 @@ public class JDialogPlaylistSettings extends JDialog {
         // Add action listeners
         saveButton.addActionListener(e -> {
             isSaving = true;
-            playlistName = playlistNameTextField.getText();
             this.dispose();
         });
 
@@ -81,6 +79,6 @@ public class JDialogPlaylistSettings extends JDialog {
     }
 
     public String getPlaylistName() {
-        return playlistName;
+        return playlistNameTextField.getText();
     }
 }

@@ -26,8 +26,6 @@ public class JDialogSettings extends JDialog {
     private JPanel saveSettingsPanel;
     private JLabel acceptDeleteAllDataLabel;
 
-    private String newUserPseudo = null;
-    private String newUserPassword = null;
     private boolean isDeletingAllData = false;
     private boolean isSaving = false;
 
@@ -58,8 +56,6 @@ public class JDialogSettings extends JDialog {
         });
 
         saveChangesButton.addActionListener(e -> {
-            newUserPseudo = userPseudoTextField.getText();
-            newUserPassword = new String(passwordTextField.getPassword());
             isSaving = true;
             this.dispose();
         });
@@ -74,11 +70,11 @@ public class JDialogSettings extends JDialog {
     }
 
     public String getUserPseudo() {
-        return newUserPseudo;
+        return userPseudoTextField.getText();
     }
 
     public String getUserPassword() {
-        return newUserPassword;
+        return new String(passwordTextField.getPassword());
     }
 
     public boolean isDeletingAllData() {
