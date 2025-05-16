@@ -10,6 +10,7 @@ public interface IMusicPlayer {
     void pause();
     void stop();
     void release();
+    void clearRessources();
     long getCurrentPosition();
     long getTotalDuration();
     void seek(long position);

@@ -1,12 +1,8 @@
 package com.javaPlayer.project.model.dao;
 
 import com.javaPlayer.project.model.entity.User;
-import com.javaPlayer.project.model.exception.UserException;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public interface IDAOUser {
     // Backup methods

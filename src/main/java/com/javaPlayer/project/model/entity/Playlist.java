@@ -48,11 +48,11 @@ public class Playlist implements Serializable {
         return lastViewedDate;
     }
 
+    // Note : To use
     public void setLastViewedDate(LocalDateTime lastViewedDate) {
         this.lastViewedDate = lastViewedDate;
     }
 
-    // Note : Create test
     public void updateLastViewedDate() {
         this.lastViewedDate = LocalDateTime.now();
     }
@@ -83,28 +83,7 @@ public class Playlist implements Serializable {
     }
 
     public void removeSong(Song song) {
-        // Verify if the song exists in the playlist
-        Song songToRemove = songList.stream()
-                .filter(s -> s.getId() == song.getId())
-                .findFirst()
-                .orElse(null);
-
-        if (songToRemove == null) {
-            throw new PlaylistException("Song doesn't exist in the playlist !");
-        }
-
-        // If it is the first song, set the new playlist icon
-        if (songList.get(0).getId() == songToRemove.getId()) {
-            if (songList.size() > 1) {
-//                icon = MusicPlayer.getSongIcon(songList.get(1).getFilename());
-                // Note : Temporary
-                icon = null;
-            } else {
-                icon = null;
-            }
-        }
-
-        songList.remove(songToRemove);
+        songList.remove(song);
     }
 
     public Song findSongById(int id) {

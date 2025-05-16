@@ -2,17 +2,7 @@ package com.javaPlayer.project.model.dao;
 
 import com.javaPlayer.project.model.entity.Playlist;
 import com.javaPlayer.project.model.entity.Song;
-import com.javaPlayer.project.model.exception.PlaylistException;
-import com.javaPlayer.project.utils.Constants;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public interface IDAOPlaylist {

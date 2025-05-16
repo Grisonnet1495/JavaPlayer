@@ -25,30 +25,12 @@ public class DAOPlaylist implements IDAOPlaylist {
     private String currentUserDataDirectory; // Directory name of all the user playlists data
     private int currentUserId; // Current user id
     private ArrayList<Playlist> playlistsList; // Current playlists of the user
-//    private Integer lastPlayedSongId = null; // Id of the current song of the user
 
     public DAOPlaylist(String playlistsConfigFilename) {
-//        playlistsConfigFilename = new DAOConfig(DefaultFilePath.CONFIG).getConfig(Constants.USER_PLAYLISTS_CONFIG_KEY);
         this.playlistsConfigFilename = playlistsConfigFilename;
 
         playlistsConfig = new Properties();
-
-        // Note : To do at the start of the controller
-//        loadPlaylistsConfigFile(userId);
-//        loadPlaylistsFromFile();
     }
-
-//    public Song getLastPlayedSong() {
-//        if (lastPlayedSongId == null) {
-//            return null;
-//        }
-//
-//        return getSongById(lastPlayedSongId);
-//    }
-
-//    public void setLastPlayedSong(Song song) {
-//        this.lastPlayedSongId = song.getId();
-//    }
 
     @Override
     public void loadPlaylistsConfigFile(int userId) {
@@ -248,8 +230,10 @@ public class DAOPlaylist implements IDAOPlaylist {
             throw new PlaylistException("This playlist cannot be removed !");
         }
 
+        // Create a copy the song list to prevent concurrent access
+        List<Song> songsToDelete = new ArrayList<>(playlist.getSongList());
         // Delete all songs from the playlist
-        for (Song s : playlist.getSongList()) {
+        for (Song s : songsToDelete) {
             deleteSongFromPlaylist(playlist, s);
         }
 
@@ -435,7 +419,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         try {
             Files.delete(filepath);
         } catch (IOException e) {
-            throw new PlaylistException("Cannot delete music file from playlist directory", e);
+            throw new PlaylistException("Cannot delete music file from playlist directory : " + e.getMessage());
         }
 
         // Remove the song from the playlist

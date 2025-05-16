@@ -52,22 +52,7 @@ public final class Controller implements ActionListener {
 
         // Authenticate user
         switchUser(authenticate());
-        view.setVisible(true);
-
-        // Set up current song
-//        currentSong = daoPlaylist.getLastPlayedSong();
-//
-//        if (currentSong == null) {
-//            currentSong = daoPlaylist.getFirstSong();
-//        }
-//
-//        if (currentSong != null) {
-//            currentPlaylist = daoPlaylist.getSongPlaylist(currentSong);
-//            currentSongIcon = musicPlayer.getSongIcon(currentSong.getFilename());
-//            isCurrentSongFavorite = daoPlaylist.isSongInFavoritesPlaylist(currentSong);
-//            playCurrentSong();
-//            pauseCurrentSong();
-//        }
+//        view.setVisible(true);
 
         // Update all playlist icons
         for (Playlist playlist : daoPlaylist.getPlaylistsList()) {
@@ -526,6 +511,15 @@ public final class Controller implements ActionListener {
             if (playlistSettings != null) {
                 // If the user wants to delete the playlist
                 if (playlistSettings.isDeletingPlaylist()) {
+                    if (currentSong != null) {
+                        if (daoPlaylist.getSongPlaylist(currentSong).equals(playlist)) {
+                            releaseCurrentSong();
+                            currentSong = null;
+                            updateSongPanel();
+                            resetTime();
+                        }
+                    }
+
                     daoPlaylist.removePlaylist(playlist);
                     daoPlaylist.savePlaylistsToFile();
 
@@ -602,6 +596,9 @@ public final class Controller implements ActionListener {
             startSongTimer();
             isCurrentSongPlaying = true;
 
+            // Update the Last viewed date of the playlist
+            daoPlaylist.getSongPlaylist(currentSong).setLastViewedDate(LocalDateTime.now());
+
             // Update the UI
             updateSongActionsPanel();
         } else {
@@ -634,7 +631,7 @@ public final class Controller implements ActionListener {
 
     public void releaseCurrentSong() {
         if (songTimer != null) songTimer.stop();
-        musicPlayer.stop();
+        musicPlayer.release();
         isCurrentSongPlaying = false;
 
         // Update the UI
@@ -778,7 +775,14 @@ public final class Controller implements ActionListener {
     private void addCurrentSongToPlaylist() {
         try {
             Playlist oldPlaylist = daoPlaylist.getSongPlaylist(currentSong);
-            String selectedPlaylist = view.promptChooseAddToPlaylist(daoPlaylist.getBasePlaylistsList());
+            ArrayList<Playlist> basePlaylistsList = daoPlaylist.getBasePlaylistsList();
+
+            if (basePlaylistsList.isEmpty()) {
+                view.showMessage("No playlists to add the song to");
+                return;
+            }
+
+            String selectedPlaylist = view.promptChooseAddToPlaylist(basePlaylistsList);
 
             if (selectedPlaylist != null) {
                 daoPlaylist.changeSongPlaylist(currentSong, daoPlaylist.getPlaylistByName(selectedPlaylist));
@@ -881,27 +885,34 @@ public final class Controller implements ActionListener {
 
     private void deletePlaylist() {
         try {
-            String playlistToDelete = view.promptChoosePlaylistToDelete(daoPlaylist.getBasePlaylistsList());
+            ArrayList<Playlist> basePlaylistsList = daoPlaylist.getBasePlaylistsList();
+
+            if (basePlaylistsList.isEmpty()) {
+                view.showMessage("No playlists to delete");
+                return;
+            }
+
+            String playlistToDelete = view.promptChoosePlaylistToDelete(basePlaylistsList);
 
             if (playlistToDelete != null) {
                 if (currentSong != null) {
                     if (daoPlaylist.getSongPlaylist(currentSong).getTitle().equals(playlistToDelete)) {
                         releaseCurrentSong();
                         currentSong = null;
+                        updateSongPanel();
+                        resetTime();
                     }
-                }
-
-                // Update currentPlaylist if necessary
-                if (currentPlaylist != null && currentPlaylist.getTitle().equals(playlistToDelete)) {
-                    currentPlaylist = null;
                 }
 
                 // Delete playlist
                 daoPlaylist.removePlaylist(daoPlaylist.getPlaylistByName(playlistToDelete));
                 daoPlaylist.savePlaylistsToFile();
 
-                // Update the UI
-                if (currentView.equals(Constants.PLAYLIST) || currentView.equals(Constants.HOME)) {
+                // Update currentPlaylist and the UI if necessary
+                if (currentPlaylist != null && currentPlaylist.getTitle().equals(playlistToDelete)) {
+                    currentPlaylist = null;
+                    updateToHome();
+                } else if (currentView.equals(Constants.HOME)) {
                     updateToHome();
                 }
             }
@@ -982,7 +993,7 @@ public final class Controller implements ActionListener {
 
     private void clearResources() {
         musicPlayer.stop();
-        musicPlayer.release();
+        musicPlayer.clearRessources();
         view.dispose();
     }
 

@@ -86,9 +86,26 @@ public class MusicPlayer implements IMusicPlayer {
         }
     }
 
-    // Free all VLC resources
+    // Release the music
     @Override
     public void release() {
+        State state = mediaPlayer.status().state();
+        if (state == State.PLAYING || state == State.PAUSED || state == State.STOPPED) {
+            mediaPlayer.controls().stop();
+
+            // Ensure media is properly stopped before releasing it
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {}
+        }
+
+        // Clears the currently loaded media
+        mediaPlayer.media().prepare("");
+    }
+
+    // Free all VLC resources
+    @Override
+    public void clearRessources() {
         if (!released) {
             mediaPlayer.release();
             factory.release();

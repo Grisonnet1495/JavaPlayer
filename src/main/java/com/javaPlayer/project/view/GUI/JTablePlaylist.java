@@ -20,7 +20,7 @@ public class JTablePlaylist extends JTable {
         setIntercellSpacing(new Dimension(0, 0));
         setBorder(BorderFactory.createEmptyBorder());
 
-        Font font = new Font("Segoe UI", Font.PLAIN, 14); // Police moderne + taille augmentée
+        Font font = UIManager.getFont("Label.font").deriveFont(14f);
         setFont(font);
 
         setBackground(Color.WHITE);
