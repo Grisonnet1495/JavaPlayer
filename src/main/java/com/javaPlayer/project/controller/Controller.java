@@ -239,6 +239,11 @@ public final class Controller implements ActionListener {
                 break;
             }
             case ControllerActions.EXPORT_SONG: {
+                if (currentSong == null) {
+                    view.showMessage("No song selected");
+                    return;
+                }
+
                 exportSong();
 
                 break;
@@ -977,7 +982,7 @@ public final class Controller implements ActionListener {
 
     private void exportSong() {
         try {
-            String newFilename = view.saveFile("Audio files (*.mp3, *.m4a)", "mp3", "m4a");
+            String newFilename = view.saveFile(currentSong.getTitle(), currentSong.getSongFileExtension(), "Audio files (*.mp3, *.m4a)", "mp3", "m4a");
 
             if (newFilename != null) {
                 daoPlaylist.exportSong(currentSong, newFilename);
@@ -1003,6 +1008,8 @@ public final class Controller implements ActionListener {
         if (!playlist.getSongList().isEmpty()) {
             playlistJacket = musicPlayer.getSongIcon(playlist.getSongList().getFirst().getFilename());
             playlist.setIcon(playlistJacket);
+        } else {
+            playlist.setIcon(null);
         }
     }
 }

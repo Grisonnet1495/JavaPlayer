@@ -480,10 +480,14 @@ public class DAOPlaylist implements IDAOPlaylist {
             throw new PlaylistException("New filename cannot be null or empty !");
         }
 
+        // Add the extension if missing
+        if (!newFilename.toLowerCase().endsWith(song.getSongFileExtension().toLowerCase())) {
+            newFilename += song.getSongFileExtension();
+        }
+
         // Export the music file to the chosen directory
         Path source = Paths.get(song.getFilename());
-        Path destination;
-        destination = Paths.get(newFilename + "." + song.getSongFileExtension());
+        Path destination = Paths.get(newFilename);
 
         try {
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);

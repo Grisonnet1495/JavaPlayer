@@ -528,18 +528,43 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     }
 
     @Override
-    public String saveFile(String fileType, String... fileExtension) {
+    public String saveFile(String filename, String currentFileExtension, String fileType, String... fileExtension) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Save file");
         FileNameExtensionFilter filter = new FileNameExtensionFilter(fileType, fileExtension);
         fileChooser.setFileFilter(filter);
 
+        // Verify the file extension
+        if (!currentFileExtension.startsWith(".")) {
+            currentFileExtension = "." + currentFileExtension;
+        }
+
+        // Set a default filename if needed
+        if (filename == null || filename.isEmpty()) {
+            filename = "Exported song";
+        }
+
+        fileChooser.setSelectedFile(new File(filename + currentFileExtension));
+
         int userSelection = fileChooser.showSaveDialog(null);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
+            String path = fileToSave.getAbsolutePath();
 
-            return fileToSave.getAbsolutePath();
+            String nameOnly = fileToSave.getName();
+
+            // If user just typed the file extension
+            if (nameOnly.equalsIgnoreCase(currentFileExtension) || nameOnly.startsWith(".")) {
+                path = fileToSave.getParent() + File.separator + "Exported song" + currentFileExtension;
+            }
+
+            // Add extension if missing
+            if (!path.toLowerCase().endsWith(currentFileExtension.toLowerCase())) {
+                path += currentFileExtension;
+            }
+
+            return path;
         }
 
         return null;

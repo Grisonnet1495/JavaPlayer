@@ -44,6 +44,7 @@ public class JDialogPlaylistSettings extends JDialog {
 
         if (!canPlaylistBeDeleted) {
             deletePlaylistButton.setEnabled(false);
+            deletePlaylistInfoUpLabel.setEnabled(false);
             acceptConsequencesCheckBox.setEnabled(false);
         }
 
