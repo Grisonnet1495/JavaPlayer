@@ -3,19 +3,12 @@ package com.javaPlayer.project.view.GUI;
 import com.javaPlayer.project.controller.Controller;
 import com.javaPlayer.project.controller.ControllerActions;
 import com.javaPlayer.project.model.entity.Song;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.Tag;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -37,10 +30,6 @@ public class JPanelSearch extends JPanel {
 
     void setController(Controller c) {
         this.controller = c;
-
-        // Note : Useful ?
-        searchTextField.setActionCommand(ControllerActions.SEARCH_SONG);
-        searchTextField.addActionListener(c);
 
         // Add a listener at the searchTextField
         searchTextField.getDocument().addDocumentListener(new DocumentListener() {
@@ -68,7 +57,7 @@ public class JPanelSearch extends JPanel {
             }
         });
 
-        // Sélectionner une chanson
+        // Add a listener for the song selection
         songResultsTable.getSelectionModel().addListSelectionListener(e -> {
             // If it isn't just a screen update
             if (!e.getValueIsAdjusting()) {
@@ -105,7 +94,7 @@ public class JPanelSearch extends JPanel {
         songResultsTable.setModel(tableModel);
     }
 
-    // Créer un composant personnalisé pour la table des chansons
+    // Create a custom component for the song results table
     private void createUIComponents() {
         songResultsTable = new JTablePlaylist(new DefaultTableModel());
     }

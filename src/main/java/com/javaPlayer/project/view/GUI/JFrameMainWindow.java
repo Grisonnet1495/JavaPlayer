@@ -185,11 +185,11 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Add the main content
-        contentPanel.add(homePanel.mainPanel, "Home");
-        contentPanel.add(playlistPanel.mainPanel, "Playlist");
-        contentPanel.add(searchPanel.mainPanel, "Search");
+        contentPanel.add(homePanel.mainPanel, Constants.HOME);
+        contentPanel.add(playlistPanel.mainPanel, Constants.PLAYLIST);
+        contentPanel.add(searchPanel.mainPanel, Constants.SEARCH);
 
-        cardLayout.show(contentPanel, "Home");
+        cardLayout.show(contentPanel, Constants.HOME);
     }
 
     @Override
@@ -237,6 +237,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
     @Override
     public void updateSongPanel(String songTitle, String artistPseudo, byte[] songIcon, boolean isSongFavorite) {
+        // Set the song title
         if (songTitle.length() > 30) {
             String newSongTitle = songTitle.substring(0, 30) + "...";
             songTitleLabel.setText(newSongTitle);
@@ -244,6 +245,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
             songTitleLabel.setText(songTitle);
         }
 
+        // Set the song artist
         if (artistPseudo.length() > 30) {
             String newArtistPseudo = artistPseudo.substring(0, 30) + "...";
             songArtistLabel.setText(newArtistPseudo);
@@ -251,6 +253,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
             songArtistLabel.setText(artistPseudo);
         }
 
+        // Set the song icon
         int targetSize = 75;
 
         if (songIcon != null) {
@@ -273,6 +276,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
             }
         }
 
+        // Set the favorite icon
         if (isSongFavorite) {
             addToFavoritesButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_favorite_song_icon.png"))));
         } else {
@@ -282,24 +286,28 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
     @Override
     public void updateSongActionsPanel(boolean isRandom, boolean isPreviousSongPossible, boolean isLooping, boolean isPlaying) {
+        // Set the random icon
         if (isRandom) {
             randomButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_random_icon.png"))));
         } else {
             randomButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_not_random_icon.png"))));
         }
 
+        // Set the previous icon
         if (isPreviousSongPossible) {
             previousButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/previous_possible_icon.png"))));
         } else {
             previousButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/previous_not_possible_icon.png"))));
         }
 
+        // Set the next icon
         if (isLooping) {
             loopButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_looping_icon.png"))));
         } else {
             loopButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/is_not_looping_icon.png"))));
         }
 
+        // Set the play/pause icon
         if (isPlaying) {
             pausePlayButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/pause_icon.png"))));
         } else {
@@ -317,17 +325,17 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
     @Override
     public void showHome() {
-        cardLayout.show(contentPanel, "Home");
+        cardLayout.show(contentPanel, Constants.HOME);
     }
 
     @Override
     public void showSearch() {
-        cardLayout.show(contentPanel, "Search");
+        cardLayout.show(contentPanel, Constants.SEARCH);
     }
 
     @Override
     public void showPlaylist() {
-        cardLayout.show(contentPanel, "Playlist");
+        cardLayout.show(contentPanel, Constants.PLAYLIST);
     }
 
     @Override
@@ -351,9 +359,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
         songDetailsDialog.setVisible(true);
 
-        SongDetails songDetails = new SongDetails(songDetailsDialog.getSongTitle(), songDetailsDialog.getSongArtist());
-        System.out.println("Title : " + songDetails.getSongTitle() + ", Artist : " + songDetails.getSongArtist());
-        return songDetails;
+        return new SongDetails(songDetailsDialog.getSongTitle(), songDetailsDialog.getSongArtist());
     }
 
     @Override
@@ -514,7 +520,7 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
         fileChooser.setFileFilter(filter);
         fileChooser.setMultiSelectionEnabled(true);
 
-        int result = fileChooser.showOpenDialog(null); // Note : Does parent could be "this" ?
+        int result = fileChooser.showOpenDialog(this);
 
         File[] selectedFiles;
 

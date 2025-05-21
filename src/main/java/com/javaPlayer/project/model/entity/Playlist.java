@@ -48,13 +48,8 @@ public class Playlist implements Serializable {
         return lastViewedDate;
     }
 
-    // Note : To use
     public void setLastViewedDate(LocalDateTime lastViewedDate) {
         this.lastViewedDate = lastViewedDate;
-    }
-
-    public void updateLastViewedDate() {
-        this.lastViewedDate = LocalDateTime.now();
     }
 
     public byte[] getIcon() {
@@ -139,7 +134,7 @@ public class Playlist implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Playlist playlist = (Playlist) o;
-        return Objects.equals(id, playlist.id);
+        return id == playlist.id;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class DAOPlaylist implements IDAOPlaylist {
             try (FileInputStream fis = new FileInputStream(playlistsConfigFile)) {
                 playlistsConfig.load(fis);
             } catch (IOException e) {
-                throw new PlaylistException("Cannot load playlist config file", e);
+                throw new PlaylistException("Cannot load playlist config file : " + e);
             }
         }
 
@@ -79,7 +79,7 @@ public class DAOPlaylist implements IDAOPlaylist {
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(playlistsList);
         } catch (IOException e) {
-            throw new PlaylistException("Cannot save playlist file", e);
+            throw new PlaylistException("Cannot save playlist file : " + e);
         }
     }
 
@@ -92,7 +92,7 @@ public class DAOPlaylist implements IDAOPlaylist {
             initialisePlaylistsList();
             savePlaylistsToFile();
         } catch (IOException | ClassNotFoundException e) {
-            throw new PlaylistException("Cannot load playlist file", e);
+            throw new PlaylistException("Cannot load playlist file : " + e);
         }
     }
 
@@ -124,16 +124,6 @@ public class DAOPlaylist implements IDAOPlaylist {
     }
 
     @Override
-    public ArrayList<String> getPlaylistsTitleList() {
-        ArrayList<String> playlistsTitleList = new ArrayList<>();
-
-        for (Playlist p : playlistsList) {
-            playlistsTitleList.add(p.getTitle());
-        }
-        return playlistsTitleList;
-    }
-
-    @Override
     public ArrayList<Playlist> getRecentPlaylistsList(int minutes) {
         ArrayList<Playlist> recentPlaylistsList = new ArrayList<>();
 
@@ -146,21 +136,6 @@ public class DAOPlaylist implements IDAOPlaylist {
         }
 
         return recentPlaylistsList;
-    }
-
-    @Override
-    public ArrayList<String> getRecentPlaylistsTitleList(int minutes) {
-        ArrayList<String> recentPlaylistsTitleList = new ArrayList<>();
-
-        LocalDateTime startTime = LocalDateTime.now().minusMinutes(minutes);
-
-        for (Playlist p : playlistsList) {
-            if (p.getLastViewedDate().isAfter(startTime)) {
-                recentPlaylistsTitleList.add(p.getTitle());
-            }
-        }
-
-        return recentPlaylistsTitleList;
     }
 
     @Override
@@ -453,11 +428,7 @@ public class DAOPlaylist implements IDAOPlaylist {
             throw new PlaylistException("Song cannot be null !");
         }
 
-        if (getSongPlaylist(song).getTitle().equals("Favorites")) {
-            return true;
-        } else {
-            return false;
-        }
+        return getSongPlaylist(song).getTitle().equals("Favorites");
     }
 
     @Override
@@ -494,18 +465,6 @@ public class DAOPlaylist implements IDAOPlaylist {
         } catch (IOException e) {
             throw new PlaylistException("Cannot copy music file to playlist directory : " + e.getMessage());
         }
-    }
-
-    @Override
-    public Song getFirstSong() {
-        for (Playlist p : playlistsList) {
-            ArrayList<Song> songList = p.getSongList(); // ou getSongList()
-            if (songList != null && !songList.isEmpty()) {
-                return songList.get(0);
-            }
-        }
-
-        return null;
     }
 
     @Override
@@ -559,14 +518,16 @@ public class DAOPlaylist implements IDAOPlaylist {
     public byte[] loadImageAsBytes(String path) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             if (is == null) {
-                throw new IllegalArgumentException("Cannot find following file : " + path);
+                throw new IllegalArgumentException("Cannot find file '" + path + "'");
             }
             BufferedImage bufferedImage = ImageIO.read(is);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("Error while reading the following file : " + path, e);
+            throw new RuntimeException("Error while reading file '" + path + "' : " + e);
         }
     }
+
+    // Note : Return each time a copy of the object ?
 }

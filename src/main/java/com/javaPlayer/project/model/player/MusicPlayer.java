@@ -105,7 +105,7 @@ public class MusicPlayer implements IMusicPlayer {
 
     // Free all VLC resources
     @Override
-    public void clearRessources() {
+    public void clearResources() {
         if (!released) {
             mediaPlayer.release();
             factory.release();
@@ -116,7 +116,7 @@ public class MusicPlayer implements IMusicPlayer {
     // Get current position in the music in milliseconds
     @Override
     public long getCurrentPosition() {
-        return mediaPlayer.status().time(); // Note : Return 0 if there is no media loaded
+        return mediaPlayer.status().time(); // Return 0 if there is no media loaded
     }
 
     // Get the total duration of the music in milliseconds

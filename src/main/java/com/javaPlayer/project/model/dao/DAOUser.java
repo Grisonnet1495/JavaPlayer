@@ -40,7 +40,7 @@ public class DAOUser implements IDAOUser, Serializable {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(usersFilename))) {
             oos.writeObject(usersList);
         } catch (IOException e) {
-            throw new UserException("Cannot save user file", e);
+            throw new UserException("Cannot save user file : " + e);
         }
     }
 
@@ -80,11 +80,12 @@ public class DAOUser implements IDAOUser, Serializable {
 
     @Override
     public void removeUserById(int userId) {
-        if (usersList.stream().noneMatch(user -> user.getId() == userId)) {
-            throw new UserException("User does not exist !");
+        boolean isUserRemoved = usersList.removeIf(user -> user.getId() == userId);
+
+        if (!isUserRemoved) {
+            throw new UserException("User does not exist!");
         }
 
-        usersList.removeIf(user -> user.getId() == userId);
         saveUsersToFile();
     }
 
@@ -100,6 +101,7 @@ public class DAOUser implements IDAOUser, Serializable {
                 return u;
             }
         }
+
         return null;
     }
 
@@ -110,6 +112,7 @@ public class DAOUser implements IDAOUser, Serializable {
                 return u;
             }
         }
+
         return null;
     }
 

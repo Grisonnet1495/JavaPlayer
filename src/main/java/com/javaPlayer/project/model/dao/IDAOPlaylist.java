@@ -7,56 +7,53 @@ import java.util.*;
 
 public interface IDAOPlaylist {
     // Backup methods
-    public void loadPlaylistsConfigFile(int userId);
-    public void savePlaylistsToFile();
-    public void loadPlaylistsFromFile();
+    void loadPlaylistsConfigFile(int userId);
+    void savePlaylistsToFile();
+    void loadPlaylistsFromFile();
 
     // Init methods
-    public void initialisePlaylistsList();
+    void initialisePlaylistsList();
 
     // For test purpose
-    public void setPlaylistsList(ArrayList<Playlist> playlistsList);
+    void setPlaylistsList(ArrayList<Playlist> playlistsList);
 
     // Set and get playlists methods
-    public ArrayList<Playlist> getPlaylistsList();
-    public ArrayList<Playlist> getBasePlaylistsList();
-    public ArrayList<String> getPlaylistsTitleList();
-    public ArrayList<Playlist> getRecentPlaylistsList(int minutes);
-    public ArrayList<String> getRecentPlaylistsTitleList(int minutes);
-    public Playlist getPlaylistByName(String playlistName);
-    public Playlist getPlaylistById(int playlistId);
+    ArrayList<Playlist> getPlaylistsList();
+    ArrayList<Playlist> getBasePlaylistsList();
+    ArrayList<Playlist> getRecentPlaylistsList(int minutes);
+    Playlist getPlaylistByName(String playlistName);
+    Playlist getPlaylistById(int playlistId);
 
     // CRUD playlists methods
-    public void createPlaylist(String playlistTitle);
-    public void removePlaylist(Playlist playlist);
-    public void removeAllPlaylists();
-    public void changePlaylistTitle(String oldTitle, String newTitle);
-    public void deleteAllCurrentUserData();
+    void createPlaylist(String playlistTitle);
+    void removePlaylist(Playlist playlist);
+    void removeAllPlaylists();
+    void changePlaylistTitle(String oldTitle, String newTitle);
+    void deleteAllCurrentUserData();
 
     // Playlists check methods
-    public boolean canPlaylistBeRenamed(String playlistName);
-    public boolean canPlaylistBeDeleted(String playlistTitle);
+    boolean canPlaylistBeRenamed(String playlistName);
+    boolean canPlaylistBeDeleted(String playlistTitle);
 
     // Get songs methods
-    public ArrayList<Song> getAllSongs();
-    public Song getSongById(int songId);
-    public Playlist getSongPlaylist(Song song);
+    ArrayList<Song> getAllSongs();
+    Song getSongById(int songId);
+    Playlist getSongPlaylist(Song song);
 
     // CRUD song methods
-    public void importSongToPlaylist(Playlist playlist, Song song);
-    public void deleteSongFromPlaylist(Playlist playlist, Song song);
-    public void changeSongPlaylist(Song song, Playlist newPlaylist);
+    void importSongToPlaylist(Playlist playlist, Song song);
+    void deleteSongFromPlaylist(Playlist playlist, Song song);
+    void changeSongPlaylist(Song song, Playlist newPlaylist);
 
     // Song checks methods
-    public boolean isSongInFavoritesPlaylist(Song song);
+    boolean isSongInFavoritesPlaylist(Song song);
 
     // Export methods
-    public void exportSong(Song song, String newFilename);
+    void exportSong(Song song, String newFilename);
 
     // Utils methods
-    public Song getFirstSong();
-    public Song getNextSong(Song currentSong, Playlist currentPlaylist );
-    public Song getPreviousSong(Song currentSong, Playlist currentPlaylist);
-    public Song getRandomSong(Playlist playlist);
-    public byte[] loadImageAsBytes(String path);
+    Song getNextSong(Song currentSong, Playlist currentPlaylist );
+    Song getPreviousSong(Song currentSong, Playlist currentPlaylist);
+    Song getRandomSong(Playlist playlist);
+    byte[] loadImageAsBytes(String path);
 }

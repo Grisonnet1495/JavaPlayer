@@ -30,7 +30,6 @@ public class JPanelHome extends JPanel {
     private JScrollPane recentPlaylistsScrollPane;
     private JScrollPane allPlaylistsScrollPane;
 
-    private String selectedPlaylistTitle = null;
     private Controller controller;
 
     public JPanelHome() {
@@ -89,7 +88,7 @@ public class JPanelHome extends JPanel {
         playlistButton.setFocusPainted(false);
 
         int targetSize = 212;
-        Icon finalButtonIcon = null;
+        Icon finalButtonIcon;
 
         byte[] buttonIcon = playlist.getIcon();
         if (buttonIcon != null) {
@@ -162,8 +161,6 @@ public class JPanelHome extends JPanel {
 
         // Action du bouton
         playlistButton.addActionListener(e -> {
-            selectedPlaylistTitle = playlist.getTitle();
-
             if (controller != null) {
                 ActionEvent event = new ActionEvent(playlist.getId(), ActionEvent.ACTION_PERFORMED, ControllerActions.PLAYLIST_VIEW);
                 controller.actionPerformed(event);
