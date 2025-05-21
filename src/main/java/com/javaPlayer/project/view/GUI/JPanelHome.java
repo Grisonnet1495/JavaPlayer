@@ -9,6 +9,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -81,8 +83,13 @@ public class JPanelHome extends JPanel {
         playlistButtonPanel.setLayout(new BoxLayout(playlistButtonPanel, BoxLayout.Y_AXIS));
 
         JButton playlistButton = new JButton();
+        playlistButton.setBackground(Color.WHITE);
+        playlistButton.setOpaque(true);
+        playlistButton.setBorderPainted(false);
+        playlistButton.setFocusPainted(false);
 
         int targetSize = 212;
+        Icon finalButtonIcon = null;
 
         byte[] buttonIcon = playlist.getIcon();
         if (buttonIcon != null) {
@@ -90,34 +97,36 @@ public class JPanelHome extends JPanel {
                 ByteArrayInputStream bais = new ByteArrayInputStream(buttonIcon);
                 BufferedImage bufferedImage = ImageIO.read(bais);
                 Image scaledImage = bufferedImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
-                playlistButton.setIcon(new ImageIcon(scaledImage));
+                finalButtonIcon = new ImageIcon(scaledImage);
+                playlistButton.setIcon(finalButtonIcon);
             } catch (Exception e) {
-                throw new RuntimeException("Error while loading the playlist icon" + e.getMessage());
+                throw new RuntimeException("Error while loading the playlist icon: " + e.getMessage());
             }
         } else {
             try {
                 BufferedImage defaultImage = ImageIO.read(Objects.requireNonNull(getClass().getResource(Constants.DEFAULT_PLAYLIST_ICON)));
                 Image scaledDefaultImage = defaultImage.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
-                playlistButton.setIcon(new ImageIcon(scaledDefaultImage));
+                finalButtonIcon = new ImageIcon(scaledDefaultImage);
+                playlistButton.setIcon(finalButtonIcon);
             } catch (IOException e) {
-                throw new RuntimeException("Error while loading the default playlist icon" + e.getMessage());
+                throw new RuntimeException("Error while loading the default playlist icon: " + e.getMessage());
             }
         }
 
         JLabel playlistLabel = new JLabel(playlist.getTitle());
         playlistLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         playlistLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        playlistLabel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+        playlistLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         playlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         Dimension buttonSize = new Dimension(targetSize, targetSize);
         playlistButton.setPreferredSize(buttonSize);
         playlistButton.setMaximumSize(buttonSize);
         playlistButton.setMinimumSize(buttonSize);
+        playlistButton.setForeground(Color.WHITE);
         playlistButtonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
 
         int panelSize = 250;
-
         playlistButtonPanel.setPreferredSize(new Dimension(panelSize, panelSize));
         playlistButtonPanel.setMaximumSize(new Dimension(panelSize, panelSize));
         playlistButtonPanel.setMinimumSize(new Dimension(panelSize, panelSize));
@@ -128,6 +137,28 @@ public class JPanelHome extends JPanel {
         allPlaylistsContentPanel.add(playlistButtonPanel);
         allPlaylistsContentPanel.revalidate();
         allPlaylistsContentPanel.repaint();
+
+        Color hoverColor = new Color(0xA02B93);
+        Icon finalIcon = finalButtonIcon; // Create a local copy of the icon
+        String playlistTitle = playlist.getTitle();
+
+        playlistButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                playlistLabel.setVisible(false);
+                playlistButton.setBackground(hoverColor);
+                playlistButton.setIcon(null);
+                playlistButton.setText(playlistTitle);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                playlistLabel.setVisible(true);
+                playlistButton.setBackground(Color.WHITE);
+                playlistButton.setIcon(finalIcon);
+                playlistButton.setText("");
+            }
+        });
 
         // Action du bouton
         playlistButton.addActionListener(e -> {
