@@ -55,5 +55,4 @@ public interface IDAOPlaylist {
     Song getNextSong(Song currentSong, Playlist currentPlaylist );
     Song getPreviousSong(Song currentSong, Playlist currentPlaylist);
     Song getRandomSong(Playlist playlist);
-    byte[] loadImageAsBytes(String path);
 }

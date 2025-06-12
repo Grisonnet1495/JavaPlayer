@@ -7,6 +7,7 @@ import com.javaPlayer.project.model.entity.*;
 import com.javaPlayer.project.model.player.IMusicPlayer;
 import com.javaPlayer.project.utils.Constants;
 import com.javaPlayer.project.view.GUI.JFrameMainWindow;
+import com.javaPlayer.project.view.IViewMainWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import static com.javaPlayer.project.utils.DurationFormatter.formatDuration;
 
 public final class Controller implements ActionListener {
-    private JFrameMainWindow view;
+    private IViewMainWindow view;
     private Authenticator authenticator;
     private IDAOPlaylist daoPlaylist;
     private IDAOUser daoUser;
@@ -38,7 +39,7 @@ public final class Controller implements ActionListener {
     private ArrayList<Song> searchResults = null;
     private Timer songTimer;
 
-    public Controller(JFrameMainWindow view, Authenticator authenticator, IDAOUser daoUser, IDAOPlaylist daoPlaylist, IMusicPlayer musicPlayer) {
+    public Controller(IViewMainWindow view, Authenticator authenticator, IDAOUser daoUser, IDAOPlaylist daoPlaylist, IMusicPlayer musicPlayer) {
         this.view = view;
         this.authenticator = authenticator;
         this.daoUser = daoUser;
@@ -999,7 +1000,7 @@ public final class Controller implements ActionListener {
     private void clearResources() {
         musicPlayer.stop();
         musicPlayer.clearResources();
-        view.dispose();
+        view.release();
     }
 
     private void updatePlaylistJacket(Playlist playlist) {

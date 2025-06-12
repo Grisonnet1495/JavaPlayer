@@ -5,8 +5,6 @@ import com.javaPlayer.project.model.entity.Playlist;
 import com.javaPlayer.project.model.entity.Song;
 import com.javaPlayer.project.utils.Constants;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,7 +54,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         try (FileOutputStream fos = new FileOutputStream(playlistsConfigFile)) {
             playlistsConfig.store(fos, "User playlists lists configuration file");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new PlaylistException("Cannot store playlist config for user of id " + userId + " : " + e.getMessage());
         }
 
         // Create the user data directory if it doesn't exist
@@ -426,7 +424,7 @@ public class DAOPlaylist implements IDAOPlaylist {
             throw new PlaylistException("Song cannot be null !");
         }
 
-        return getSongPlaylist(song).getTitle().equals("Favorites");
+        return getSongPlaylist(song).getTitle().equals(Constants.FAVORITES_PLAYLIST);
     }
 
     @Override
@@ -510,20 +508,5 @@ public class DAOPlaylist implements IDAOPlaylist {
         int randomSong = random.nextInt(songCount);
 
         return playlist.getSongList().get(randomSong);
-    }
-
-    @Override
-    public byte[] loadImageAsBytes(String path) {
-        try (InputStream is = getClass().getResourceAsStream(path)) {
-            if (is == null) {
-                throw new IllegalArgumentException("Cannot find file '" + path + "'");
-            }
-            BufferedImage bufferedImage = ImageIO.read(is);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while reading file '" + path + "' : " + e);
-        }
     }
 }

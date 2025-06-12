@@ -22,7 +22,7 @@ public class JDialogAccountChooser extends JDialog {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         // Set the properties of the dialog box
-        this.setSize(350, 200);
+        this.setSize(360, 200);
         this.setResizable(false);
 
         // Add action listeners

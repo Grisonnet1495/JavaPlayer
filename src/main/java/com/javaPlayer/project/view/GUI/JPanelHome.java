@@ -50,9 +50,7 @@ public class JPanelHome extends JPanel {
             recentPlaylistsContentPanel.add(noRecentPlaylistsLabel);
         } else {
             for (Playlist p : playlistsList) {
-                // Creation of the components
                 JPanel playlistButtonPanel = createButtonPanel(p);
-
                 recentPlaylistsContentPanel.add(playlistButtonPanel);
             }
         }

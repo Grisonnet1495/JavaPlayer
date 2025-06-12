@@ -46,7 +46,6 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     private final JMenuItem deletePlaylistMenuItem;
     private final JMenuItem editPlaylistMenuItem;
 
-
     // Left Menu Panel
     private JButton homeButton;
     private JButton searchButton;
@@ -55,7 +54,6 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
 
     // Song panel
     private JPanel songPanel;
-//    private JScrollPane contentScrollPane;
     private JSlider timeSlider;
     private JPanel songTimeActionsPanel;
     private JPanel songActionsPanel;
@@ -265,7 +263,6 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading song icon : " + e.getMessage());
             }
-
         } else {
             try {
                 BufferedImage defaultImage = ImageIO.read(Objects.requireNonNull(getClass().getResource(Constants.DEFAULT_PLAYLIST_ICON)));
@@ -428,6 +425,12 @@ public class JFrameMainWindow extends JFrame implements IViewMainWindow {
     @Override
     public void stop() {
         this.setVisible(false);
+    }
+
+    @Override
+    public void release() {
+        this.setVisible(false);
+        this.dispose();
     }
 
     @Override

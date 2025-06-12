@@ -39,6 +39,7 @@ public interface IViewMainWindow {
     // Run and stop
     void run();
     void stop();
+    void release();
 
     // Set controller
     void setController(Controller c);
