@@ -31,8 +31,6 @@ There probably won't be any release for this app. If you want to try it, please 
 
 You are free to compile and modify this project for personal use, as long as you credit the original developers.
 
-Developers: Grisonnet1495 and Sachavdv
-
 ## Issues:
 
 Known issues:
