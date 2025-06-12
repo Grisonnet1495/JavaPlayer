@@ -62,7 +62,7 @@ public final class Controller implements ActionListener {
         // Update the current song view
         resetTime();
         updateSongPanel();
-        resetTime();
+        updateSongActionsPanel();
 
         // Show home menu
         updateToHome();
