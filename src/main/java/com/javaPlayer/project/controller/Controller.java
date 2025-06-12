@@ -53,7 +53,6 @@ public final class Controller implements ActionListener {
 
         // Authenticate user
         switchUser(authenticate());
-//        view.setVisible(true);
 
         // Update all playlist icons
         for (Playlist playlist : daoPlaylist.getPlaylistsList()) {
@@ -63,7 +62,7 @@ public final class Controller implements ActionListener {
         // Update the current song view
         resetTime();
         updateSongPanel();
-        updateSongActionsPanel();
+        resetTime();
 
         // Show home menu
         updateToHome();
@@ -106,6 +105,17 @@ public final class Controller implements ActionListener {
             }
             case ControllerActions.SWITCH_ACCOUNT: {
                 view.stop();
+
+                if (currentSong != null) {
+                    releaseCurrentSong();
+                    currentSong = null;
+                    updateSongPanel();
+                    updateSongActionsPanel();
+                    resetTime();
+                }
+
+                currentPlaylist = null;
+
                 switchUser(authenticate());
                 view.run();
 
