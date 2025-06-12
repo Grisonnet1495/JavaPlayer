@@ -2,48 +2,72 @@ package com.javaPlayer.project.model.entity;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class UserTest {
+
     @Test
-    void getId() {
+    void testGetAndSetId() {
+        User user = new User("testUser", "password");
+        user.setId(10);
+        assertEquals(10, user.getId());
     }
 
     @Test
-    void setId() {
+    void testGetAndSetPseudo() {
+        User user = new User("testUser", "password");
+        user.setPseudo("newPseudo");
+        assertEquals("newPseudo", user.getPseudo());
     }
 
     @Test
-    void getSurname() {
+    void testGetAndSetPassword() {
+        User user = new User("testUser", "password");
+        user.setPassword("newPassword");
+        assertEquals("newPassword", user.getPassword());
     }
 
     @Test
-    void setSurname() {
+    void testToString() {
+        User user = new User("testUser", "password");
+        user.setId(5);
+        String expected = "User{id=5, pseudo='testUser'}";
+        assertEquals(expected, user.toString());
     }
 
     @Test
-    void getName() {
+    void testEqualsAndHashCode() {
+        User user1 = new User("user1", "pass1");
+        user1.setId(1);
+
+        User user2 = new User("user2", "pass2");
+        user2.setId(1);
+
+        User user3 = new User("user3", "pass3");
+        user3.setId(2);
+
+        assertEquals(user1, user2);
+        assertNotEquals(user1, user3);
+        assertEquals(user1.hashCode(), user2.hashCode());
+        assertNotEquals(user1.hashCode(), user3.hashCode());
     }
 
     @Test
-    void setName() {
+    void testNotEqualsDifferentClass() {
+        User user = new User("testUser", "password");
+        user.setId(1);
+        assertNotEquals(user, "someString");
     }
 
     @Test
-    void getPassword() {
+    void testEqualsSameInstance() {
+        User user = new User("testUser", "password");
+        assertEquals(user, user);
     }
 
     @Test
-    void setPassword() {
-    }
-
-    @Test
-    void getPlaylistList() {
-    }
-
-    @Test
-    void setPlaylistList() {
-    }
-
-    @Test
-    void testEquals() {
+    void testEqualsNull() {
+        User user = new User("testUser", "password");
+        assertNotEquals(user, null);
     }
 }
