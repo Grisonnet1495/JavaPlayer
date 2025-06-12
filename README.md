@@ -29,8 +29,6 @@ Please note that this is our first project in Java and our first time using the 
 **This app is experimental. We are not responsible for any damage to your system.**
 There probably won't be any release for this app. If you want to try it, please compile it directly.
 
-You are free to compile and modify this project for personal use, as long as you credit the original developers.
-
 ## Issues:
 
 Known issues:
