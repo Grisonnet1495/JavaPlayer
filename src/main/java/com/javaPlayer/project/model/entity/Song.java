@@ -1,19 +1,15 @@
 package com.javaPlayer.project.model.entity;
 
 import com.javaPlayer.project.model.exception.SongException;
-import com.javaPlayer.project.view.IViewMainWindow;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+
+import static com.javaPlayer.project.utils.DurationFormatter.formatDuration;
 
 public class Song implements Serializable {
-//    private static int currentSongId = 0;
     private int id;
     private String title;
     private String artist;
@@ -21,7 +17,6 @@ public class Song implements Serializable {
     private Duration duration;
     private LocalDateTime addedDate;
     private String filename;
-    private IViewMainWindow view;
 
     public Song(String title, String artist, String genre, Duration duration, LocalDateTime addedDate, String filename) {
         this.id = 0;
@@ -80,21 +75,7 @@ public class Song implements Serializable {
     }
 
     public String getFormattedDuration() {
-        if (duration == null) {
-            return "00:00";
-        }
-
-        long hours = duration.toHours();
-        long minutes = duration.toMinutesPart();
-        long seconds = duration.toSecondsPart();
-
-        if (hours <= 0) {
-            // Without hours
-            return String.format("%02d:%02d", minutes, seconds);
-        } else {
-            // With hours
-            return String.format("%d:%02d:%02d", hours, minutes, seconds);
-        }
+        return formatDuration(duration);
     }
 
     public void setDuration(Duration duration) {

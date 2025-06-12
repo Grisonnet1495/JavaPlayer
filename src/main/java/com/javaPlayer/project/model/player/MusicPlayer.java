@@ -193,7 +193,7 @@ public class MusicPlayer implements IMusicPlayer {
                         .getBinaryData();
             }
         } catch (Exception e) {
-            throw new MusicPlayerException("Cannot read song icon from " + filePath, e);
+            throw new MusicPlayerException("Cannot read song icon from '" + filePath + "' : " + e.getMessage());
         }
 
         return null;

@@ -13,7 +13,6 @@ public class DAOConfig implements IDAOConfig {
     public DAOConfig(String configFilename) {
         config = new Properties();
         setupConfig(configFilename);
-        loadConfig();
     }
 
     private void setupConfig(String filename) {
@@ -47,7 +46,7 @@ public class DAOConfig implements IDAOConfig {
 
             saveConfig();
         } catch (IOException | SecurityException e) {
-            throw new ConfigException("Cannot setup config file '" + configFilename + "' : " + e);
+            throw new ConfigException("Cannot setup config file '" + configFilename + "' : " + e.getMessage());
         }
     }
 
@@ -56,9 +55,9 @@ public class DAOConfig implements IDAOConfig {
         try (FileInputStream fis = new FileInputStream(configFilename)) {
             config.load(fis);
         } catch (FileNotFoundException e) {
-            throw new ConfigException("Config file not found : " + e);
+            throw new ConfigException("Config file not found : " + e.getMessage());
         } catch (IOException e) {
-            throw new ConfigException("IO Exception : " + e);
+            throw new ConfigException("IO Exception : " + e.getMessage());
         }
     }
 
@@ -67,9 +66,9 @@ public class DAOConfig implements IDAOConfig {
         try (FileOutputStream fos = new FileOutputStream(configFilename)) {
             config.store(fos, "Config");
         } catch (FileNotFoundException e) {
-            throw new ConfigException("Config file not found : " + e);
+            throw new ConfigException("Config file not found : " + e.getMessage());
         } catch (IOException e) {
-            throw new ConfigException("IO Exception : " + e);
+            throw new ConfigException("IO Exception : " + e.getMessage());
         }
     }
 

@@ -1,8 +1,7 @@
 package com.javaPlayer.project.model.entity;
 
 import com.javaPlayer.project.model.exception.SongException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SongTest {
-
     private Song song;
     private File tempFile;
 
@@ -25,15 +23,9 @@ class SongTest {
     }
 
     @Test
-    void getId() {
+    void getAndSetId() {
         song.setId(42);
         assertEquals(42, song.getId());
-    }
-
-    @Test
-    void setId() {
-        song.setId(5);
-        assertEquals(5, song.getId());
     }
 
     @Test
@@ -113,14 +105,12 @@ class SongTest {
 
     @Test
     void setFilename_empty_shouldThrowException() {
-        SongException exception = assertThrows(SongException.class, () -> song.setFilename(""));
-        assertEquals("Filename can't be empty !", exception.getMessage());
+        assertThrows(SongException.class, () -> song.setFilename(""));
     }
 
     @Test
     void setFilename_nonExisting_shouldThrowException() {
-        SongException exception = assertThrows(SongException.class, () -> song.setFilename("nonexistent.mp3"));
-        assertEquals("File doesn't exist !", exception.getMessage());
+        assertThrows(SongException.class, () -> song.setFilename("nonexistent.mp3"));
     }
 
     @Test

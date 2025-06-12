@@ -1,6 +1,5 @@
 package com.javaPlayer.project.model.entity;
 import com.javaPlayer.project.model.exception.PlaylistException;
-import com.javaPlayer.project.model.player.MusicPlayer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -43,7 +42,6 @@ public class Playlist implements Serializable {
         this.title = title;
     }
 
-    // Note : Create test
     public LocalDateTime getLastViewedDate() {
         return lastViewedDate;
     }
@@ -104,7 +102,7 @@ public class Playlist implements Serializable {
     }
 
     public void sortSongsByArtist() {
-        songList.sort(Comparator.comparing(song -> song.getArtist()));
+        songList.sort(Comparator.comparing(Song::getArtist));
     }
 
     public void sortSongsByGenre() {

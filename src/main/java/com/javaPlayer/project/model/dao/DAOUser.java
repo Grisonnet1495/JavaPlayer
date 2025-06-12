@@ -31,7 +31,7 @@ public class DAOUser implements IDAOUser, Serializable {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(usersFilename))) {
             usersList = (ArrayList<User>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new UserException("Cannot load user file", e);
+            throw new UserException("Cannot load user file : " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class DAOUser implements IDAOUser, Serializable {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(usersFilename))) {
             oos.writeObject(usersList);
         } catch (IOException e) {
-            throw new UserException("Cannot save user file : " + e);
+            throw new UserException("Cannot save user file : " + e.getMessage());
         }
     }
 

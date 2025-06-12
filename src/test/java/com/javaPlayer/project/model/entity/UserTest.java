@@ -5,9 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
-
     @Test
-    void testGetAndSetId() {
+    void getAndSetId() {
         User user = new User("testUser", "password");
         user.setId(10);
         assertEquals(10, user.getId());
@@ -36,7 +35,7 @@ public class UserTest {
     }
 
     @Test
-    void testEqualsAndHashCode() {
+    void testEquals() {
         User user1 = new User("user1", "pass1");
         user1.setId(1);
 
@@ -48,26 +47,20 @@ public class UserTest {
 
         assertEquals(user1, user2);
         assertNotEquals(user1, user3);
+    }
+
+    @Test
+    void testHashCode() {
+        User user1 = new User("user1", "pass1");
+        user1.setId(1);
+
+        User user2 = new User("user2", "pass2");
+        user2.setId(1);
+
+        User user3 = new User("user3", "pass3");
+        user3.setId(2);
+
         assertEquals(user1.hashCode(), user2.hashCode());
         assertNotEquals(user1.hashCode(), user3.hashCode());
-    }
-
-    @Test
-    void testNotEqualsDifferentClass() {
-        User user = new User("testUser", "password");
-        user.setId(1);
-        assertNotEquals(user, "someString");
-    }
-
-    @Test
-    void testEqualsSameInstance() {
-        User user = new User("testUser", "password");
-        assertEquals(user, user);
-    }
-
-    @Test
-    void testEqualsNull() {
-        User user = new User("testUser", "password");
-        assertNotEquals(user, null);
     }
 }

@@ -107,7 +107,7 @@ class PlaylistTest {
     @Test
     void addSong_throwsExceptionIfDuplicateId() {
         Song duplicate = new Song("Duplicate Song", "Another Artist", "Genre", Duration.ofMinutes(2), LocalDateTime.now(), tempFile.getAbsolutePath());
-        duplicate.setId(1); // same ID as song1
+        duplicate.setId(1);
         assertThrows(PlaylistException.class, () -> playlist.addSong(duplicate));
     }
 
@@ -130,19 +130,19 @@ class PlaylistTest {
     @Test
     void sortSongsById() {
         playlist.sortSongsById();
-        assertEquals(1, playlist.getSongList().get(0).getId());
+        assertEquals(1, playlist.getSongList().getFirst().getId());
     }
 
     @Test
     void sortSongsByTitle() {
         playlist.sortSongsByTitle();
-        assertEquals("Song A", playlist.getSongList().get(0).getTitle());
+        assertEquals("Song A", playlist.getSongList().getFirst().getTitle());
     }
 
     @Test
     void sortSongsByArtist() {
         playlist.sortSongsByArtist();
-        assertEquals("Artist A", playlist.getSongList().get(0).getArtist());
+        assertEquals("Artist A", playlist.getSongList().getFirst().getArtist());
     }
 
     @Test
@@ -155,13 +155,13 @@ class PlaylistTest {
     @Test
     void sortSongsByDuration() {
         playlist.sortSongsByDuration();
-        assertEquals(2, playlist.getSongList().get(0).getDuration().toMinutes());
+        assertEquals(2, playlist.getSongList().getFirst().getDuration().toMinutes());
     }
 
     @Test
     void sortSongsByAddedDate() {
         playlist.sortSongsByAddedDate();
-        assertEquals(song1, playlist.getSongList().get(0));
+        assertEquals(song1, playlist.getSongList().getFirst());
     }
 
     @Test

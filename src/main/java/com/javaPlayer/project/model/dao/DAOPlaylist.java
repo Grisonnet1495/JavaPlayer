@@ -43,7 +43,7 @@ public class DAOPlaylist implements IDAOPlaylist {
             try (FileInputStream fis = new FileInputStream(playlistsConfigFile)) {
                 playlistsConfig.load(fis);
             } catch (IOException e) {
-                throw new PlaylistException("Cannot load playlist config file : " + e);
+                throw new PlaylistException("Cannot load playlist config file : " + e.getMessage());
             }
         }
 
@@ -79,7 +79,7 @@ public class DAOPlaylist implements IDAOPlaylist {
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(playlistsList);
         } catch (IOException e) {
-            throw new PlaylistException("Cannot save playlist file : " + e);
+            throw new PlaylistException("Cannot save playlist file : " + e.getMessage());
         }
     }
 
@@ -92,7 +92,7 @@ public class DAOPlaylist implements IDAOPlaylist {
             initialisePlaylistsList();
             savePlaylistsToFile();
         } catch (IOException | ClassNotFoundException e) {
-            throw new PlaylistException("Cannot load playlist file : " + e);
+            throw new PlaylistException("Cannot load playlist file : " + e.getMessage());
         }
     }
 
@@ -313,9 +313,7 @@ public class DAOPlaylist implements IDAOPlaylist {
         ArrayList<Song> allSongs = new ArrayList<>();
 
         for (Playlist p : playlistsList) {
-            for (Song song : p.getSongList()) {
-                allSongs.add(song);
-            }
+            allSongs.addAll(p.getSongList());
         }
 
         return allSongs;
@@ -528,6 +526,4 @@ public class DAOPlaylist implements IDAOPlaylist {
             throw new RuntimeException("Error while reading file '" + path + "' : " + e);
         }
     }
-
-    // Note : Return each time a copy of the object ?
 }

@@ -1,7 +1,5 @@
 package com.javaPlayer.project.view.GUI;
 
-import com.javaPlayer.project.model.entity.Song;
-
 import javax.swing.*;
 import java.awt.*;
 

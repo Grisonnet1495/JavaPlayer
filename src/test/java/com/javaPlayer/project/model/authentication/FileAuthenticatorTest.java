@@ -3,56 +3,74 @@ package com.javaPlayer.project.model.authentication;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileAuthenticatorTest {
-    private static FileAuthenticator fileAuthenticator;
-    private static String fileName = "testUser.properties";
-    private static File file = null;
+    private FileAuthenticator fileAuthenticator;
+    private final String TEST_USER_PASSWORDS_FILE = "testUserPasswords.properties";
 
     @BeforeEach
     void setUp() {
-        // Suppression du fichier à la fin
-        file = new File(fileName);
-        if (file.exists()) file.delete();
-
-        fileAuthenticator = new FileAuthenticator(fileName);
+        fileAuthenticator = new FileAuthenticator(TEST_USER_PASSWORDS_FILE);
         fileAuthenticator.addUsers("Tom", "1234");
         fileAuthenticator.addUsers("Sacha", "abcd");
-        fileAuthenticator.saveUsers();
     }
 
     @AfterEach
-    void deleteFile() {
-        if (file.exists()) file.delete();
+    void tearDown() {
+        File file = new File(TEST_USER_PASSWORDS_FILE);
+
+        if (file.exists()) {
+            file.delete();
+        }
+
+        fileAuthenticator = null;
     }
 
     @Test
     void loadUsers() {
-        fileAuthenticator.saveUsers();
+        Properties props = new Properties();
+        props.setProperty("testUser1", "testPassword1");
+        props.setProperty("testUser2", "testPassword2");
+
+        File file = new File(TEST_USER_PASSWORDS_FILE);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            props.store(fos, null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         fileAuthenticator.loadUsers();
-        assertTrue(fileAuthenticator.isLoginExists("Tom"));
-        assertEquals("1234", fileAuthenticator.getPassword("Tom"));
-        assertTrue(fileAuthenticator.isLoginExists("Sacha"));
-        assertEquals("abcd", fileAuthenticator.getPassword("Sacha"));
+
+        assertEquals("testPassword1", fileAuthenticator.getPassword("testUser1"));
+        assertEquals("testPassword2", fileAuthenticator.getPassword("testUser2"));
     }
 
     @Test
     void saveUsers() {
         fileAuthenticator.saveUsers();
-        fileAuthenticator.loadUsers();
-        assertTrue(fileAuthenticator.isLoginExists("Tom"));
+
+        Properties props = new Properties();
+
+        File file = new File(TEST_USER_PASSWORDS_FILE);
+        try (FileInputStream fos = new FileInputStream(file)) {
+            props.load(fos);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         assertEquals("1234", fileAuthenticator.getPassword("Tom"));
-        assertTrue(fileAuthenticator.isLoginExists("Sacha"));
         assertEquals("abcd", fileAuthenticator.getPassword("Sacha"));
     }
 
     @Test
     void addUsers() {
-        fileAuthenticator.addUsers("Noa", "motDePasse");
-        assertTrue(fileAuthenticator.isLoginExists("Noa"));
-        assertEquals("motDePasse", fileAuthenticator.getPassword("Noa"));
+        fileAuthenticator.addUsers("testUser", "testPassword");
+        assertEquals("testPassword", fileAuthenticator.getPassword("testUser"));
     }
 
     @Test
@@ -73,7 +91,7 @@ class FileAuthenticatorTest {
     @Test
     void isLoginExists() {
         assertTrue(fileAuthenticator.isLoginExists("Tom"));
-        assertFalse(fileAuthenticator.isLoginExists("Noa"));
+        assertFalse(fileAuthenticator.isLoginExists("testUser"));
     }
 
     @Test

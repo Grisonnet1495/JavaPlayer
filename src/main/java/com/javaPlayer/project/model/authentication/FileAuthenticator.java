@@ -17,7 +17,7 @@ public class FileAuthenticator extends Authenticator {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                throw new AuthenticatorException("Cannot create file", e);
+                throw new AuthenticatorException("Cannot create file : " + e.getMessage());
             }
         }
 
@@ -38,7 +38,7 @@ public class FileAuthenticator extends Authenticator {
         try (FileOutputStream fos = new FileOutputStream(usersPasswordsFilename)) {
             usersPasswords.store(fos, "User passwords");
         } catch (IOException e) {
-            throw new AuthenticatorException("Cannot save users", e);
+            throw new AuthenticatorException("Cannot save users : " + e.getMessage());
         }
     }
 
