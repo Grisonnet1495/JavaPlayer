@@ -36,8 +36,8 @@ public class JDialogSettings extends JDialog {
 
         // Set the properties of the dialog box
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) ((float) screenSize.width / 2);
-        int height = (int) ((float) screenSize.height / 2);
+        int width = 800;
+        int height = 475;
         this.setSize(new Dimension(width, height));
         this.setResizable(false);
 
